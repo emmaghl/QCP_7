@@ -18,5 +18,9 @@ class Quantum_Computer:
 class Gates:
 	def __init__(self):
 		pass
+	def X():
+		return np.array([[0,1],[1,0]])
+	def Y():
+		return Y = np.array([[0,0+1j],[0-1j,0]],dtype = complex)
 	def Hadamard():
-		return np.array([1,1],[1,-1])
+		return np.array([[1,1],[1,-1]])
