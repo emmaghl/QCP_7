@@ -8,7 +8,7 @@ class Quantum_Computer:
         self.Y = Gates.Y()
         self.Z = Gates.Z()
         self.H = Gates.Hadamard()
-        self.RN = Gates.Root_Not()
+        self.CNot = Gates.C_not()
 
     def Register(self):
         def Tensor_Prod(self):
@@ -32,8 +32,17 @@ class Gates:
         return 1 / np.sqrt(2) * np.array([[1, -1], [1, 1]])
 
     def Hadamard(self):
-        return np.array([[1, 1], [1, -1]])
+        return 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
 
     def Phase(self):
         return np.array([[1, 0], [1, 0 + 1j]], dtype=complex)
+
+    def T(self):
+        return np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex)
+
+    def C_not(self):
+        return np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]])
+
+
+
 
