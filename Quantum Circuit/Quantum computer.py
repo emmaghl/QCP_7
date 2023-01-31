@@ -8,6 +8,10 @@ class Quantum_Computer:
 		self.Z = Gates.Z()
 		self.H = Gates.Hadamard()
 		self.RN = Gates.Root_Not()
+
+		
+lopchsikcdskv 
+=======
 	
 	def Register():
 		def Tensor_Prod():
