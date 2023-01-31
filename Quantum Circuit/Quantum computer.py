@@ -9,9 +9,6 @@ class Quantum_Computer:
 		self.H = Gates.Hadamard()
 		self.RN = Gates.Root_Not()
 
-		
-lopchsikcdskv 
-=======
 	
 	def Register():
 		def Tensor_Prod():
