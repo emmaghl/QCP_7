@@ -43,6 +43,7 @@ class Gates:
     def C_not(self):
         return np.matmul(np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]), self.inpt)
 
-
+    def swap(self):
+        return np.matmul(np.array([1,0,0,0],[0,0,1,0],[0,1,0,0],[0,0,0,1]), self.inpt)
 
 
