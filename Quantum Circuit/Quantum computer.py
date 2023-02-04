@@ -44,6 +44,6 @@ class Gates:
         return np.matmul(np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]), self.inpt)
 
     def Swap(self):
-        return np.matmul(np.array([1,0,0,0],[0,0,1,0],[0,1,0,0],[0,0,0,1]), self.inpt)
+        return np.matmul(np.array([[1,0,0,0],[0,0,1,0],[0,1,0,0],[0,0,0,1]]), self.inpt)
 
 
