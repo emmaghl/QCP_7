@@ -6,6 +6,7 @@ class Quantum_Computer:
         self.Register_Size = Qubits
         self.Zero = np.array([1, 0])  # This is |0> vector state
         self.One = np.array([0, 1])  # This is |1> vector state
+        self.input = 0
 
     def Register(self):
         pass
