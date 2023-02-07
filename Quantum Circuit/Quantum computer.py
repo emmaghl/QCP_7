@@ -17,7 +17,7 @@ class Quantum_Computer:
             tensorprod = []
             for x in np.nditer(Q1): #iterate x over Q1
                 tensorprod = np.append(tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
-            return tensorprod.reshape(size.Q1,size.Q2) #ouput is linear so reshape into matrix
+            return tensorprod.reshape(np.size(Q2),np.size(Q2)) #ouput is linear so reshape into matrix
 
     def Qubit(self):
         self.Zero = np.array([[1, 0],[0, 0]]) #This is |0> vector state
