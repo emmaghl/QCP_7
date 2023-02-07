@@ -12,8 +12,13 @@ class Quantum_Computer:
         self.swap = Gates.Swap()
 
     def Register(self):
-        def Tensor_Prod(self):
-            pass
+        def Tensor_Prod(self, Q1, Q2):
+            #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
+            tensorprod = []
+            for x in np.nditer(Q1):
+                tensorprod = np.append(tensorprod, x * Q2)
+            return tensorprod.reshape(size.Q1,size.Q2) #ouput is linear so reshape into matrix
+
     def Qubit(self):
         self.Zero = np.array([[1, 0],[0, 0]]) #This is |0> vector state
         self.One = np.array([[0,0], [0,1]]) #This is |1> vector state
