@@ -15,8 +15,8 @@ class Quantum_Computer:
         def Tensor_Prod(self, Q1, Q2):
             #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
             tensorprod = []
-            for x in np.nditer(Q1):
-                tensorprod = np.append(tensorprod, x * Q2)
+            for x in np.nditer(Q1): #iterate x over Q1
+                tensorprod = np.append(tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
             return tensorprod.reshape(size.Q1,size.Q2) #ouput is linear so reshape into matrix
 
     def Qubit(self):
