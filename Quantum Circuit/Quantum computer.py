@@ -8,8 +8,8 @@ class Quantum_Computer:
         self.Y = Gates.Y()
         self.Z = Gates.Z()
         self.H = Gates.Hadamard()
-        self.CNot = Gates.C_not()
-        self.swap = Gates.Swap()
+        self.CNot = Gates.CNot()
+        self.Swap = Gates.Swap()
 
     def Register(self):
         pass
@@ -29,33 +29,33 @@ class Quantum_Computer:
 
 class Gates:
     def __init__(self, input):
-        self.inpt = input
+        self.input = input
 
     def X(self):
-        return np.matmul(np.array([[0, 1], [1, 0]]), self.inpt)
+        return np.matmul(np.array([[0, 1], [1, 0]]), self.input)
 
     def Y(self):
-        return np.matmul(np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex), self.inpt)
+        return np.matmul(np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex), self.input)
 
     def Z(self):
-        return np.matmul(np.array([[1, 0], [0, -1]]), self.inpt)
+        return np.matmul(np.array([[1, 0], [0, -1]]), self.input)
 
     def Root_Not(self):
-        return np.matmul(1 / np.sqrt(2) * np.array([[1, -1], [1, 1]]), self.inpt)
+        return np.matmul(1 / np.sqrt(2) * np.array([[1, -1], [1, 1]]), self.input)
 
     def Hadamard(self):
-        return np.matmul(1 / np.sqrt(2) * np.array([[1, 1], [1, -1]]), self.inpt)
+        return np.matmul(1 / np.sqrt(2) * np.array([[1, 1], [1, -1]]), self.input)
 
     def Phase(self):
-        return np.matmul(np.array([[1, 0], [1, 0 + 1j]], dtype=complex), self.inpt)
+        return np.matmul(np.array([[1, 0], [1, 0 + 1j]], dtype=complex), self.input)
 
     def T(self):
-        return np.matmul(np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex), self.inpt)
+        return np.matmul(np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex), self.input)
 
-    def C_not(self):
-        return np.matmul(np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]), self.inpt)
+    def CNot(self):
+        return np.matmul(np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]), self.input)
 
     def Swap(self):
-        return np.matmul(np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]), self.inpt)
+        return np.matmul(np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]), self.input)
 
 
