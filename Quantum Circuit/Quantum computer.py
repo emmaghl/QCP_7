@@ -13,7 +13,12 @@ class Quantum_Computer:
     def Register(self):
         def Tensor_Prod(self):
             pass
-
+    def Qubit(self):
+        self.Zero = np.array([[1, 0],[0, 0]]) #This is |0> vector state
+        self.One = np.array([[0,0], [0,1]]) #This is |1> vector state
+        self.a = (0+1j)/2**0.5
+        self.b = (0+1j)/2**0.5
+        return a*Zero + b*One
 
 class Gates:
     def __init__(self, input):
@@ -23,7 +28,7 @@ class Gates:
         return np.matmul(np.array([[0, 1], [1, 0]]), self.inpt)
 
     def Y(self):
-        return np.matmul(np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex),self.inpt)
+        return np.matmul(np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex), self.inpt)
 
     def Z(self):
         return np.matmul(np.array([[1, 0], [0, -1]]), self.inpt)
@@ -43,6 +48,7 @@ class Gates:
     def C_not(self):
         return np.matmul(np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]), self.inpt)
 
-
+    def Swap(self):
+        return np.matmul(np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]), self.inpt)
 
 
