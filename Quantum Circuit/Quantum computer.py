@@ -25,12 +25,6 @@ class Quantum_Computer:
         # self.b = (0+1j)/2**0.5 # the norm of b**2 by contrast is prob of finding qbit in state b. If measured, it will be in either a or b.
         return self.a*self.Zero + self.b*self.One
 
-
-
-class Gates:
-    def __init__(self, expression):
-        self.input = expression
-
     def X(self):
         return np.matmul(np.array([[0, 1], [1, 0]]), self.input)
 
