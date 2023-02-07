@@ -17,9 +17,15 @@ class Quantum_Computer:
     def Qubit(self):
         self.Zero = np.array([1, 0]) #This is |0> vector state
         self.One = np.array([0, 1]) #This is |1> vector state
-        self.a = (0+1j)/2**0.5 #the norm of a**2 plus norm of b**2 should = 1, this is the porbability of finding qbit in either state, 
-        self.b = (0+1j)/2**0.5 # the norm of b**2 by contrast is prob of finding qbit in state b. If measured, it will be in either a or b. 
-        return a*Zero + b*One
+        self.a = np.random.random()+np.random.random()*1j #generates a random complex number to be assigned as coefficient to |0> vector state
+        modb = np.sqrt(1 - (np.absolute(self.a))**2) #produces norm of a second complex number as coefficient to |1> vector state to ensure normalisation
+        randtheta = np.random.random() * 2 * np.pi #produces random angle in [0, 2π)
+        self.b = modb*np.cos(randtheta)+modb*np.sin(randtheta)*1j #generates a complex number to be assigned as coefficient to |1> and guarantees normalisation
+        # self.a = (0+1j)/2**0.5 #the norm of a**2 plus norm of b**2 should = 1, this is the porbability of finding qbit in either state,
+        # self.b = (0+1j)/2**0.5 # the norm of b**2 by contrast is prob of finding qbit in state b. If measured, it will be in either a or b.
+        return self.a*self.Zero + self.b*self.One
+
+
 
 class Gates:
     def __init__(self, expression):
