@@ -29,19 +29,18 @@ class Quantum_Computer:
     def Normalising(self):
         j = 2**self.Register_Size
         # returns j coefficients which normalise to 1
-        coeffs = np.zeros(j)
+        self.coeffs = np.zeros(j)
         for i in range(j):
-            coeffs[i] = np.random.random() + np.random.random()*1j
+            self.coeffs[i] = np.random.random() + np.random.random()*1j
 
         norm = 0
         for i in range(j):
-            norm += np.absolute(coeffs[i]))**2
+            norm += np.absolute(self.coeffs[i])**2
         norm = np.sqrt(norm)
 
         for i in range(j):
-            coeffs[i] = coeffs[i]/norm
-
-        return coeffs
+            self.coeffs[i] = coeffs[i]/norm
+        return self.coeffs
 
     def Basis(self):
         # returns a basis for the tensor product space given by the product of single qubit states
