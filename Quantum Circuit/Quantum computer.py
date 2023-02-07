@@ -9,6 +9,7 @@ class Quantum_Computer:
         self.Z = Gates.Z()
         self.H = Gates.Hadamard()
         self.CNot = Gates.C_not()
+        self.swap = Gates.Swap()
 
     def Register(self):
         def Tensor_Prod(self):
