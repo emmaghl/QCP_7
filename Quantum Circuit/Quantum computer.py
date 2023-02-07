@@ -28,8 +28,8 @@ class Quantum_Computer:
         return a*Zero + b*One
 
 class Gates:
-    def __init__(self, input):
-        self.input = input
+    def __init__(self, expression):
+        self.input = expression
 
     def X(self):
         return np.matmul(np.array([[0, 1], [1, 0]]), self.input)
