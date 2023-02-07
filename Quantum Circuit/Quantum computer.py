@@ -4,8 +4,6 @@ class Quantum_Computer:
 
     def __init__(self, Qubits):
         self.Register_Size = Qubits
-
-    def ComputationalBasis(self):
         self.Zero = np.array([1, 0])  # This is |0> vector state
         self.One = np.array([0, 1])  # This is |1> vector state
 
@@ -31,8 +29,9 @@ class Quantum_Computer:
     def Basis(self):
         # returns a basis for the tensor product space given by the product of single qubit states
         n = self.Register_Size
-        basis = np.zeros(2**n)
-        return basis
+        self.basis = np.zeros(2**n)
+
+        return self.basis
 
     def X(self):
         return np.matmul(np.array([[0, 1], [1, 0]]), self.input)
