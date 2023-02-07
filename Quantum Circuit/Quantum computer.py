@@ -4,12 +4,6 @@ class Quantum_Computer:
 
     def __init__(self, Qubits):
         self.Register_Size = Qubits
-        self.X = Gates.X()
-        self.Y = Gates.Y()
-        self.Z = Gates.Z()
-        self.H = Gates.Hadamard()
-        self.CNot = Gates.CNot()
-        self.Swap = Gates.Swap()
 
     def Register(self):
         pass
