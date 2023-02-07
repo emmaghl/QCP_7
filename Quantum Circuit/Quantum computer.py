@@ -17,9 +17,10 @@ class Quantum_Computer:
     def Qubit(self):
         self.Zero = np.array([[1, 0],[0, 0]]) #This is |0> vector state
         self.One = np.array([[0,0], [0,1]]) #This is |1> vector state
+        #Look into normalize function se we can change the values for a and b 
         self.a = (0+1j)/2**0.5 #the norm of a**2 plus norm of b**2 should = 1, this is the porbability of finding qbit in either state, 
         self.b = (0+1j)/2**0.5 # the norm of b**2 by contrast is prob of finding qbit in state b. If measured, it will be in either a or b. 
-        return a*Zero + b*One
+        return a*Zero + b*One 
 
 class Gates:
     def __init__(self, input):
