@@ -26,7 +26,6 @@ class Quantum_Computer:
         for i in range(j): #compute random complex numbers in polar form
             theta = np.random.random() * np.pi * 2 #generate random angles ranging [0, 2π)
             self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
-        return self.coeffs
 
 
     def Basis(self):
