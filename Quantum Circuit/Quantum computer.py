@@ -28,12 +28,33 @@ class Quantum_Computer:
             self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
         return self.coeffs
 
+
     def Basis(self):
         # returns a basis for the tensor product space given by the product of single qubit states
-        n = self.Register_Size
-        self.basis = np.zeros(2**n)
+        N = self.Register_Size
+        Q = []
 
-        return self.basis
+        for i in range(0, 2 ** N):
+            digit = []
+            if i < (2 ** N) / 2:
+                base = self.Zero
+                digit.append(0)
+            else:
+                base = self.One
+                digit.append(1)
+            for j in range(1, N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** N) / (2 ** (k + 1))
+                if x < (2 ** N) / (2 ** (j + 1)):
+                    base = self.Tensor_Prod(base, self.Zero)
+                    digit.append(0)
+                else:
+                    base = self.Tensor_Prod(base, self.One)
+                    digit.append(1)
+            Q.append(base)
+
+        return Q
 
     def X(self):
         return np.matmul(np.array([[0, 1], [1, 0]]), self.input)
