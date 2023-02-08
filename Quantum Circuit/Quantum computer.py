@@ -18,36 +18,20 @@ class Quantum_Computer:
             self.tensorprod = np.append(self.tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
         return self.tensorprod #ouput is linear tensor product (NOTE: matrix form infromation lost)
 
-    # def Qubit(self):
-    #     self.a = np.random.random()+np.random.random()*1j #generates a random complex number to be assigned as coefficient to the |0> vector state
-    #     modb = np.sqrt(1 - (np.absolute(self.a))**2) #produces norm of a second complex number as coefficient to |1> vector state to ensure normalisation
-    #     randtheta = np.random.random() * 2 * np.pi #produces random angle in [0, 2π), which combined with the norm above will produce a second random complex number
-    #     self.b = modb*np.cos(randtheta)+modb*np.sin(randtheta)*1j #generates a complex number to be assigned as coefficient to the |1> vector state
-    #     # self.a = (0+1j)/2**0.5 #the norm of a**2 plus norm of b**2 should = 1, this is the porbability of finding qbit in either state,
-    #     # self.b = (0+1j)/2**0.5 # the norm of b**2 by contrast is prob of finding qbit in state b. If measured, it will be in either a or b.
-    #     return self.a*self.Zero + self.b*self.One
 
     def Normalising(self):
+        # returns an array of 2**n complex coefficients and ensures normalisation.
         j = 2**self.Register_Size
-        # returns j coefficients which normalise to 1
-        self.coeffs = np.zeros(j)
-        for i in range(j):
-            self.coeffs[i] = np.random.random() + np.random.random()*1j
-
-        norm = 0
-        for i in range(j):
-            norm += np.absolute(self.coeffs[i])**2
-        norm = np.sqrt(norm)
-
-        for i in range(j):
-            self.coeffs[i] = coeffs[i]/norm
+        self.coeffs = (0 + 0 * 1j) * np.zeros(j) #create an arbitrary numpy array of complex coefficients
+        for i in range(j): #compute random complex numbers in polar form
+            theta = np.random.random() * np.pi * 2 #generate random angles ranging [0, 2π)
+            self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
         return self.coeffs
 
     def Basis(self):
         # returns a basis for the tensor product space given by the product of single qubit states
         n = self.Register_Size
         self.basis = np.zeros(2**n)
-
 
         return self.basis
 
