@@ -16,9 +16,6 @@ class Quantum_Computer:
         self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]])
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]])
 
-    def Register(self):
-        pass
-
     def Tensor_Prod(self, Q1, Q2):
         #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
         self.tensorprod = []
@@ -29,11 +26,11 @@ class Quantum_Computer:
     def Coefficients(self):
         # returns an array of 2**n complex coefficients and ensures normalisation.
         j = 2**self.Register_Size
-        self.coeffs = (0 + 0 * 1j) * np.zeros(j) #create an arbitrary numpy array of complex coefficients
+        coeffs = (0 + 0 * 1j) * np.zeros(j) #create an arbitrary numpy array of complex coefficients
         for i in range(j): #compute random complex numbers in polar form
             theta = np.random.random() * np.pi * 2 #generate random angles ranging [0, 2π)
-            self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
-
+            coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
+        self.coeffs = coeffs
 
     def Basis(self):
         # returns a basis for the tensor product space given by the product of single qubit states
@@ -58,11 +55,10 @@ class Quantum_Computer:
                     base = self.Tensor_Prod(base, self.One)
                     digit.append(1)
             Q.append(base)
-        return Q
+        # to look up how numpy stores information and if it's more efficient to return the transposed basis or to transpose it each time on use
+        self.Q = Q
 
-    def Multiply(self, mat_1, mat_2):
-        return np.matmul(mat_1,mat_2)
+    def Psi(self):
+        return np.matmul(np.transpose(self.Basis), self.coeffs)
 
 
-A = Quantum_Computer(2)
-print(A.Coefficients())
