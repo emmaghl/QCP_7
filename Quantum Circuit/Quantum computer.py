@@ -60,9 +60,6 @@ class Quantum_Computer:
         # k is the kth qubit on which the hadamard is acting, and k in (0, n-1) where n is the number of qubits.
         # k can be a list of positions or an integer
         gate_inputs = ["Hadamard", "Rnot", "Phase", "X", "Y", "Z", "T"]
-
-
-
         for j in range(len(k)):
             if j == 0:
                 H = self.Hadamard
