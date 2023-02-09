@@ -6,8 +6,8 @@ class Quantum_Computer:
         self.Register_Size = Qubits
         self.Zero = np.array([1, 0])  # This is |0> vector state
         self.One = np.array([0, 1])  # This is |1> vector state
-        self.x  = np.array([[0, 1], [1, 0]])
-        self.y = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex)
+        self.X = np.array([[0, 1], [1, 0]])
+        self.Y = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex)
         self.Z = np.array([[1, 0], [0, -1]])
         self.RNot = 1 / np.sqrt(2) * np.array([[1, -1], [1, 1]])
         self.Hadamard = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
