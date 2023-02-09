@@ -55,7 +55,7 @@ class Quantum_Computer:
                     digit.append(1)
             Q.append(base)
         # to look up how numpy stores information and if it's more efficient to return the transposed basis or to transpose it each time on use
-        Q = np.asmatrix(Q)
+        self.Q = np.asmatrix(Q)
         for i in range(len(Q)):
             self.Q.append(np.transpose(Q[i])) #transposes all the incoming basis states
 
