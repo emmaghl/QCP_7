@@ -66,20 +66,16 @@ class Quantum_Computer:
         return np.matmul(self.coeffs, column_ones)
 
     def Hadamard_Logic(self, k):
-        # k is the kth state on which the hadamard is acting, and k in (0, n-1) where n is the number of quibits
-        if k == 0:
-            H = np.asmatrix(self.tensorprod(self.Hadamard, self.I))
-        elif k == 1:
-            H = np.asmatrix(self.tensorprod(self.I, self.Hadamard))
-        else:
-            H = np.asmatrix(self.tensorprod(self.I, self.I))
+        # k is the kth qubit on which the hadamard is acting, and k in (0, n-1) where n is the number of qubits.
+        # k can be a list of positions or an integer
 
-        for i in range(2, len(self.Register_Size)):
-            if i == k:
-                H = np.asmatrix(self.tensorprod(H, self.Hadamard))
-            else:
-                H = np.asmatrix(self.tensorprod(H, self.I))
+        [H = np.asmatrix(self.tensorprod(self.Hadamard, self.I)) for _ in range(len(k)) if _ == 0]
+        [H = np.asmatrix(self.tensorprod(self.Ι, self.Hadamard)) for _ in range(len(k)) if _ == 1]
+        [H = np.asmatrix(self.tensorprod(self.Hadamard, self.Hadamard)) for _ in range(len(k)) if _ > 1]
 
+        for j in range(2, len(self.Register_Size)):
+            [H = np.asmatrix(self.tensorprod(H, self.Hadamard)) for _ in range(len(k)) if _ == j]
+            [H = np.asmatrix(self.tensorprod(H, self.I)) for _ in range(len(k)) if _ != j]
 
 
 #function logicgate(1, 3) =  tensor.product (tensor.product(hadarmard, identity ) , identity) 
