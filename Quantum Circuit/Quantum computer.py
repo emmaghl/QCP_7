@@ -25,6 +25,16 @@ class Quantum_Computer:
         self.tensorprod = np.asmatrix(self.tensorprod)
         #ouput is linear tensor product (NOTE: matrix form infromation lost)
 
+    def Sparse(self, Matrix): #defines a sparse matrix of the form row i column j has value {}
+        rows = np.shape(Matrix)[0]
+        cols = np.shape(Matrix)[1]
+        SMatrix = [] #output matrix
+        for i in range(rows):
+            for j in range(cols):
+                if Matrix[i,j] != 0: #if the value of the matrix element i,j is not 0 then store the value and the location
+                    SMatrix.append([i,j,Matrix[i,j]]) #Output array: (row, column, value)
+        return SMatrix #return output
+
     def Coefficients(self):
         # returns an array of 2**n complex coefficients and ensures normalisation.
         j = 2**self.Register_Size
