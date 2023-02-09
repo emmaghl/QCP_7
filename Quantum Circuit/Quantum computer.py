@@ -63,4 +63,14 @@ class Quantum_Computer:
         column_ones = np.transpose(np.ones(self.Register_Size))
         return np.matmul(column_ones, self.coeffs)
 
+#function logicgate(1, 3) =  tensor.product (tensor.product(hadarmard, identity ) , identity) 
+ 
+#function logicgate(2, 3) =  tensor.product (tensor.product(identity, hadarmard ) , identity)    
 
+#function logicgate(3, 3) =  tensor.product (tensor.product(identity, identity ) , hadamrd)
+
+#function logicgate(3, 4) =  tensor product(tensor.product (tensor.product(identity, identity ) , hadamard) , identity)
+
+#function logicgate (k, n) =  tensor.product (tensor.product(hadarmard, identity ) , identity) 
+ 
+   # n= qubits k = 0, ... (n - 1) 
