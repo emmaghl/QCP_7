@@ -58,7 +58,7 @@ class Quantum_Computer:
         # to look up how numpy stores information and if it's more efficient to return the transposed basis or to transpose it each time on use
         Q = np.asmatrix(Q)
         for i in range(len(Q)):
-            self.Q.append(np.transpose(Q[i]))
+            self.Q.append(np.transpose(Q[i])) #transposes all the incoming basis states
 
     def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
         column_ones = np.transpose(np.ones(self.Register_Size))
