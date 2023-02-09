@@ -42,6 +42,7 @@ class Quantum_Computer:
         for i in range(j): #compute random complex numbers in polar form
             theta = np.random.random() * np.pi * 2 #generate random angles ranging [0, 2π)
             self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
+        self.coeffs.shape = (j, 1)
 
     def Basis(self):
         N = self.Register_Size
@@ -55,7 +56,7 @@ class Quantum_Computer:
     def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
         return np.matmul(self.Q, np.transpose(self.coeffs))
 
-    def Hadamard_Circuit(self, gate, k):
+    def Hadamard_Logic(self, k):
         # k is the kth qubit on which the hadamard is acting, and k in (0, n-1) where n is the number of qubits.
         # k can be a list of positions or an integer
 
@@ -71,4 +72,3 @@ class Quantum_Computer:
                     H = np.asmatrix(self.tensorprod(H, self.Hadamard))
                 else:
                     H = np.asmatrix(self.tensorprod(H, self.I))
-
