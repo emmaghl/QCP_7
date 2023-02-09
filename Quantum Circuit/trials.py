@@ -63,3 +63,16 @@ a graveyard of trials
 # # print(sum)
 # #
 # # #idea is to get a random angle and set the absolute value to 1/2**n. (would reduce comp. time)
+
+#
+# [H = np.asmatrix(self.tensorprod(self.Hadamard, self.I)) for _ in range(len(k)) if _ == 0]
+# [H = np.asmatrix(self.tensorprod(self.Ι, self.Hadamard)) for _ in range(len(k)) if _ == 1]
+# [H = np.asmatrix(self.tensorprod(self.Hadamard, self.Hadamard)) for _ in range(len(k)) if _ > 1]
+#
+# for j in range(2, len(self.Register_Size)):
+#     [H = np.asmatrix(self.tensorprod(H, self.Hadamard)) for _ in range(len(k)) if _ == j]
+#     [H = np.asmatrix(self.tensorprod(H, self.I)) for _ in range(len(k)) if _ != j]
+#
+# self.H = H
+
+# k is the kth state on which the hadamard is acting, and k in (0, n-1) where n is the number of quibits

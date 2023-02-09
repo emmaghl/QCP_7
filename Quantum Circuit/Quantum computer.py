@@ -61,30 +61,23 @@ class Quantum_Computer:
             self.Q.append(np.transpose(Q[i])) #transposes all the incoming basis states
 
     def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
-        column_ones = np.transpose(np.ones(self.Register_Size))
-        return np.matmul(self.coeffs, column_ones)
+        return np.matmul(self.Q, np.transpose(self.coeffs))
+
+
 
     def Hadamard_Logic(self, k):
         # k is the kth qubit on which the hadamard is acting, and k in (0, n-1) where n is the number of qubits.
         # k can be a list of positions or an integer
 
-        [H = np.asmatrix(self.tensorprod(self.Hadamard, self.I)) for _ in range(len(k)) if _ == 0]
-        [H = np.asmatrix(self.tensorprod(self.Ι, self.Hadamard)) for _ in range(len(k)) if _ == 1]
-        [H = np.asmatrix(self.tensorprod(self.Hadamard, self.Hadamard)) for _ in range(len(k)) if _ > 1]
+        for j in range(len(k)):
+            if j == 0:
+                H = self.Hadamard
+            else:
+                H = self.I
 
-        for j in range(2, len(self.Register_Size)):
-            [H = np.asmatrix(self.tensorprod(H, self.Hadamard)) for _ in range(len(k)) if _ == j]
-            [H = np.asmatrix(self.tensorprod(H, self.I)) for _ in range(len(k)) if _ != j]
-
-
-#function logicgate(1, 3) =  tensor.product (tensor.product(hadarmard, identity ) , identity) 
- 
-#function logicgate(2, 3) =  tensor.product (tensor.product(identity, hadarmard ) , identity)    
-
-#function logicgate(3, 3) =  tensor.product (tensor.product(identity, identity ) , hadamrd)
-
-#function logicgate(3, 4) =  tensor product(tensor.product (tensor.product(identity, identity ) , hadamard) , identity)
-
-#function logicgate (k, n) =  tensor.product (tensor.product(hadarmard, identity ) , identity) 
- 
-   # n= qubits k = 0, ... (n - 1) 
+        for i in range(1, len(self.Register_Size)):
+            for j in range(len(k)):
+                if i == j:
+                    H = np.asmatrix(self.tensorprod(H, self.Hadamard))
+                else:
+                    H = np.asmatrix(self.tensorprod(H, self.I))
