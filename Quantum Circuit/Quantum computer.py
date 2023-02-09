@@ -56,9 +56,12 @@ class Quantum_Computer:
     def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
         return np.matmul(self.Q, np.transpose(self.coeffs))
 
-    def Hadamard_Logic(self, k):
+    def Logic(self, gate, k):
         # k is the kth qubit on which the hadamard is acting, and k in (0, n-1) where n is the number of qubits.
         # k can be a list of positions or an integer
+        gate_inputs = ["Hadamard", "Rnot", "Phase", "X", "Y", "Z", "T"]
+
+
 
         for j in range(len(k)):
             if j == 0:
