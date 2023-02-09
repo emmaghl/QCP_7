@@ -24,7 +24,6 @@ class Quantum_Computer:
         self.tensorprod = []
         for x in np.nditer(Q1): #iterate x over Q1
             self.tensorprod = np.append(self.tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
-        return self.tensorprod #ouput is linear tensor product (NOTE: matrix form infromation lost)
 
     def Normalising(self):
         # returns an array of 2**n complex coefficients and ensures normalisation.
@@ -38,7 +37,6 @@ class Quantum_Computer:
         # returns a basis for the tensor product space given by the product of single qubit states
         N = self.Register_Size
         Q = []
-
         for i in range(0, 2 ** N):
             digit = []
             if i < (2 ** N) / 2:
@@ -58,7 +56,6 @@ class Quantum_Computer:
                     base = self.Tensor_Prod(base, self.One)
                     digit.append(1)
             Q.append(base)
-
         return Q
 
     def Multiply(self, mat_1, mat_2):
