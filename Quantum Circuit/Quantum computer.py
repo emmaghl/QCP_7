@@ -44,31 +44,13 @@ class Quantum_Computer:
             self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
 
     def Basis(self):
-        # returns a basis for the tensor product space given by the product of single qubit states
         N = self.Register_Size
-        Q = []
+        self.Q = []
+
         for i in range(0, 2 ** N):
-            digit = []
-            if i < (2 ** N) / 2:
-                base = self.Zero
-                digit.append(0)
-            else:
-                base = self.One
-                digit.append(1)
-            for j in range(1, N):
-                for k in range(0, len(digit)):
-                    i -= digit[k] * (2 ** N) / (2 ** (k + 1))
-                if i < (2 ** N) / (2 ** (j + 1)):
-                    base = self.Tensor_Prod(base, self.Zero)
-                    digit.append(0)
-                else:
-                    base = self.Tensor_Prod(base, self.One)
-                    digit.append(1)
-            Q.append(base)
-        # to look up how numpy stores information and if it's more efficient to return the transposed basis or to transpose it each time on use
-        self.Q = np.asmatrix(Q)
-        for i in range(len(Q)):
-            self.Q.append(np.transpose(Q[i])) #transposes all the incoming basis states
+            self.Q.append(np.zeros(2 ** N))
+            self.Q[i][i] = 1
+            self.Q[i].shape = (2 ** N, 1)
 
     def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
         return np.matmul(self.Q, np.transpose(self.coeffs))

@@ -76,3 +76,32 @@ a graveyard of trials
 # self.H = H
 
 # k is the kth state on which the hadamard is acting, and k in (0, n-1) where n is the number of quibits
+
+'''
+def Basis(self):
+    # returns a basis for the tensor product space given by the product of single qubit states
+    N = self.Register_Size
+    Q = []
+    for i in range(0, 2 ** N):
+        digit = []
+        if i < (2 ** N) / 2:
+            base = self.Zero
+            digit.append(0)
+        else:
+            base = self.One
+            digit.append(1)
+        for j in range(1, N):
+            for k in range(0, len(digit)):
+                i -= digit[k] * (2 ** N) / (2 ** (k + 1))
+            if i < (2 ** N) / (2 ** (j + 1)):
+                base = self.Tensor_Prod(base, self.Zero)
+                digit.append(0)
+            else:
+                base = self.Tensor_Prod(base, self.One)
+                digit.append(1)
+        Q.append(base)
+    # to look up how numpy stores information and if it's more efficient to return the transposed basis or to transpose it each time on use
+    self.Q = np.asmatrix(Q)
+    for i in range(len(Q)):
+        self.Q.append(np.transpose(Q[i]))  # transposes all the incoming basis states
+        '''
