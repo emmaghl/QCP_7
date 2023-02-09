@@ -32,7 +32,8 @@ class Quantum_Computer:
         for i in range(rows):
             for j in range(cols):
                 if Matrix[i,j] != 0:
-                    self.SMatrix.append([i,j,Matrix[i,j]])
+                    SMatrix.append([i,j,Matrix[i,j]])
+        return SMatrix
 
     def Coefficients(self):
         # returns an array of 2**n complex coefficients and ensures normalisation.
