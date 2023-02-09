@@ -26,11 +26,10 @@ class Quantum_Computer:
     def Coefficients(self):
         # returns an array of 2**n complex coefficients and ensures normalisation.
         j = 2**self.Register_Size
-        coeffs = (0 + 0 * 1j) * np.zeros(j) #create an arbitrary numpy array of complex coefficients
+        self.coeffs = (0 + 0 * 1j) * np.zeros(j) #create an arbitrary numpy array of complex coefficients
         for i in range(j): #compute random complex numbers in polar form
             theta = np.random.random() * np.pi * 2 #generate random angles ranging [0, 2π)
-            coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
-        self.coeffs = coeffs
+            self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
 
     def Basis(self):
         # returns a basis for the tensor product space given by the product of single qubit states
