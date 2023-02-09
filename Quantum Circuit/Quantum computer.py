@@ -46,10 +46,9 @@ class Quantum_Computer:
                 base = self.One
                 digit.append(1)
             for j in range(1, N):
-                x = i
                 for k in range(0, len(digit)):
-                    x -= digit[k] * (2 ** N) / (2 ** (k + 1))
-                if x < (2 ** N) / (2 ** (j + 1)):
+                    i -= digit[k] * (2 ** N) / (2 ** (k + 1))
+                if i < (2 ** N) / (2 ** (j + 1)):
                     base = self.Tensor_Prod(base, self.Zero)
                     digit.append(0)
                 else:
