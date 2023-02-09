@@ -24,14 +24,16 @@ class Quantum_Computer:
         self.tensorprod = []
         for x in np.nditer(Q1): #iterate x over Q1
             self.tensorprod = np.append(self.tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
+        #ouput is linear tensor product (NOTE: matrix form infromation lost)
 
-    def Normalising(self):
+    def Coefficients(self):
         # returns an array of 2**n complex coefficients and ensures normalisation.
         j = 2**self.Register_Size
         self.coeffs = (0 + 0 * 1j) * np.zeros(j) #create an arbitrary numpy array of complex coefficients
         for i in range(j): #compute random complex numbers in polar form
             theta = np.random.random() * np.pi * 2 #generate random angles ranging [0, 2π)
             self.coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j # form complex numbers and set modulus to be 1/j for each so that j coefficients normalise to 1.
+
 
     def Basis(self):
         # returns a basis for the tensor product space given by the product of single qubit states
@@ -62,3 +64,5 @@ class Quantum_Computer:
         return np.matmul(mat_1,mat_2)
 
 
+A = Quantum_Computer(2)
+print(A.Coefficients())
