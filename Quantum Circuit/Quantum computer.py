@@ -6,21 +6,23 @@ class Quantum_Computer:
         self.Register_Size = Qubits
         self.Zero = np.array([1, 0])  # This is |0> vector state
         self.One = np.array([0, 1])  # This is |1> vector state
-        self.X = np.array([[0, 1], [1, 0]])
-        self.Y = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex)
-        self.Z = np.array([[1, 0], [0, -1]])
-        self.RNot = 1 / np.sqrt(2) * np.array([[1, -1], [1, 1]])
-        self.Hadamard = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
-        self.Phase = np.array([[1, 0], [1, 0 + 1j]], dtype=complex)
-        self.T = np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex)
-        self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]])
-        self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]])
+        self.I = np.array([[1,0],[0,1]]) #Identity gate
+        self.X = np.array([[0, 1], [1, 0]]) #Flips the |0> to |1> and vice versa
+        self.Y = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex) #converts |0> to i|1> and |1> to -i|0>
+        self.Z = np.array([[1, 0], [0, -1]]) #sends |1> to -|1> and |0> to |0>
+        self.RNot = 1 / np.sqrt(2) * np.array([[1, -1], [1, 1]]) #sends |0> to 0.5^(-0.5)(|0>+|1>) and |1> to 0.5^(-0.5)(|1>-|0>)
+        self.Hadamard = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]]) #sends |0> to |+> and |1> to |->
+        self.Phase = np.array([[1, 0], [1, 0 + 1j]], dtype=complex) #sends |0>+|1> to |0>+i|1>
+        self.T = np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex) #square root of phase (rotates by pi/8)
+        self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]) #reversable xor: |00> -> |00>, |01> -> |11>
+        self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) #¯\_(ツ)_/¯
 
     def Tensor_Prod(self, Q1, Q2):
         #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
         self.tensorprod = []
         for x in np.nditer(Q1): #iterate x over Q1
             self.tensorprod = np.append(self.tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
+        self.tensorprod = np.asmatrix(self.tensorprod)
         #ouput is linear tensor product (NOTE: matrix form infromation lost)
 
     def Coefficients(self):
