@@ -59,6 +59,7 @@ class Quantum_Computer:
         self.Q = Q
 
     def Psi(self):
-        return np.matmul(np.transpose(self.Basis), self.coeffs)
+        column_ones = np.transpose(np.ones(self.Register_Size))
+        return np.matmul(column_ones, self.coeffs)
 
 
