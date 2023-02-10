@@ -56,19 +56,40 @@ class Quantum_Computer:
     def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
         return np.matmul(self.Q, np.transpose(self.coeffs))
 
-    def Logic(self, gate, k):
+    def Single_Logic(self, gate, k):
         # k is the kth qubit on which the hadamard is acting, and k in (0, n-1) where n is the number of qubits.
         # k can be a list of positions or an integer
-        gate_inputs = ["Hadamard", "Rnot", "Phase", "X", "Y", "Z", "T"]
-        for j in range(len(k)):
-            if j == 0:
-                H = self.Hadamard
-            else:
-                H = self.I
 
-        for i in range(1, len(self.Register_Size)):
-            for j in range(len(k)):
-                if i == j:
-                    H = np.asmatrix(self.tensorprod(H, self.Hadamard))
+        assert len(gate) != len(K), "unequal list lenghts"
+
+        for count_i, value_i in enumerate(k):
+            for count_j, value_j in enumerate(k):
+                assert (count_i != count_j and value_i = value_j), "same position value for multiple gates"
+
+        gate_inputs = ["Hadamard", "Rnot", "Phase", "X", "Y", "Z", "T"]
+        matrices = [self.Hadamard, self.Rnot, self.Phase, self.X, self.Y, self.Z, self.T]
+
+        M = np.zeros[len(gate)]
+        for i in gate_inputs:
+            for j in gate:
+                if gate[j] == gate_inputs[i]:
+                    M[j] = np.asmatrix(matrices[i])
+            else:
+                return("Please enter one of the following gates and ensure correct spelling: Hadamard, Rnot, Phase, X, Y, Z, T")
+
+        L = self.I
+        for i in range(len(k)):
+            for j in range(len(k[i])):
+                if j == 0:
+                    L = M[i]
                 else:
-                    H = np.asmatrix(self.tensorprod(H, self.I))
+                    L = L
+
+        for l in range(1, len(self.Register_Size)):
+            for i in range(len(k)):
+                for j in range(len(k[i])):
+                    if l == j:
+                        L = np.asmatrix(self.tensorprod(L, M))
+                    else:
+                        L = np.asmatrix(self.tensorprod(L, self.I))
+

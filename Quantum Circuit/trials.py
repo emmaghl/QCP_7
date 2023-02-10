@@ -5,6 +5,14 @@ import cmath
 a graveyard of trials
 '''
 
+gates = (Hamard, phase)
+k = ((0, 2), (1))
+
+
+(H, P, H)
+
+
+
 # def Qubit(self):
 #     self.a = np.random.random()+np.random.random()*1j #generates a random complex number to be assigned as coefficient to the |0> vector state
 #     modb = np.sqrt(1 - (np.absolute(self.a))**2) #produces norm of a second complex number as coefficient to |1> vector state to ensure normalisation
