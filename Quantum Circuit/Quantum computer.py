@@ -57,18 +57,20 @@ class Quantum_Computer:
         return np.matmul(self.Q, np.transpose(self.coeffs))
 
     def Single_Logic(self, gate, k):
-        # k is the kth qubit on which the hadamard is acting, and k in (0, n-1) where n is the number of qubits.
-        # k can be a list of positions or an integer
+        '''
+        - param gate: list of gate names to be applied
+        - param k: list of lists. each entry corresponds to the respective gate
+        and contains a list of qubit position(s) on which to apply that gate
+        '''
 
-        assert len(gate) != len(K), "unequal list lenghts"
+        assert len(gate) != len(K), "unequal list lenghts" #the number of gates should match the position lists
 
-        for count_i, value_i in enumerate(k):
+        for count_i, value_i in enumerate(k): #this is only one step. so only one gate can be applied to each qubit.
             for count_j, value_j in enumerate(k):
                 assert (count_i != count_j and value_i = value_j), "same position value for multiple gates"
 
-        gate_inputs = ["Hadamard", "Rnot", "Phase", "X", "Y", "Z", "T"]
+        gate_inputs = ["Hadamard", "Rnot", "Phase", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
         matrices = [self.Hadamard, self.Rnot, self.Phase, self.X, self.Y, self.Z, self.T]
-
         M = np.zeros[len(gate)]
         for i in gate_inputs:
             for j in gate:
@@ -93,3 +95,4 @@ class Quantum_Computer:
                     else:
                         L = np.asmatrix(self.tensorprod(L, self.I))
 
+        self.SingleL = L
