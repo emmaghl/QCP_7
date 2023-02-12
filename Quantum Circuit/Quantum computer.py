@@ -19,11 +19,12 @@ class Quantum_Computer:
 
     def Tensor_Prod(self, Q1, Q2):
         #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
-        self.tensorprod = []
+        tensorprod = []
         for x in np.nditer(Q1): #iterate x over Q1
-            self.tensorprod = np.append(self.tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
-        self.tensorprod = np.asmatrix(self.tensorprod)
+            tensorprod = np.append(tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
+        tensorprod = np.asmatrix(tensorprod)
         #ouput is linear tensor product (NOTE: matrix form infromation lost)
+        return tensorprod
 
     def Sparse(self, Matrix): #defines a sparse matrix of the form row i column j has value {}
         rows = np.shape(Matrix)[0]
@@ -56,43 +57,54 @@ class Quantum_Computer:
     def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
         return np.matmul(self.Q, np.transpose(self.coeffs))
 
-    def Single_Logic(self, gate, k):
+    def Single_Logic(self, gate, positions):
         '''
         - param gate: list of gate names to be applied
-        - param k: list of lists. each entry corresponds to the respective gate
+        - param positions: list of lists. each entry corresponds to the respective gate
         and contains a list of qubit position(s) on which to apply that gate
         '''
 
-        assert len(gate) != len(K), "unequal list lenghts" #the number of gates should match the position lists
+        assert len(gate) == len(positions), "unequal list lenghts" #the number of gates should match the position lists
 
-        for count_i, value_i in enumerate(k): #this is only one step. so only one gate can be applied to each qubit.
-            for count_j, value_j in enumerate(k):
-                assert (count_i != count_j and value_i = value_j), "same position value for multiple gates"
+        # this is only one step. so only one logic gate can be applied to a single qubit. so must return an error
+        # if any value within the position sub-lists is repeated
+        list_check = [] #create a unique list with the each of the arguments of the sublists of positions
+        for k in range(len(positions)):
+            for i in range(len(positions[k])):
+                list_check.append((positions[k])[i])
 
-        gate_inputs = ["Hadamard", "Rnot", "Phase", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
-        matrices = [self.Hadamard, self.Rnot, self.Phase, self.X, self.Y, self.Z, self.T]
-        M = np.zeros[len(gate)]
-        for i in gate_inputs:
-            for j in gate:
-                if gate[j] == gate_inputs[i]:
-                    M[j] = np.asmatrix(matrices[i])
-            else:
-                return("Please enter one of the following gates and ensure correct spelling: Hadamard, Rnot, Phase, X, Y, Z, T")
+        assert len(list(list_check)) == len(set(list_check)), "repeated position value"  #ensure lenght of list is equal to lenght of unique values in list i.e. avoid repetiotion
+
+        gate_inputs = ["H", "RNot", "Phase", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
+        matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
+        M = []
+        for j in range(len(gate)):
+            for i in range(len(gate_inputs)):
+                if str(gate[j]) == str(gate_inputs[i]):
+                    M.append(np.asmatrix(matrices[i]))
+        assert len(M) > 0, ("Please enter one of the following gates and ensure correct spelling: H, RNot, Phase, X, Y, Z, T")
 
         L = self.I
-        for i in range(len(k)):
-            for j in range(len(k[i])):
+        for i in range(len(positions)):
+            for j in range(len(positions[i])):
                 if j == 0:
                     L = M[i]
                 else:
                     L = L
 
-        for l in range(1, len(self.Register_Size)):
-            for i in range(len(k)):
-                for j in range(len(k[i])):
+        for l in range(1, self.Register_Size):
+            for i in range(len(positions)):
+                for j in range(len(positions[i])):
                     if l == j:
-                        L = np.asmatrix(self.tensorprod(L, M))
+                        L = (self.Tensor_Prod(L, M[i]))
+                        print(L)
                     else:
-                        L = np.asmatrix(self.tensorprod(L, self.I))
+                        L = (self.Tensor_Prod(L, self.I))
 
-        self.SingleL = L
+        return L
+
+Q = Quantum_Computer(4)
+
+gate = ["H", "RNot"]
+positions = [[1,3], [4]]
+print(Q.Single_Logic(gate, positions))
