@@ -5,24 +5,6 @@ import cmath
 a graveyard of trials
 '''
 
-# gates = (Hamard, phase)
-# k = ((0, 2), (1))
-#
-#
-# (H, P, H)
-
-
-
-
-gate = ["H", "RNot"]
-positions = [[1], [3]]
-
-gate_inputs = ["H", "RNot", "Phase", "X", "Y", "Z", "T"]  # maps the string input to the relevant matrix and creates an array
-
-for j in range(len(gate)):
-    for i in range(len(gate_inputs)):
-        if str(gate[j]) == str(gate_inputs[i]):
-            print(gate_inputs[i])
 
 
 

@@ -103,8 +103,11 @@ class Quantum_Computer:
 
         return L
 
+'''
+#tesing Single_Logic
 Q = Quantum_Computer(4)
 
 gate = ["H", "RNot"]
 positions = [[1,3], [4]]
 print(Q.Single_Logic(gate, positions))
+'''
