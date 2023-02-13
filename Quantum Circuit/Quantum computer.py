@@ -4,8 +4,11 @@ class Quantum_Computer:
 
     def __init__(self, Qubits):
         self.Register_Size = Qubits
+
         self.Zero = np.array([1, 0])  # This is |0> vector state
         self.One = np.array([0, 1])  # This is |1> vector state
+
+        #gates
         self.I = np.array([[1,0],[0,1]]) #Identity gate
         self.X = np.array([[0, 1], [1, 0]]) #Flips the |0> to |1> and vice versa
         self.Y = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex) #converts |0> to i|1> and |1> to -i|0>
@@ -16,6 +19,9 @@ class Quantum_Computer:
         self.T = np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex) #square root of phase (rotates by pi/8)
         self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]) #reversable xor: |00> -> |00>, |01> -> |11>
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) #¯\_(ツ)_/¯
+
+        # produce binary digits for 2 input gates
+        self.binary = self.produce_digits()
 
     def Tensor_Prod(self, Q1, Q2):
         #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
@@ -102,6 +108,88 @@ class Quantum_Computer:
                         L = (self.Tensor_Prod(L, self.I))
 
         return L
+
+    #normalisation function (if needed?)
+    def Norm(self, array):
+        total = 0
+        for i in range(0, len(array)):
+            total += np.sqrt(np.real(array[i]) ** 2 + np.imag(array[i]) ** 2)
+
+        array /= total
+
+        return array
+
+    def CNot(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+        N = self.Register_Size
+
+        cn = []
+        digits = self.binary
+
+        for i in range(0, 2 ** N):
+            if digits[i][c] == 1:
+                digits[i][t] = 1 - digits[i][t] % 2
+
+        index = self.recog_digits(digits)
+
+        for i in range(0, 2 ** N):
+            new_row = self.Q[index[i]]
+            new_row.shape = (1, 2 ** N)
+            cn.append(new_row)
+
+        cn = np.asmatrix(np.asarray(cn))
+
+        return cn
+
+    def CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+        N = self.Register_Size
+
+        cv = []
+        digits = self.binary
+
+        for i in range(0, 2 ** N):
+            if digits[i][c] == 1 and digits[i][t] == 1:
+                new_row = 1j * self.Q[i]
+            else:
+                new_row = self.Q[i]
+            new_row.shape = (1, 2 ** N)
+            cv.append(new_row)
+
+        cv = np.asmatrix(np.asarray(cv))
+
+        return cv
+
+    def recog_digits(self, digits):
+        N = self.Register_Size
+        numbers = []
+
+        for i in range(0, 2 ** N):
+            num = 0
+            for j in range(0, N):
+                num += 2 ** (N - j - 1) * digits[i][j]
+            numbers.append(num)
+
+        return numbers
+
+    def produce_digits(self):
+        N = self.Register_Size
+        digits = []
+        for i in range(0, 2 ** N):
+            digit = []
+            if i < (2 ** N) / 2:
+                digit.append(0)
+            else:
+                digit.append(1)
+            for j in range(1, N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** N) / (2 ** (k + 1))
+                if x < (2 ** N) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        return digits
+
 
 '''
 #tesing Single_Logic
