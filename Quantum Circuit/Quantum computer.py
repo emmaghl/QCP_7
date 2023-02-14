@@ -72,7 +72,7 @@ class Quantum_Computer:
 
         assert len(gate) == len(positions), "unequal list lenghts" #the number of gates should match the position lists
 
-        # this is only one step. so only one logic gate can be applied to a single qubit. so must return an error
+        # this is only one step. so only one logic gate can be applied to a single Qubit. so must return an error
         # if any value within the position sub-lists is repeated
         list_check = [] #create a unique list with the each of the arguments of the sublists of positions
         for k in range(len(positions)):
@@ -85,28 +85,35 @@ class Quantum_Computer:
         matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
         M = []
         for j in range(len(gate)):
-            for i in range(len(gate_inputs)):
+            for i in range(len(single_gate_inputs)):
                 if str(gate[j]) == str(single_gate_inputs[i]):
-                    M.append(np.asmatrix(matrices[i]))
+                    M.append(matrices[i])
         assert len(M) > 0, ("Please enter one of the following gates and ensure correct spelling: H, RNot, Phase, X, Y, Z, T")
 
         L = self.I
         for i in range(len(positions)):
             for j in range(len(positions[i])):
-                if j == 0:
-                    L = np.asmatrix(M[i])
-                else:
-                    L = np.asmatrix(L)
+                if positions[i][j] == 0:
+                    L = M[i] #and else L = L
 
         for l in range(1, self.Register_Size):
+            size1 = 1
+            for dim in np.shape(L): size1 *= dim
+
             for i in range(len(positions)):
                 for j in range(len(positions[i])):
-                    if l == j:
-                        L = np.asmatrix(self.Tensor_Prod(L, M[i]))
-                    else:
-                        L = np.asmatrix(self.Tensor_Prod(L, self.I))
+                    if l == positions[i][j]:
+                        L = self.Tensor_Prod(L, M[i])
 
-        return L
+                size2 = 1
+                for dim in np.shape(L): size2 *= dim
+
+                if size1 == size2:
+                    L = self.Tensor_Prod(L, self.I)
+
+        L.shape = (2**self.Register_Size, 2**self.Register_Size)
+
+        return np.asmatrix(L)
 
     #normalisation function (if needed?)
     def Norm(self, array):
@@ -199,13 +206,11 @@ class Quantum_Computer:
         '''
         assert len(gates) == timesteps and len(positions) == timesteps, "error"
 
-
-
-'''
 #tesing Single_Logic
-Q = Quantum_Computer(4)
+Q = Quantum_Computer(2)
 
-gate = ["H", "RNot"]
-positions = [[1,3], [4]]
+gate = ["H"]
+positions = [[1]]
 print(Q.Single_Logic(gate, positions))
-'''
+
+
