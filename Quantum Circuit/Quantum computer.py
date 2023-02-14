@@ -23,14 +23,31 @@ class Quantum_Computer:
         # produce binary digits for 2 input gates
         self.binary = self.produce_digits()
 
-    def Tensor_Prod(self, Q1, Q2):
-        #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
-        tensorprod = []
-        for x in np.nditer(Q1): #iterate x over Q1
-            tensorprod = np.append(tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
-        tensorprod = np.asmatrix(tensorprod)
-        #ouput is linear tensor product (NOTE: matrix form infromation lost)
-        return tensorprod
+    # def Tensor_Prod(self, Q1, Q2):
+    #     print(f"h{len(Q1)}")
+    #     #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
+    #     tensorprod = []
+    #     for x in np.nditer(Q1): #iterate x over Q1
+    #         tensorprod = np.append(tensorprod, x * Q2) #appends tensorprod with x'th value of Q1 * (matrix) Q2
+    #     tensorprod = np.asmatrix(tensorprod)
+    #     #ouput is linear tensor product (NOTE: matrix form infromation lost)
+    #
+    #     return tensorprod
+    #
+
+    def Tensor_Prod(self, Q1, Q2): #rewritten by Emma
+        R = []
+        for i in range(len(Q1)):
+            R.append(Q1[i][0]*Q2)
+            for j in range(1, len(Q1[i])):
+                R[i] = np.concatenate((R[i], (Q1[i][j]*Q2)), axis=1)
+
+
+        C = R[0]
+        for i in range(1, len(Q1)):
+            C = np.concatenate((C, R[i]), axis = 0)
+
+        return C
 
     def Sparse(self, Matrix): #defines a sparse matrix of the form row i column j has value {}
         rows = np.shape(Matrix)[0]
@@ -211,6 +228,26 @@ Q = Quantum_Computer(2)
 
 gate = ["H"]
 positions = [[1]]
-print(Q.Single_Logic(gate, positions))
+# print(Q.Single_Logic(gate, positions))
+
+
+I = np.array([[1,0],[0,1]]) #Identity gate
+# M = np.asmatrix((Q.Tensor_Prod(I, I)))
+# M.shape = (4,4)
+#
+# M2 = np.asmatrix((Q.Tensor_Prod(M, 2*I)))
+# M2.shape = (8,8)
+#
+# print(M2)
+
+M3 = Q.Tensor_Prod_Emma(I, I)
+M4 = Q.Tensor_Prod_Emma(M3, I)
+
+H = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
+M5 = Q.Tensor_Prod_Emma(H, H)
+print(M5)
+
+
+
 
 
