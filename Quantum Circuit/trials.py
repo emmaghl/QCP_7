@@ -5,13 +5,18 @@ import cmath
 a graveyard of trials
 '''
 
-a = np.array([[1, 2], [3, 4]])
-b = np.array([[5, 6], [7,8]])
-c = np.concatenate((a, b), axis=1)
-print(c)
 
 
 
+#
+# a = np.array([[1, 2], [3, 4]])
+# b = np.array([[5, 6], [7,8]])
+# c = np.concatenate((a, b), axis=1)
+# print(c)
+#
+# single_gate_inputs = ["H", "RNot", "Phase", "X", "Y", "Z", "T"]  # maps the string input to the relevant matrix and creates an array
+# a = "H"
+# print(any(i in a for i in single_gate_inputs))
 
 # def Qubit(self):
 #     self.a = np.random.random()+np.random.random()*1j #generates a random complex number to be assigned as coefficient to the |0> vector state

@@ -36,6 +36,11 @@ class Quantum_Computer:
     #
 
     def Tensor_Prod(self, Q1, Q2): #rewritten by Emma
+        # if len(np.shape(Q1)) == 1:  #so it works for vectors and not just matrices
+        #     Q1 = [Q1]
+        # if len(np.shape(Q2)) == 1:
+        #     Q2 = [Q2]
+
         R = []
         for i in range(len(Q1)):
             R.append(Q1[i][0]*Q2)
@@ -48,6 +53,24 @@ class Quantum_Computer:
             C = np.concatenate((C, R[i]), axis = 0)
 
         return C
+
+    def Mat_Mul(self, Q1, Q2):
+        assert np.shape(Q1)[1] == np.shape(Q2)[0], "can't perform matrix multiplication"
+        M = np.zeros(len(Q1)*len(Q2[0]))
+        M.shape = (len(Q1), len(Q2[0]))
+        print(M)
+        
+        for i in range(len(Q1)): #rows of Q1
+            for j in range(len(Q2[0])): #columns of Q2
+                for k in range(len(Q2)): #rows of Q2
+                    M[i][j] += Q1[i][k] * Q2[k][j]
+
+        return M
+                    
+
+
+
+
 
     def Sparse(self, Matrix): #defines a sparse matrix of the form row i column j has value {}
         rows = np.shape(Matrix)[0]
@@ -128,9 +151,9 @@ class Quantum_Computer:
                 if size1 == size2:
                     L = self.Tensor_Prod(L, self.I)
 
-        L.shape = (2**self.Register_Size, 2**self.Register_Size)
+        # L.shape = (2**self.Register_Size, 2**self.Register_Size)
 
-        return np.asmatrix(L)
+        return L
 
     #normalisation function (if needed?)
     def Norm(self, array):
@@ -222,32 +245,21 @@ class Quantum_Computer:
         and contains a list of qubit position(s) on which to apply that gate
         '''
         assert len(gates) == timesteps and len(positions) == timesteps, "error"
+        
 
-#tesing Single_Logic
-Q = Quantum_Computer(2)
-
-gate = ["H"]
-positions = [[1]]
-# print(Q.Single_Logic(gate, positions))
+#testing Single_Logic
 
 
-I = np.array([[1,0],[0,1]]) #Identity gate
-# M = np.asmatrix((Q.Tensor_Prod(I, I)))
-# M.shape = (4,4)
-#
-# M2 = np.asmatrix((Q.Tensor_Prod(M, 2*I)))
-# M2.shape = (8,8)
-#
-# print(M2)
+comp = Quantum_Computer(2)
+# print(len(np.shape(comp.One)))
+# print(np.asmatrix(comp.Tensor_Prod(comp.Zero, comp.Zero)))
+# print(comp.Single_Logic(["H"], [[1]]))
 
-M3 = Q.Tensor_Prod_Emma(I, I)
-M4 = Q.Tensor_Prod_Emma(M3, I)
-
-H = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
-M5 = Q.Tensor_Prod_Emma(H, H)
-print(M5)
+A = [[1, 2, 3], [4, 5, 6]]
+B = [[7, 8], [9,10], [11,12]]
 
 
+print(comp.Mat_Mul(A, B))
 
 
-
+# print(np.asmatrix(comp.Single_Logic(["H", "Phase"], [[0,2], [1]])))
