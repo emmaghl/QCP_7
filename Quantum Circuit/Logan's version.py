@@ -1,10 +1,12 @@
 # quantum computer simulation - Logan's Version
-# current update as of 15/02
+# updated as of 15/02
 
 import numpy as np
+import time
+import copy
 
 
-class Quantum_Computer:
+class QuantumComputer:
 
     def __init__(self, Qubits):
         self.Register_Size = Qubits
@@ -46,7 +48,6 @@ class Quantum_Computer:
 
         return C
 
-    #if needed?
     def Mat_Mul(self, Q1, Q2):
         assert np.shape(Q1)[1] == np.shape(Q2)[0], "can't perform matrix multiplication"
         M = np.zeros(len(Q1) * len(Q2[0]))
@@ -59,7 +60,6 @@ class Quantum_Computer:
                     M[i][j] += Q1[i][k] * Q2[k][j]
 
         return M
-
 
     def Q_Register(self):
         j = 2 ** self.Register_Size
@@ -93,7 +93,7 @@ class Quantum_Computer:
         N = self.Register_Size
 
         cn = []
-        digits = self.binary
+        digits = copy.deepcopy(self.binary)
 
         for i in range(0, 2 ** N):
             if digits[i][c] == 1:
@@ -114,10 +114,9 @@ class Quantum_Computer:
         N = self.Register_Size
 
         cv = []
-        digits = self.binary
 
         for i in range(0, 2 ** N):
-            if digits[i][c] == 1 and digits[i][t] == 1:
+            if self.binary[i][c] == 1 and self.binary[i][t] == 1:
                 new_row = 1j * self.Q[i]
             else:
                 new_row = self.Q[i]
@@ -229,20 +228,39 @@ class Interface(object):
 
 
 # main
-comp = Quantum_Computer(2)
+comp = QuantumComputer(2)
 
+t1 = time.time()
+cnot = comp.CNOT(0, 1)
+t2 = time.time()
+print("CNOT gate", t2 - t1)
+print(cnot)
 
 # CNOT gate made using only CV and Hadamard gates:
-step1 = (["H"],[[1]])
-step2 = (["CV"],[[0,1]])
-step3 = (["CV"],[[0,1]])
-step4 = (["H"],[[1]])
+t3 = time.time()
+step1 = (["H"], [[1]])
+step2 = (["CV"], [[0, 1]])
+step3 = (["CV"], [[0, 1]])
+step4 = (["H"], [[1]])
 
-steps = [step1,step2,step3,step4]
+steps = [step1, step2, step3, step4]
 
 mat = comp.Gate_Logic(steps)
-mat = np.real(mat)
-print(mat)
+t4 = time.time()
+print("CNOT gate using H and CV", t4 - t3)
+print(np.real(mat))
 
-cnot = comp.CNOT(0,1)
-print(cnot)
+# Toffoli gate made from only CV and Hadamard gates
+comp3 = QuantumComputer(3)
+t5 = time.time()
+
+toffoli_steps = [(["H"], [[2]]), (["CV"], [[1, 2]]),
+                 (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
+                 (["CV"], [[1, 2]]), (["CV"], [[1, 2]]), (["CV"], [[1, 2]]),
+                 (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
+                 (["CV"], [[0, 2]]), (["H"], [[2]])]
+
+toffoli_matrix = comp3.Gate_Logic(toffoli_steps)
+t6 = time.time()
+print("Toffoli gate using H and CV", t6 - t5)
+print(np.real(toffoli_matrix))
