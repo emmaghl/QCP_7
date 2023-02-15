@@ -5,6 +5,7 @@ class Quantum_Computer:
     def __init__(self, Qubits):
         self.Register_Size = Qubits
 
+        #computational basis
         self.Zero = np.array([1, 0])  # This is |0> vector state
         self.One = np.array([0, 1])  # This is |1> vector state
 
@@ -19,6 +20,11 @@ class Quantum_Computer:
         self.T = np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex) #square root of phase (rotates by pi/8)
         self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]) #reversable xor: |00> -> |00>, |01> -> |11>
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) #¯\_(ツ)_/¯
+
+        self.single_inputs = ["H", "P"]
+        self.matrices = [self.H, self.P]
+
+        self.double_inputs = ["CV", "CNOT"]
 
         # produce binary digits for 2 input gates
         self.binary = self.produce_digits()
@@ -68,10 +74,6 @@ class Quantum_Computer:
         return M
                     
 
-
-
-
-
     def Sparse(self, Matrix): #defines a sparse matrix of the form row i column j has value {}
         rows = np.shape(Matrix)[0]
         cols = np.shape(Matrix)[1]
@@ -81,6 +83,7 @@ class Quantum_Computer:
                 if Matrix[i,j] != 0: #if the value of the matrix element i,j is not 0 then store the value and the location
                     SMatrix.append([i,j,Matrix[i,j]]) #Output array: (row, column, value)
         return SMatrix #return output
+
 
     def Coefficients(self):
         # returns an array of 2**n complex coefficients and ensures normalisation.
@@ -198,7 +201,7 @@ class Quantum_Computer:
         return digits
 
 
-    def CNot(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+    def CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         N = self.Register_Size
 
         cn = []
@@ -245,9 +248,54 @@ class Quantum_Computer:
         and contains a list of qubit position(s) on which to apply that gate
         '''
         assert len(gates) == timesteps and len(positions) == timesteps, "error"
-        
 
-#testing Single_Logic
+    def Gate_Logic(self, inputs):
+        N = self.Register_Size
+        step_n = len(inputs)
+
+        M = []
+
+        for i in range(0, step_n):
+            for j in range(0, len(self.single_inputs)):
+                if self.single_inputs[j] in inputs[i][0]:
+                    M.append(self.Single_Gates(inputs[i][0], inputs[i][1]))
+            for j in range(0, len(self.double_inputs)):
+                if self.double_inputs[j] in inputs[i][0]:
+                    M.append(self.Double_Gates(inputs[i][0], inputs[i][1]))
+
+        m = M[0]
+        for i in range(1, len(M)):
+            m = np.matmul(m, M[i])
+
+        return m
+
+    def Double_Gates(self, gate, qnum):
+
+        if gate[0] == "CV":
+            return self.CV(qnum[0][0], qnum[0][1])
+        if gate[0] == "CNOT":
+            return self.CNOT(qnum[0][0], qnum[0][1])
+
+    def Single_Gates(self, gate, qnum):
+        M = [0] * self.Register_Size
+
+        for i in range(0, len(self.single_inputs)):
+            for j in range(0, len(gate)):
+                if self.single_inputs[i] == gate[j]:
+                    for k in range(0, len(qnum[j])):
+                        M[qnum[j][k]] = self.matrices[i]
+
+        for i in range(0, len(M)):
+            if type(M[i]) != np.ndarray:
+                M[i] = self.I
+
+        m = M[0]
+        for i in range(1, len(M)):
+            m = self.Tensor_Prod(m, M[i])
+
+        return m
+
+        #testing Single_Logic
 
 
 comp = Quantum_Computer(2)
