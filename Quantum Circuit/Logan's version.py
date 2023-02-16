@@ -244,8 +244,7 @@ class QuantumComputer:
         SMatrix = []  # output matrix
         for i in range(rows):
             for j in range(cols):
-                if Matrix[
-                    i, j] != 0:  # if the value of the matrix element i,j is not 0 then store the value and the location
+                if Matrix[i, j] != 0:  # if the value of the matrix element i,j is not 0 then store the value and the location
                     SMatrix.append([i, j, Matrix[i, j]])  # Output array: (row, column, value)
         return SMatrix  # return output
 
