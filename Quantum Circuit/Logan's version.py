@@ -37,16 +37,30 @@ class QuantumComputer:
 
     def Tensor_Prod(self, Q1, Q2):  # by emma
         R = []
-        for i in range(len(Q1)):
-            R.append(Q1[i][0] * Q2)
-            for j in range(1, len(Q1[i])):
-                R[i] = np.concatenate((R[i], (Q1[i][j] * Q2)), axis=1)
+        if len(Q1.shape) > 1:
+            for i in range(len(Q1)):
+                R.append(Q1[i][0] * Q2)
+                for j in range(1, len(Q1[i])):
+                    R[i] = np.concatenate((R[i], (Q1[i][j] * Q2)), axis=1)
 
-        C = R[0]
-        for i in range(1, len(Q1)):
-            C = np.concatenate((C, R[i]), axis=0)
+            C = R[0]
+            for i in range(1, len(Q1)):
+                C = np.concatenate((C, R[i]), axis=0)
+
+        else:
+            for i in range(len(Q1)):
+                R.append(Q1[i] * Q2)
+            C = R[0]
+            if Q1.shape[0] > 0:
+                ax = 0
+            else:
+                ax = 1
+            for i in range(1, len(Q1)):
+                C = np.concatenate((C, R[i]), axis=ax)
 
         return C
+
+    # needs to be more general? rather than case by case
 
     def Mat_Mul(self, Q1, Q2):
         assert np.shape(Q1)[1] == np.shape(Q2)[0], "can't perform matrix multiplication"
@@ -219,6 +233,21 @@ class QuantumComputer:
             m = np.matmul(m, M[i])
 
         return m
+
+    def ApplyOperator(self, matrix, qubits):
+        qubits = self.Norm(np.matmul(matrix, qubits))
+        return qubits
+
+    def Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
+        rows = np.shape(Matrix)[0]
+        cols = np.shape(Matrix)[1]
+        SMatrix = []  # output matrix
+        for i in range(rows):
+            for j in range(cols):
+                if Matrix[
+                    i, j] != 0:  # if the value of the matrix element i,j is not 0 then store the value and the location
+                    SMatrix.append([i, j, Matrix[i, j]])  # Output array: (row, column, value)
+        return SMatrix  # return output
 
 
 class Interface(object):

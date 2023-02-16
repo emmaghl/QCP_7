@@ -41,24 +41,32 @@ class Quantum_Computer:
     #     return tensorprod
     #
 
-    def Tensor_Prod(self, Q1, Q2): #rewritten by Emma
-        # if len(np.shape(Q1)) == 1:  #so it works for vectors and not just matrices
-        #     Q1 = [Q1]
-        # if len(np.shape(Q2)) == 1:
-        #     Q2 = [Q2]
-
+    def Tensor_Prod(self, Q1, Q2):  # by emma
         R = []
-        for i in range(len(Q1)):
-            R.append(Q1[i][0]*Q2)
-            for j in range(1, len(Q1[i])):
-                R[i] = np.concatenate((R[i], (Q1[i][j]*Q2)), axis=1)
+        if len(Q1.shape) > 1:
+            for i in range(len(Q1)):
+                R.append(Q1[i][0] * Q2)
+                for j in range(1, len(Q1[i])):
+                    R[i] = np.concatenate((R[i], (Q1[i][j] * Q2)), axis=1)
 
+            C = R[0]
+            for i in range(1, len(Q1)):
+                C = np.concatenate((C, R[i]), axis=0)
 
-        C = R[0]
-        for i in range(1, len(Q1)):
-            C = np.concatenate((C, R[i]), axis = 0)
+        else:
+            for i in range(len(Q1)):
+                R.append(Q1[i] * Q2)
+            C = R[0]
+            if Q1.shape[0] > 0:
+                ax = 0
+            else:
+                ax = 1
+            for i in range(1, len(Q1)):
+                C = np.concatenate((C, R[i]), axis=ax)
 
         return C
+
+    # needs to be more general? rather than case by case
 
     def Mat_Mul(self, Q1, Q2):
         assert np.shape(Q1)[1] == np.shape(Q2)[0], "can't perform matrix multiplication"
