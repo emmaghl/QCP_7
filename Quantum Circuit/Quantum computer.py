@@ -1,8 +1,15 @@
 import numpy as np
+from abc import ABC, abstractmethod
+class AbstactClassCSV(metaclass = ABCMeta):
 
 class Quantum_Computer:
 
     def __init__(self, Qubits):
+        """! The Quantum_Computer class initializer.
+            @param Qubits: the number of Qubits in the quantum register
+            @return  An instance of the Quantum_Computer class initialized with the specified number of qubits
+        """
+
         self.Register_Size = Qubits
 
         #computational basis
@@ -36,7 +43,7 @@ class Quantum_Computer:
         self.binary = self.produce_digits()
 
     #following is linear tensor product which looses matrix info
-'''    def Tensor_Prod(self, Q1, Q2):
+    '''    def Tensor_Prod(self, Q1, Q2):
         print(f"h{len(Q1)}")
         #IMPORTANT: Tensor product multiples the values of Q1 with the matrix Q2
         tensorprod = []
@@ -48,6 +55,10 @@ class Quantum_Computer:
         return tensorprod '''
 
     def Tensor_Prod(self, Q1, Q2):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         R = []
         if len(Q1.shape) > 1:
             for i in range(len(Q1)):
@@ -74,6 +85,10 @@ class Quantum_Computer:
     # needs to be more general? rather than case by case
 
     def Mat_Mul(self, Q1, Q2):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         assert np.shape(Q1)[1] == np.shape(Q2)[0], "can't perform matrix multiplication"
         M = np.zeros(len(Q1)*len(Q2[0]))
         M.shape = (len(Q1), len(Q2[0]))
@@ -87,6 +102,10 @@ class Quantum_Computer:
         return M
 
     def Q_Register(self):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         # returns an array of 2**n complex coefficients and ensures normalisation.
         j = 2 ** self.Register_Size
         coeffs = (0 + 0 * 1j) * np.zeros(j)
@@ -98,7 +117,11 @@ class Quantum_Computer:
         self.psi.shape = (j, 1)
 
 
-    def __Basis(self):
+    def Basis(self):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         N = self.Register_Size
         self.Q = []
 
@@ -111,6 +134,10 @@ class Quantum_Computer:
     #     return np.matmul(self.Q, np.transpose(self.coeffs))
 
     def __Norm(self, array): #normalisation function (if needed?)
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         total = 0
         for i in range(0, len(array)):
             total += np.sqrt(np.real(array[i]) ** 2 + np.imag(array[i]) ** 2)
@@ -120,6 +147,10 @@ class Quantum_Computer:
         return array
 
     def __Single_Logic(self, gate, positions):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         '''
         this is another version of Single_Gates which includes assert statements and checks
         intend to save all those in a separate Input_Check method and ensure it's compatible witj Sinle_Gates below
@@ -171,6 +202,10 @@ class Quantum_Computer:
         return L
 
     def __Single_Gates(self, gate, qnum):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         M = [0] * self.Register_Size
 
         for i in range(0, len(self.single_inputs)):
@@ -190,6 +225,10 @@ class Quantum_Computer:
         return m
 
     def __recog_digits(self, digits):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         N = self.Register_Size
         numbers = []
 
@@ -201,7 +240,11 @@ class Quantum_Computer:
 
         return numbers
 
-    def __produce_digits(self):
+    def produce_digits(self):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         N = self.Register_Size
         digits = []
         for i in range(0, 2 ** N):
@@ -222,6 +265,10 @@ class Quantum_Computer:
         return digits
 
     def __CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         N = self.Register_Size
 
         cn = []
@@ -243,6 +290,10 @@ class Quantum_Computer:
         return cn
 
     def __CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         N = self.Register_Size
 
         cv = []
@@ -261,6 +312,10 @@ class Quantum_Computer:
         return cv
 
     def __Double_Gates(self, gate, qnum):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
 
         if gate[0] == "CV":
             return self.CV(qnum[0][0], qnum[0][1])
@@ -268,6 +323,10 @@ class Quantum_Computer:
             return self.CNOT(qnum[0][0], qnum[0][1])
 
     def Gate_Logic(self, inputs):
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         N = self.Register_Size
         step_n = len(inputs)
 
@@ -288,11 +347,19 @@ class Quantum_Computer:
         return m
 
     def __ApplyOperator(self, matrix, qubits): #this function will produce the output but still working on how to do that
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         qubits = self.Norm(np.matmul(matrix, qubits))
         return qubits
 
 
     def __Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
         rows = np.shape(Matrix)[0]
         cols = np.shape(Matrix)[1]
         SMatrix = []  # output matrix
@@ -304,40 +371,44 @@ class Quantum_Computer:
         return SMatrix  # return output
 
 # main
-comp = QuantumComputer(2)
 
-t1 = time.time()
-cnot = comp.CNOT(0, 1)
-t2 = time.time()
-print("CNOT gate", t2 - t1)
-print(cnot)
 
-# CNOT gate made using only CV and Hadamard gates:
-t3 = time.time()
-step1 = (["H"], [[1]])
-step2 = (["CV"], [[0, 1]])
-step3 = (["CV"], [[0, 1]])
-step4 = (["H"], [[1]])
 
-steps = [step1, step2, step3, step4]
-
-mat = comp.Gate_Logic(steps)
-t4 = time.time()
-print("CNOT gate using H and CV", t4 - t3)
-print(np.real(mat))
-
-# Toffoli gate made from only CV and Hadamard gates
-comp3 = QuantumComputer(3)
-t5 = time.time()
-
-toffoli_steps = [(["H"], [[2]]), (["CV"], [[1, 2]]),
-                 (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
-                 (["CV"], [[1, 2]]), (["CV"], [[1, 2]]), (["CV"], [[1, 2]]),
-                 (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
-                 (["CV"], [[0, 2]]), (["H"], [[2]])]
-
-toffoli_matrix = comp3.Gate_Logic(toffoli_steps)
-t6 = time.time()
-print("Toffoli gate using H and CV", t6 - t5)
-print(np.real(toffoli_matrix))
-
+comp = Quantum_Computer(2)
+print(comp.__doc__)
+#
+# t1 = time.time()
+# cnot = comp.CNOT(0, 1)
+# t2 = time.time()
+# print("CNOT gate", t2 - t1)
+# print(cnot)
+#
+# # CNOT gate made using only CV and Hadamard gates:
+# t3 = time.time()
+# step1 = (["H"], [[1]])
+# step2 = (["CV"], [[0, 1]])
+# step3 = (["CV"], [[0, 1]])
+# step4 = (["H"], [[1]])
+#
+# steps = [step1, step2, step3, step4]
+#
+# mat = comp.Gate_Logic(steps)
+# t4 = time.time()
+# print("CNOT gate using H and CV", t4 - t3)
+# print(np.real(mat))
+#
+# # Toffoli gate made from only CV and Hadamard gates
+# comp3 = QuantumComputer(3)
+# t5 = time.time()
+#
+# toffoli_steps = [(["H"], [[2]]), (["CV"], [[1, 2]]),
+#                  (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
+#                  (["CV"], [[1, 2]]), (["CV"], [[1, 2]]), (["CV"], [[1, 2]]),
+#                  (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
+#                  (["CV"], [[0, 2]]), (["H"], [[2]])]
+#
+# toffoli_matrix = comp3.Gate_Logic(toffoli_steps)
+# t6 = time.time()
+# print("Toffoli gate using H and CV", t6 - t5)
+# print(np.real(toffoli_matrix))
+#
