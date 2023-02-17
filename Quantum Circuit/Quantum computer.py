@@ -98,7 +98,7 @@ class Quantum_Computer:
         self.psi.shape = (j, 1)
 
 
-    def Basis(self):
+    def __Basis(self):
         N = self.Register_Size
         self.Q = []
 
@@ -110,7 +110,7 @@ class Quantum_Computer:
     # def Psi(self):  #Our register doesn't need to call the basis states (yet), all we need is a column with n entries all equal to 1 (the sum of all the basis states), our normalised coefficients
     #     return np.matmul(self.Q, np.transpose(self.coeffs))
 
-    def Norm(self, array): #normalisation function (if needed?)
+    def __Norm(self, array): #normalisation function (if needed?)
         total = 0
         for i in range(0, len(array)):
             total += np.sqrt(np.real(array[i]) ** 2 + np.imag(array[i]) ** 2)
@@ -119,7 +119,7 @@ class Quantum_Computer:
 
         return array
 
-    def Single_Logic(self, gate, positions):
+    def __Single_Logic(self, gate, positions):
         '''
         this is another version of Single_Gates which includes assert statements and checks
         intend to save all those in a separate Input_Check method and ensure it's compatible witj Sinle_Gates below
@@ -170,7 +170,7 @@ class Quantum_Computer:
 
         return L
 
-    def Single_Gates(self, gate, qnum):
+    def __Single_Gates(self, gate, qnum):
         M = [0] * self.Register_Size
 
         for i in range(0, len(self.single_inputs)):
@@ -189,7 +189,7 @@ class Quantum_Computer:
 
         return m
 
-    def recog_digits(self, digits):
+    def __recog_digits(self, digits):
         N = self.Register_Size
         numbers = []
 
@@ -201,7 +201,7 @@ class Quantum_Computer:
 
         return numbers
 
-    def produce_digits(self):
+    def __produce_digits(self):
         N = self.Register_Size
         digits = []
         for i in range(0, 2 ** N):
@@ -221,8 +221,7 @@ class Quantum_Computer:
             digits.append(digit)
         return digits
 
-
-    def CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+    def __CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         N = self.Register_Size
 
         cn = []
@@ -243,7 +242,7 @@ class Quantum_Computer:
 
         return cn
 
-    def CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+    def __CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         N = self.Register_Size
 
         cv = []
@@ -261,7 +260,7 @@ class Quantum_Computer:
 
         return cv
 
-    def Double_Gates(self, gate, qnum):
+    def __Double_Gates(self, gate, qnum):
 
         if gate[0] == "CV":
             return self.CV(qnum[0][0], qnum[0][1])
@@ -288,12 +287,12 @@ class Quantum_Computer:
 
         return m
 
-    def ApplyOperator(self, matrix, qubits): #this function will produce the output but still working on how to do that
+    def __ApplyOperator(self, matrix, qubits): #this function will produce the output but still working on how to do that
         qubits = self.Norm(np.matmul(matrix, qubits))
         return qubits
 
 
-    def Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
+    def __Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
         rows = np.shape(Matrix)[0]
         cols = np.shape(Matrix)[1]
         SMatrix = []  # output matrix
