@@ -1,6 +1,7 @@
+from PrintingCircuit import PrintingCircuit
 import numpy as np
 from abc import ABC, abstractmethod
-
+class AbstactClassCSV(metaclass = ABCMeta):
 
 class Quantum_Computer:
 
@@ -42,6 +43,9 @@ class Quantum_Computer:
         # produce binary digits for 2 input gates
         self.binary = self.produce_digits()
 
+        #Keeps track of the gates that we've added via Gate Logic
+        self.gate_histroy = []
+
     #following is linear tensor product which looses matrix info
     '''    def Tensor_Prod(self, Q1, Q2):
         print(f"h{len(Q1)}")
@@ -53,6 +57,14 @@ class Quantum_Computer:
         #ouput is linear tensor product (NOTE: matrix form infromation lost)
 
         return tensorprod '''
+
+    def print_circuit(self):
+        '''
+        WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
+            Prints the quantum circuit in an ascii format on the terminal.
+        '''
+        pc = PrintingCircuit(self.gate_histroy, self.Register_Size)
+        pc.print_circuit_ascii()
 
     def Tensor_Prod(self, Q1, Q2):
         """! What the class/method does
@@ -278,7 +290,7 @@ class Quantum_Computer:
             if digits[i][c] == 1:
                 digits[i][t] = 1 - digits[i][t] % 2
 
-        index = self.recog_digits(digits)
+        index = self.__recog_digits(digits)
 
         for i in range(0, 2 ** N):
             new_row = self.Q[index[i]]
@@ -318,9 +330,9 @@ class Quantum_Computer:
         """
 
         if gate[0] == "CV":
-            return self.CV(qnum[0][0], qnum[0][1])
+            return self.__CV(qnum[0][0], qnum[0][1])
         if gate[0] == "CNOT":
-            return self.CNOT(qnum[0][0], qnum[0][1])
+            return self.__CNOT(qnum[0][0], qnum[0][1])
 
     def Gate_Logic(self, inputs):
         """! What the class/method does
@@ -330,15 +342,18 @@ class Quantum_Computer:
         N = self.Register_Size
         step_n = len(inputs)
 
+        # Add the gates to the gate history for printing later.
+        [self.gate_histroy.append(i) for i in inputs]
+
         M = []
 
         for i in range(0, step_n):
-            for j in range(0, len(self.single_inputs)):
-                if self.single_inputs[j] in inputs[i][0]:
-                    M.append(self.Single_Gates(inputs[i][0], inputs[i][1]))
+            for j in range(0, len(self.single_gate_inputs)):
+                if self.single_gate_inputs[j] in inputs[i][0]:
+                    M.append(self.__Single_Gates(inputs[i][0], inputs[i][1]))
             for j in range(0, len(self.double_inputs)):
                 if self.double_inputs[j] in inputs[i][0]:
-                    M.append(self.Double_Gates(inputs[i][0], inputs[i][1]))
+                    M.append(self.__Double_Gates(inputs[i][0], inputs[i][1]))
 
         m = M[0]
         for i in range(1, len(M)):
@@ -374,8 +389,8 @@ class Quantum_Computer:
 
 
 
-comp = Quantum_Computer(2)
-print(comp.__doc__)
+#comp = Quantum_Computer(2)
+#print(comp.__doc__)
 #
 # t1 = time.time()
 # cnot = comp.CNOT(0, 1)

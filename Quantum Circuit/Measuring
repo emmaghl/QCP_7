@@ -1,0 +1,51 @@
+#This is a draft, !!!
+
+#Psi is our final state after going through a circuit, this is just a column vector etc...
+
+#Not sure if we have P0, and P1 yet 
+P0 = np.dot(Zero, Zero.T) #This is a 2x2 matrix with the comp basis Zero matrix multiplied by the transpose of Zero, are we allowed to use .T?
+P1 = np.dot(One, One.T) #Same but with One comp basis state instead 
+
+#If Psi is in the Bra notation we need to do the inner product, or the ket, so this Rho Psi is the ket to our bra 
+RhoPsi = np.dot(Psi, Psi.T) 
+
+#If we want to measure Qubit i in n number of Qubits as being in state 0
+QiProb0 = np.trace(np.dot( #Circuit corresponding to P0 on the qubit with Identity everywhere else ), RhoPsi) 
+
+#If we want to measure Qubit i in n number of Qubits as being in state 1
+QiProb1 = np.trace(np.dot( #Circuit corresponding to P1 on the qubit with Identity everywhere else ), RhoPsi) 
+
+#These will give us a decimal value, corresponding to the probability! So no need for a histogram to find out what this value is because we can cheat, and just look at the value, not the case in a real QC so we can "measure" a bunch of times to make a histogram 
+
+import numpy.random 
+
+if (np.random.rand() < QiProb1: 
+  #Measure 1 on Qubit i, so our result is 1
+  MeasureResult = 1
+  #Could also ask to collapse wavefunction to give resulting state of measurement;
+  ResultMeasureState = NormalizeFunction(np.dot(tensor.Product(P1 on ith Qubit, Identity everywhere else), Psi))
+else: 
+  #Measure 0 on Qubit i, so our result is 0
+  ResultMeasureState = NormalizeFunction(np.dot(tensor.Product(P0 on ith Qubit, Identity everywhere else), Psi))
+
+
+#Exact same as above but just to create a histogram 
+count=1
+while(count<10): #suitable number of itterations
+    if (np.random.rand() < QiProb1: 
+  #Measure 1 on Qubit i, so our result is 1
+  MeasureResult = 1
+  #Could also ask to collapse wavefunction to give resulting state of measurement;
+  ResultMeasureState = NormalizeFunction(np.dot(tensor.Product(P1 on ith Qubit, Identity everywhere else), Psi))
+else: 
+  #Measure 0 on Qubit i, so our result is 0
+  ResultMeasureState = NormalizeFunction(np.dot(tensor.Product(P0 on ith Qubit, Identity everywhere else), Psi))
+
+x.append(format(Result))
+else:
+     print("count value reached")
+
+import matplotlib.pyplot as plt
+
+plt.hist(x)
+plt.show
