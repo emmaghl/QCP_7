@@ -1,6 +1,6 @@
 import numpy as np
 from abc import ABC, abstractmethod
-class AbstactClassCSV(metaclass = ABCMeta):
+
 
 class Quantum_Computer:
 
