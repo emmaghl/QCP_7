@@ -323,6 +323,23 @@ class Quantum_Computer:
 
         return cv
 
+    def CZ(self, c, t):
+        N = self.Register_Size
+
+        cz = []
+
+        for i in range(0, 2 ** N):
+            if self.binary[i][c] == 1 and self.binary[i][t] == 1:
+                new_row = -1 * self.Q[i]
+            else:
+                new_row = self.Q[i]
+            new_row.shape = (1, 2 ** N)
+            cz.append(new_row)
+
+        cz = np.asarray(np.matrix(np.asarray(cz)))
+
+        return cz
+
     def __Double_Gates(self, gate, qnum):
         """! What the class/method does
             @param list the parameters and what they do
