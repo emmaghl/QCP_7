@@ -43,7 +43,7 @@ class Quantum_Computer:
         self.binary = self.produce_digits()
 
         #Keeps track of the gates that we've added via Gate Logic
-        self.gate_histroy = []
+        self.__gate_histroy = []
 
     #following is linear tensor product which looses matrix info
     '''    def Tensor_Prod(self, Q1, Q2):
@@ -62,7 +62,7 @@ class Quantum_Computer:
         WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
             Prints the quantum circuit in an ascii format on the terminal.
         '''
-        pc = PrintingCircuit(self.gate_histroy, self.Register_Size)
+        pc = PrintingCircuit(self.__gate_histroy, self.Register_Size)
         pc.print_circuit_ascii()
 
     def Tensor_Prod(self, Q1, Q2):
@@ -211,7 +211,7 @@ class Quantum_Computer:
 
         return L
 
-    def Single_Gates(self, gate, qnum):
+    def __Single_Gates(self, gate, qnum):
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
@@ -274,7 +274,7 @@ class Quantum_Computer:
             digits.append(digit)
         return digits
 
-    def CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+    def __CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
@@ -299,7 +299,7 @@ class Quantum_Computer:
 
         return cn
 
-    def CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+    def __CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
@@ -317,11 +317,11 @@ class Quantum_Computer:
             new_row.shape = (1, 2 ** N)
             cv.append(new_row)
 
-        cv = np.asarray(cv)
+        cv = np.asmatrix(np.asarray(cv))
 
         return cv
 
-    def CZ(self, c, t):
+    def __CZ(self, c, t):
         N = self.Register_Size
 
         cz = []
@@ -373,15 +373,15 @@ class Quantum_Computer:
 
         # Add the gates to the gate history for printing later.
         if add_gate_name == "": # If not defining a custom name
-            [self.gate_histroy.append(i) for i in inputs]
+            [self.__gate_histroy.append(i) for i in inputs]
         else: # If defining a gate with a custom Name
-            self.gate_histroy.append(([add_gate_name], [[0, N-1]]))
+            self.__gate_histroy.append(([add_gate_name], [[0, N-1]]))
 
         M = []
 
         for i in range(0, step_n):
-            for j in range(0, len(self.single_gate_inputs)):
-                if self.single_gate_inputs[j] in inputs[i][0]:
+            for j in range(0, len(self.single_inputs)):
+                if self.single_inputs[j] in inputs[i][0]:
                     M.append(self.__Single_Gates(inputs[i][0], inputs[i][1]))
             for j in range(0, len(self.double_inputs)):
                 if self.double_inputs[j] in inputs[i][0]:
