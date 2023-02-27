@@ -92,7 +92,12 @@ def I():
     i2 = lambda x, y: y
     return [i1, i2]
 
+TP = lambda a,b,c,d: [idn[i](h[j](a,b),h[j](c,d)) for i in range(2) for j in range(2)]
+print(TP)
 
+def TensorProd():
+
+'''
 def TP(m1, m2):
     tp = []
     for i in range(0, len(m1)):
@@ -105,6 +110,6 @@ def TP(m1, m2):
 def TP2(m1, m2):
     tp = list(map((lambda x: x), m1))
     print(tp)
+'''
 
-
-tenP = TP2(I(), H())
+#tenP = TP2(I(), H())
