@@ -1,7 +1,6 @@
 from PrintingCircuit import PrintingCircuit
 import numpy as np
 from abc import ABC, abstractmethod
-class AbstactClassCSV(metaclass = ABCMeta):
 
 class Quantum_Computer:
 
@@ -38,7 +37,7 @@ class Quantum_Computer:
         self.single_gate_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
         self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
 
-        self.double_inputs = ["CV", "CNOT"]
+        self.double_inputs = ["CV", "CNOT", "CZ"]
 
         # produce binary digits for 2 input gates
         self.binary = self.produce_digits()
@@ -220,9 +219,9 @@ class Quantum_Computer:
         """
         M = [0] * self.Register_Size
 
-        for i in range(0, len(self.single_inputs)):
+        for i in range(0, len(self.single_gate_inputs)):
             for j in range(0, len(gate)):
-                if self.single_inputs[i] == gate[j]:
+                if self.single_gate_inputs[i] == gate[j]:
                     for k in range(0, len(qnum[j])):
                         M[qnum[j][k]] = self.matrices[i]
 
@@ -323,7 +322,7 @@ class Quantum_Computer:
 
         return cv
 
-    def CZ(self, c, t):
+    def __CZ(self, c, t):
         N = self.Register_Size
 
         cz = []
@@ -346,21 +345,38 @@ class Quantum_Computer:
             @return  what the function returns
         """
 
+        if gate[0] == "CZ":
+            return self.__CZ(qnum[0][0], qnum[0][1])
         if gate[0] == "CV":
             return self.__CV(qnum[0][0], qnum[0][1])
         if gate[0] == "CNOT":
             return self.__CNOT(qnum[0][0], qnum[0][1])
 
-    def Gate_Logic(self, inputs):
+
+    def Make_Gate_Logic(self, inputs: list, name: str) -> np.ndarray:
+        '''
+        Defines a custom gate with a letter, in order to simploify the printing of the circuit.
+        :param inputs: Input list of timesteps to build circuit.
+        :param name: One letter to define the name of the gate.
+        :return: A circuit.
+        '''
+        return self.Gate_Logic(inputs, add_gate_name = name)
+
+
+    def Gate_Logic(self, inputs, add_gate_name = ""):
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
+            :param add_gate_history:
         """
         N = self.Register_Size
         step_n = len(inputs)
 
         # Add the gates to the gate history for printing later.
-        [self.gate_histroy.append(i) for i in inputs]
+        if add_gate_name == "": # If not defining a custom name
+            [self.gate_histroy.append(i) for i in inputs]
+        else: # If defining a gate with a custom Name
+            self.gate_histroy.append(([add_gate_name], [[0, N-1]]))
 
         M = []
 
