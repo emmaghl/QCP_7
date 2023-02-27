@@ -22,7 +22,7 @@ class Sparse_Quantum_Computer:
         # self.Q_Register()
         #
         # gates
-      ./  self.I = np.array([[1, 0], [0, 1]])  # Identity gate
+        self.I = np.array([[1, 0], [0, 1]])  # Identity gate
         self.Hadamard = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])  # sends |0> to |+> and |1> to |->
         self.Phase = np.array([[1, 0], [1, 0 + 1j]], dtype=complex)  # sends |0>+|1> to |0>+i|1>
 
