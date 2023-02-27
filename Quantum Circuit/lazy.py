@@ -32,7 +32,7 @@ tp2 = lambda a, b, c, d: h1(i2(a, b), i2(c, d))
 tp3 = lambda a, b, c, d: h2(i1(a, b), i1(c, d))
 tp4 = lambda a, b, c, d: h2(i2(a, b), i2(c, d))
 
-#TP = lambda a,b,c,d: [idn[i](h[j](a,b),h[j](c,d)) for i in range(2) for j in range(2)]
+#TP = lambda *args: [idn[i](h[j](args[0],args[1]),h[j](args[2],args[3])) for i in range(2) for j in range(2)]
 
 TP = [tp1, tp2, tp3, tp4]
 
