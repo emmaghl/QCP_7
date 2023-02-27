@@ -34,7 +34,7 @@ class Quantum_Computer:
         self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]) #reversable xor: |00> -> |00>, |01> -> |11>
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) #¯\_(ツ)_/¯
 
-        self.single_gate_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
+        self.single_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
         self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
 
         self.double_inputs = ["CV", "CNOT", "CZ"]
@@ -103,8 +103,7 @@ class Quantum_Computer:
         assert np.shape(Q1)[1] == np.shape(Q2)[0], "can't perform matrix multiplication"
         M = np.zeros(len(Q1)*len(Q2[0]))
         M.shape = (len(Q1), len(Q2[0]))
-        print(M)
-        
+
         for i in range(len(Q1)): #rows of Q1
             for j in range(len(Q2[0])): #columns of Q2
                 for k in range(len(Q2)): #rows of Q2
@@ -212,16 +211,16 @@ class Quantum_Computer:
 
         return L
 
-    def __Single_Gates(self, gate, qnum):
+    def Single_Gates(self, gate, qnum):
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
         """
         M = [0] * self.Register_Size
 
-        for i in range(0, len(self.single_gate_inputs)):
+        for i in range(0, len(self.single_inputs)):
             for j in range(0, len(gate)):
-                if self.single_gate_inputs[i] == gate[j]:
+                if self.single_inputs[i] == gate[j]:
                     for k in range(0, len(qnum[j])):
                         M[qnum[j][k]] = self.matrices[i]
 
@@ -275,7 +274,7 @@ class Quantum_Computer:
             digits.append(digit)
         return digits
 
-    def __CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+    def CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
@@ -300,7 +299,7 @@ class Quantum_Computer:
 
         return cn
 
-    def __CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
+    def CV(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
@@ -318,11 +317,11 @@ class Quantum_Computer:
             new_row.shape = (1, 2 ** N)
             cv.append(new_row)
 
-        cv = np.asmatrix(np.asarray(cv))
+        cv = np.asarray(cv)
 
         return cv
 
-    def __CZ(self, c, t):
+    def CZ(self, c, t):
         N = self.Register_Size
 
         cz = []
@@ -345,12 +344,12 @@ class Quantum_Computer:
             @return  what the function returns
         """
 
-        if gate[0] == "CZ":
-            return self.__CZ(qnum[0][0], qnum[0][1])
         if gate[0] == "CV":
             return self.__CV(qnum[0][0], qnum[0][1])
         if gate[0] == "CNOT":
             return self.__CNOT(qnum[0][0], qnum[0][1])
+        if gate[0] == "CZ":
+            return self.__CZ(qnum[0][0], qnum[0][1])
 
 
     def Make_Gate_Logic(self, inputs: list, name: str) -> np.ndarray:
@@ -402,27 +401,12 @@ class Quantum_Computer:
         qubits = self.Norm(np.matmul(matrix, qubits))
         return qubits
 
-
-    def __Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
-        """! What the class/method does
-            @param list the parameters and what they do
-            @return  what the function returns
-        """
-        rows = np.shape(Matrix)[0]
-        cols = np.shape(Matrix)[1]
-        SMatrix = []  # output matrix
-        for i in range(rows):
-            for j in range(cols):
-                if Matrix[
-                    i, j] != 0:  # if the value of the matrix element i,j is not 0 then store the value and the location
-                    SMatrix.append([i, j, Matrix[i, j]])  # Output array: (row, column, value)
-        return SMatrix  # return output
-
 # main
 
 
 
-#comp = Quantum_Computer(2)
+# comp = Quantum_Computer(2)
+# print(comp.Q)
 #print(comp.__doc__)
 #
 # t1 = time.time()
