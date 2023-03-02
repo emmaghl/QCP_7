@@ -3,7 +3,7 @@ import numpy as np
 
 def glue_circuits(matricies: list[np.ndarray]) -> np.ndarray:
     '''
-    Glues together circuits from left to right. In terms of matricies, multiply_matricies([a, b, c]), returns c*b*a.
+    Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.
     '''
     m = np.identity(len(matricies[0]))
     for matrix in np.flip(matricies, axis=0):

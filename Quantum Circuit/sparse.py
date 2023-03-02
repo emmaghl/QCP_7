@@ -42,13 +42,13 @@ class Sparse_Quantum_Computer:
                                    "T"]  # maps the string input to the relevant matrix and creates an array
         self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
         #
-        # self.double_inputs = ["CV", "CNOT"]
+        self.double_inputs = ["CV", "CNOT"]
         #
         # produce binary digits for 2 input gates
         self.binary = self.produce_digits()
         #
         # # Keeps track of the gates that we've added via Gate Logic
-        # self.gate_histroy = []
+        self.gate_histroy = []
 
 
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
@@ -133,7 +133,7 @@ class Sparse_Quantum_Computer:
     def Sparse_MatMul(self, SM1, SM2):
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
         dict1 = {(row, col): val for row, col, val in SM1}
-        dict2 = {(row, col): val for row, c, v in SM2}
+        dict2 = {(row, c): v for row, c, v in SM2}
 
         Sdict = {}
         for (r1, c1), v1 in dict1.items(): #iterate over SM1
@@ -315,9 +315,9 @@ class Sparse_Quantum_Computer:
         M = []
 
         for i in range(0, step_n):
-            for j in range(0, len(self.single_gate_inputs)):
-                if self.single_gate_inputs[j] in inputs[i][0]:
-                    M.append(self.__Single_Gates(inputs[i][0], inputs[i][1]))
+            for j in range(0, len(self.single_inputs)):
+                if self.single_inputs[j] in inputs[i][0]:
+                    M.append(self.Single_Gates(inputs[i][0], inputs[i][1]))
             for j in range(0, len(self.double_inputs)):
                 if self.double_inputs[j] in inputs[i][0]:
                     M.append(self.__Double_Gates(inputs[i][0], inputs[i][1]))
@@ -343,11 +343,11 @@ class Sparse_Quantum_Computer:
             print("matrices DO NOT match")
 
 
-comp = Sparse_Quantum_Computer(3)
+'''comp = Sparse_Quantum_Computer(3)
 A = comp.Sparse_CZ(0,2)
 B = comp.Sparse_to_Dense(A)
 
-print(B)
+print(B)'''
 
 
 # # comp.Check_Same(comp.Basis, comp.Sparse_to_Dense(comp.Sparse_Basis()))
@@ -357,11 +357,11 @@ print(B)
 # B = comp.Sparse_to_Dense(A)
 # print(t2-t1)
 #
-from QuantumComputer import Quantum_Computer
+'''from QuantumComputer import Quantum_Computer
 
 compdense = Quantum_Computer(3)
 C = compdense.CZ(0,2)
-print(C)
+print(C)'''
 
 #
 # comp.Check_Same(B, C)

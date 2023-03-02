@@ -1,10 +1,10 @@
+from sparse import Sparse_Quantum_Computer
 from QuantumComputer import Quantum_Computer
 import numpy as np
+from numba import njit
 
 def glue_circuits(matricies: list[np.ndarray]) -> np.ndarray:
-    '''
-    Glues together circuits from left to right. In terms of matricies, multiply_matricies([a, b, c]), returns c*b*a.
-    '''
+    ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
     m = np.identity(len(matricies[0]))
     for matrix in np.flip(matricies, axis=0):
         m = np.matmul(m, matrix)
@@ -12,7 +12,8 @@ def glue_circuits(matricies: list[np.ndarray]) -> np.ndarray:
 
 def example():
     ''' An example of implementing a 3 qubit system, using dense matricies, and then printing the circuit to the terminal.'''
-    qc = Quantum_Computer(3)
+
+    qc = Sparse_Quantum_Computer(3)
 
     # Defines toffoli gate
     toffoli_steps = [
@@ -29,11 +30,11 @@ def example():
              (["G"], [[0, 2]])]
 
     circuits = [
-        qc.Make_Gate_Logic(toffoli_steps, "To"),
-        qc.Gate_Logic(gates),
-        qc.Make_Gate_Logic(toffoli_steps, "To")
+        #qc.Sparse_Gate_Logic(toffoli_steps, "Tof"),
+        qc.Sparse_Gate_Logic(gates)
+        #qc.Make_Gate_Logic(toffoli_steps, "To")
     ]
-    qc.print_circuit()
+    #qc.print_circuit()
 
     print("With the matrix representation:")
     print(glue_circuits(circuits))
@@ -76,6 +77,7 @@ def GroverAlgorithm():
 def main():
     #GroverAlgorithm()
     example()
+
 
 if __name__=="__main__":
     main()
