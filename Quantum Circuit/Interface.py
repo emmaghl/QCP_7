@@ -4,6 +4,9 @@ from abc import ABC, abstractmethod
 
 
 class QuantumComputer(ABC):
+    @abstractmethod
+    def __init__(self, numQ):
+        self.N = numQ
 
     @abstractmethod
     def TensorProduct(self,v1,v2):
@@ -13,23 +16,18 @@ class QuantumComputer(ABC):
     def MatrixMultiply(self,m1,m2):
         pass
 
-
-class Dense(QuantumComputer,numQ):
-    def __init__(self):
-        self.N = numQ
-
+class Dense(QuantumComputer):
     def TensorProduct(self,v1,v2):
         pass
 
     def MatrixMultiply(self,m1,m2):
         pass
 
-class Sparse(QuantumComputer,numQ):
+class Sparse(QuantumComputer):
     def __init__(self):
-        self.N = numQ
 
-class Lazy(QuantumComputer,numQ):
+class Lazy(QuantumComputer):
     def __init__(self):
-        self.N = numQ
+
 
 

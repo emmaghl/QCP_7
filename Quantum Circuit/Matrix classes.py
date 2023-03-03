@@ -1,4 +1,41 @@
 import numpy as np
+import math
+
+#defining dense and sparse matrices with the same philosopy used by logan in lazy
+
+class SparseMatrix(object):
+    def __init__(self, Type: str, *args):
+
+        if Type == 'I': #identity gate
+            self.matrix = np.array([0,0,1], [1,1,1])
+        if Type == 'H': #hadamard gate
+            self.matrix = 1 / math.sqrt(2) * np.array([0,0,1], [0,1,1], [1,0,1],[1,1,-1])
+        if Type == 'TP' or Type == 'MM': #tensor product or matrix multiplication
+            self.matrix = args[0] #'matrix' to be first argument fed into the operation
+        self.dim = self.size_matrix()[0]
+
+    def size_matrix(self):
+        ncol = self.matrix[-1][0]+1 #number of columns is the coloumn value of the last entry in the sparse matrix
+        nr = 0 #number of rows is the maximum row value across the array (+1 because of Python indexing)
+        for j in range(len(self.matrix)):
+            if self.matrix[j][1] > nr:
+                nr = self.matrix[j][1]
+        nrow = nr+1
+        return (ncol, nrow)
+
+
+    @classmethod
+    def tensor_prod(cls, m1, m2):
+        pass
+
+
+    @classmethod
+    def matrix_multiply(cls, m1, m2):
+        pass
+
+
+    def output(self, inputs):
+        pass
 
 class LazyMatrix(object):
 
@@ -13,20 +50,6 @@ class LazyMatrix(object):
 
     @classmethod
     def tensor_prod(cls, m1, m2):
-        SM2col = self.Size_Sparse(SM2)[0] #STcol/SM1col = SM2col etc.
-        SM2row = self.Size_Sparse(SM2)[1]
-
-        STensor = []
-        for j in range(len(SM1)):
-            for i in range(len(SM2)):
-                column = SM2col * SM1[j][0] + SM2[i][0]
-                row = SM2row * SM1[j][1] + SM2[i][1]
-                value = SM1[j][2] * SM2[i][2]
-                STensor.append([column, row, value])
-
-        return STensor
-
-
         tp = []
         for i in range(0, m1.dim):
             for j in range(0, m2.dim):
@@ -54,27 +77,3 @@ class LazyMatrix(object):
             out.append(self.matrix[i](inputs))
 
         return out
-
-
-
-
-
-
-# example of how to use:
-I = LazyMatrix('I')
-H = LazyMatrix('H')
-
-IH = LazyMatrix.tensor_prod(I, H)
-
-IIH = LazyMatrix.tensor_prod(I, IH)
-
-HII = LazyMatrix.tensor_prod(H, LazyMatrix.tensor_prod(I, I))
-
-mat = LazyMatrix.matrix_multiply(HII, IIH)
-
-# tests
-inputs1 = [1, 2, 3, 5]
-inputs2 = [1, 2, 3, 5, 7, 11, 13, 17]
-
-print(IH.output(inputs1))
-print(mat.output(inputs2))
