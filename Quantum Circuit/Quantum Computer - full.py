@@ -51,20 +51,53 @@ class QuantumComputer(Interface):
         # print(self.cnot.output([1,2,3,5]))
 
 
-class MatrixFrame(ABC):
+class MatrixFrame(object):
+
     def __init__(self):
-        pass
+        self.binary = self.produce_digits(
 
-    @abstractmethod
-    def tensor_prod(self, m1, m2):
-        pass
+    def produce_digits(self):
+        digits = []
+        for i in range(0, 2 ** self.N):
+            digit = []
+            if i < (2 ** self.N) / 2:
+                digit.append(0)
+            else:
+                digit.append(1)
+            for j in range(1, self.N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+                if x < (2 ** self.N) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        return digits
 
-    @abstractmethod
-    def matrix_multiply(self, m1, m2):
-        pass
+    def recog_digits(self, digits):
+        numbers = []
+        for i in range(0, 2 ** self.N):
+            num = 0
+            for j in range(0, self.N):
+                num += 2 ** (self.N - j - 1) * digits[i][j]
+            numbers.append(num)
+        return numbers
+
+    def CNOT_logic(self, c, t):
+        digits = copy.deepcopy(self.binary)
+
+        for i in range(0, 2 ** self.N):
+            if digits[i][c] == 1:
+                digits[i][t] = 1 - digits[i][t] % 2
+
+        index = self.recog_digits(self.N, digits)
+
+        return index
 
 
 class DenseMatrix(MatrixFrame):
+
     def __init__(self, Type, *args):
         if Type == 'H':
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -147,8 +180,8 @@ class SparseMatrix(MatrixFrame):
         nrow = nr+1
         return (ncol, nrow)
 
-
-    def tensor_prod(self, m1, m2):
+    @classmethod
+    def tensor_prod(cls, m1, m2):
         m2_col = self.size_matrix(m2)[0] #STcol/SM1col = SM2col etc.
         m2_row = self.size_matrix(m2)[1]
 
@@ -162,7 +195,8 @@ class SparseMatrix(MatrixFrame):
 
         return tensorprod
 
-    def matrix_multiply(self, m1, m2):
+    @classmethod
+    def matrix_multiply(cls, m1, m2):
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
         dict1 = {(row, col): val for row, col, val in m1}
         dict2 = {(row, col): val for row, c, v in m2}
