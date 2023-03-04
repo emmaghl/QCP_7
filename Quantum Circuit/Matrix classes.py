@@ -5,7 +5,6 @@ import math
 
 class SparseMatrix(object):
     def __init__(self, Type: str, *args):
-
         if Type == 'I': #identity gate
             self.matrix = np.array([0,0,1], [1,1,1])
         if Type == 'H': #hadamard gate
@@ -23,19 +22,41 @@ class SparseMatrix(object):
         nrow = nr+1
         return (ncol, nrow)
 
-
     @classmethod
     def tensor_prod(cls, m1, m2):
-        pass
+        m2_col = self.size_matrix(m2)[0] #STcol/SM1col = SM2col etc.
+        m2_row = self.size_matrix(m2)[1]
+
+        tensorprod = []
+        for j in range(len(m1)):
+            for i in range(len(m1)):
+                column = m2_col * m1[j][0] + m2[i][0]
+                row = m2_row * m1[j][1] + m2[i][1]
+                value = m1[j][2] * m2[i][2]
+                tensorprod.append([column, row, value])
+
+        return tensorprod
 
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
-        pass
+        # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
+        dict1 = {(row, col): val for row, col, val in m1}
+        dict2 = {(row, col): val for row, c, v in m2}
+
+        dict = {}
+        for (r1, c1), v1 in dict1.items(): #iterate over SM1
+            for (r2, c2), v2 in dict2.items(): #and SM2
+                if c1 == r2: #when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
+                    dict[(r1, c2)] = dict.get((r1, c2), 0) + v1 * v2 #there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
+
+        matmul = [[r, c, v] for (r, c), v in dict.items()] #return in sparse matric form
+        return matmul
 
 
     def output(self, inputs):
-        pass
+        return matrix_multiply(self.matrix, inputs)
+
 
 class LazyMatrix(object):
 

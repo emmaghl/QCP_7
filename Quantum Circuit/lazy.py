@@ -26,17 +26,6 @@ class LazyMatrix(object):
 
         return STensor
 
-
-        tp = []
-        for i in range(0, m1.dim):
-            for j in range(0, m2.dim):
-                tp.append(lambda x, y=i, z=j: m1.matrix[y](
-                    [m2.matrix[z]([x[m2.dim * k + l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
-
-        new_matrix = LazyMatrix('TP', tp)
-
-        return new_matrix
-
     @classmethod
     def matrix_multiply(cls, m1, m2):
         mm = []
@@ -48,12 +37,18 @@ class LazyMatrix(object):
 
         return new_matrix
 
+
+
+
+
     def output(self, inputs):
         out = []
         for i in range(0, self.dim):
             out.append(self.matrix[i](inputs))
 
         return out
+
+
 
 
 
