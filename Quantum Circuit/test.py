@@ -11,7 +11,7 @@ class Sparse(ABC):
         '''Describe what it does'''
         pass
 
-    def hell0(self):
+    def hello(self):
         pass
 
 

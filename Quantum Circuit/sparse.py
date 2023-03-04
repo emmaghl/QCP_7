@@ -38,18 +38,37 @@ class Sparse_Quantum_Computer:
             [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 0, 1], [0, 0, 1, 0]])  # reversable xor: |00> -> |00>, |01> -> |11>
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]])  # ¯\_(ツ)_/¯
         #
-        self.single_inputs = ["H", "RNot", "P", "X", "Y", "Z",
-                                   "T"]  # maps the string input to the relevant matrix and creates an array
+        self.single_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T"]  # maps the string input to the relevant matrix and creates an array
         self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
         #
-        self.double_inputs = ["CV", "CNOT"]
+        self.double_inputs = ["CV", "CNOT", "CZ"]
         #
         # produce binary digits for 2 input gates
         self.binary = self.produce_digits()
         #
         # # Keeps track of the gates that we've added via Gate Logic
-        self.gate_histroy = []
+        self.__gate_history = []
 
+
+
+    def give_su2(self,alpha: float, beta: float, theta: float):
+        return np.array([
+            [np.exp(1j*(alpha+beta)/2)*np.cos(theta/2), np.exp(1j*(alpha-beta)/2)*np.sin(theta/2)],
+            [-np.exp(1j*(-alpha+beta)/2)*np.sin(theta/2), np.exp(1j*(-alpha-beta)/2)*np.cos(theta/2)]
+        ])
+
+    def add_single_gate(self, alpha: float, beta: float, theta: float, name: str):
+        '''Adds any single SU(2) gate, in the form given by arxiv:9503016 Lemma 4.1.'''
+        self.single_inputs.append(name)
+        self.matrices.append( self.give_su2(alpha, beta, theta) )
+
+    def print_circuit(self):
+        '''
+        WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
+            Prints the quantum circuit in an ascii format on the terminal.
+        '''
+        pc = PrintingCircuit(self.__gate_history, self.Register_Size)
+        pc.print_circuit_ascii()
 
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
         """! What the class/method does
@@ -61,7 +80,7 @@ class Sparse_Quantum_Computer:
         SMatrix = []  # output matrix
         for i in range(rows):
             for j in range(cols):
-                if Matrix[i][j] != 0:  # if the value of the matrix element i,j is not 0 then store the value and the location
+                if np.abs(Matrix[i][j]) > 0.01:  # if the value of the matrix element i,j is not 0 then store the value and the location
                     SMatrix.append([i, j, Matrix[i][j]])  # Output array: (row, column, value)
         return SMatrix  # return output
         #comment how this is okay because last and first row always have a non zero element - why do i say this tho?
@@ -104,10 +123,11 @@ class Sparse_Quantum_Computer:
             typex = "complex"
 
 
-        DMatrix = np.zeros((self.Size_Sparse(SMatrix)[0])*self.Size_Sparse(SMatrix)[1], dtype=typex) #create an array of zeros of the right size
+        DMatrix = np.zeros((self.Size_Sparse(SMatrix)[0])*self.Size_Sparse(SMatrix)[1]) #create an array of zeros of the right size
         DMatrix.shape = self.Size_Sparse(SMatrix)
+
         for j in range(len(SMatrix)): #iterate over each row of the sparse matrix
-            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2]) #change the non zero entries of the dense matrix
+            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = SMatrix[j][2] #change the non zero entries of the dense matrix
         return DMatrix
 
     def Sparse_Tensor(self, SM1, SM2):
@@ -273,6 +293,7 @@ class Sparse_Quantum_Computer:
 
         return cv
 
+
     def Sparse_CZ(self, c, t):
         N = self.Register_Size
 
@@ -300,8 +321,19 @@ class Sparse_Quantum_Computer:
             return self.Sparse_CNOT(qnum[0][0], qnum[0][1])
         if gate[0] == "CZ":
             return self.Sparse_CZ(qnum[0][0], qnum[0][1])
+        if gate[0] == "CZn":
+            return self.__CZn(qnum[0][0], qnum[0][1])
 
-    def Sparse_Gate_Logic(self, inputs): #still to be tested
+    def Make_Gate_Logic(self, inputs: list, name: str) -> np.ndarray:
+        '''
+        Defines a custom gate with a letter, in order to simploify the printing of the circuit.
+        :param inputs: Input list of timesteps to build circuit.
+        :param name: One letter to define the name of the gate.
+        :return: A circuit.
+        '''
+        return self.Gate_Logic(inputs, add_gate_name = name)
+
+    def Gate_Logic(self, inputs, add_gate_name = ""): #still to be tested
         """! What the class/method does
             @param list the parameters and what they do
             @return  what the function returns
@@ -310,7 +342,10 @@ class Sparse_Quantum_Computer:
         step_n = len(inputs)
 
         # Add the gates to the gate history for printing later.
-        [self.gate_histroy.append(i) for i in inputs]
+        if add_gate_name == "": # If not defining a custom name
+            [self.__gate_history.append(i) for i in inputs]
+        else: # If defining a gate with a custom Name
+            self.__gate_history.append(([add_gate_name], [[0, N-1]]))
 
         M = []
 
@@ -322,6 +357,8 @@ class Sparse_Quantum_Computer:
                 if self.double_inputs[j] in inputs[i][0]:
                     M.append(self.__Double_Gates(inputs[i][0], inputs[i][1]))
 
+        #FLip matricies! For correct ordering....
+        M = np.flip(M, axis=0)
         m = M[0]
         for i in range(1, len(M)):
             m = self.Sparse_MatMul(m, M[i])

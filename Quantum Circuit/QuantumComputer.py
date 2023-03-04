@@ -31,13 +31,15 @@ class Quantum_Computer:
         self.Z = np.array([[1, 0], [0, -1]]) #sends |1> to -|1> and |0> to |0>
         self.RNot = 1 / np.sqrt(2) * np.array([[1, -1], [1, 1]]) #sends |0> to 0.5^(-0.5)(|0>+|1>) and |1> to 0.5^(-0.5)(|1>-|0>)
         self.T = np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex) #square root of phase (rotates by pi/8)
+        self.TD = np.array([[1,0],[0,1 / np.sqrt(2) * (1-1j)]], dtype=complex)
+
         self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]) #reversable xor: |00> -> |00>, |01> -> |11>
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) #¯\_(ツ)_/¯
 
-        self.single_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
-        self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
+        self.single_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T", "TD"] #maps the string input to the relevant matrix and creates an array
+        self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T, self.TD]
 
-        self.double_inputs = ["CV", "CNOT", "CZ"]
+        self.double_inputs = ["CV", "CNOT", "CZ", "CZn"]
 
         # produce binary digits for 2 input gates
         self.binary = self.produce_digits()
@@ -56,6 +58,17 @@ class Quantum_Computer:
         #ouput is linear tensor product (NOTE: matrix form infromation lost)
 
         return tensorprod '''
+
+    def give_su2(self,alpha: float, beta: float, theta: float):
+        return np.array([
+            [np.exp(1j*(alpha+beta)/2)*np.cos(theta/2), np.exp(1j*(alpha-beta)/2)*np.sin(theta/2)],
+            [-np.exp(1j*(-alpha+beta)/2)*np.sin(theta/2), np.exp(1j*(-alpha-beta)/2)*np.cos(theta/2)]
+        ])
+
+    def add_single_gate(self, alpha: float, beta: float, theta: float, name: str):
+        '''Adds any single SU(2) gate, in the form given by arxiv:9503016 Lemma 4.1.'''
+        self.single_inputs.append(name)
+        self.matrices.append( self.give_su2(alpha, beta, theta) )
 
     def print_circuit(self):
         '''
@@ -176,13 +189,12 @@ class Quantum_Computer:
                 list_check.append((positions[k])[i])
 
         assert len(list(list_check)) == len(set(list_check)), "repeated position value"  #ensure lenght of list is equal to lenght of unique values in list i.e. avoid repetiotion
-
-        single_gate_inputs = ["H", "RNot", "Phase", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
+ #maps the string input to the relevant matrix and creates an array
         matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
         M = []
         for j in range(len(gate)):
-            for i in range(len(single_gate_inputs)):
-                if str(gate[j]) == str(single_gate_inputs[i]):
+            for i in range(len(self.single_inputs)):
+                if str(gate[j]) == str(self.single_inputs[i]):
                     M.append(matrices[i])
         assert len(M) > 0, ("Please enter one of the following gates and ensure correct spelling: H, RNot, Phase, X, Y, Z, T")
 
@@ -338,6 +350,14 @@ class Quantum_Computer:
 
         return cz
 
+    def __CZn(self, c, t):
+        N = self.Register_Size
+
+        czN = np.identity(N)
+        czN[N-1, N-1]=-1
+
+        return czN
+
     def __Double_Gates(self, gate, qnum):
         """! What the class/method does
             @param list the parameters and what they do
@@ -387,6 +407,8 @@ class Quantum_Computer:
                 if self.double_inputs[j] in inputs[i][0]:
                     M.append(self.__Double_Gates(inputs[i][0], inputs[i][1]))
 
+        #FLip matricies! For correct ordering....
+        M = np.flip(M, axis=0)
         m = M[0]
         for i in range(1, len(M)):
             m = np.matmul(m, M[i])
