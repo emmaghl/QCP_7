@@ -26,8 +26,9 @@ class QuantumComputer(Interface):
             self.Matrix = LazyMatrix
 
         # set up basis and quantum register
-        #
-        #
+        self.Q_Register()
+        # print(self.psi)
+        # self.Basis()
 
         # single input gates
         self.I = self.Matrix('I')
@@ -47,14 +48,35 @@ class QuantumComputer(Interface):
 
         self.double_inputs = ["CV", "CNOT"]
 
-        # self.cnot = self.Matrix('CNOT',self.N,1,0)
-        # print(self.cnot.output([1,2,3,5]))
+        self.cnot = self.Matrix('CNOT', self.binary, 1, 0)
+        print(self.cnot.output([1, 2, 3, 5]))
 
+        self.cv = self.Matrix('CV', self.binary, 1, 0)
+        print(self.cv.output([1, 2, 3, 5]))
 
-class MatrixFrame(object):
+    def Q_Register(self):
+        coeffs = []
 
-    def __init__(self):
-        self.binary = self.produce_digits(
+        for i in range(0, self.N):
+            alpha = np.random.random() + np.random.random() * 1j
+            beta = np.random.random() + np.random.random() * 1j
+            normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
+
+            alpha /= normF
+            beta /= normF
+
+            coeffs.append(np.array([[alpha], [beta]]))
+
+        self.psi = coeffs[0]
+        for i in range(1, self.N):
+            self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])
+
+    def Basis(self):
+        self.Q = []
+        for i in range(0, 2 ** self.N):
+            self.Q.append(np.zeros(2 ** self.N))
+            self.Q[i][i] = 1
+            self.Q[i].shape = (2 ** self.N, 1)
 
     def produce_digits(self):
         digits = []
@@ -75,28 +97,49 @@ class MatrixFrame(object):
             digits.append(digit)
         return digits
 
+
+class MatrixFrame(object):
+
+    def __init__(self):
+        pass
+
     def recog_digits(self, digits):
+        N = int(np.log(len(digits)) / np.log(2))
         numbers = []
-        for i in range(0, 2 ** self.N):
+        for i in range(0, 2 ** N):
             num = 0
-            for j in range(0, self.N):
-                num += 2 ** (self.N - j - 1) * digits[i][j]
+            for j in range(0, N):
+                num += 2 ** (N - j - 1) * digits[i][j]
             numbers.append(num)
         return numbers
 
-    def CNOT_logic(self, c, t):
-        digits = copy.deepcopy(self.binary)
+    def CNOT_logic(self, digits, c, t):
+        N = int(np.log(len(digits)) / np.log(2))
 
-        for i in range(0, 2 ** self.N):
+        for i in range(0, 2 ** N):
             if digits[i][c] == 1:
                 digits[i][t] = 1 - digits[i][t] % 2
 
-        index = self.recog_digits(self.N, digits)
+        index = self.recog_digits(digits)
 
         return index
 
+    def CV_logic(self, digits, c, t):
+        N = int(np.log(len(digits)) / np.log(2))
+        index = []
+        for i in range(0, 2 ** N):
+            if digits[i][c] == 1 and digits[i][t] == 1:
+                index.append(1)
+            else:
+                index.append(0)
+        return index
+
+    def CZ_logic(self, digits, c, t):
+        pass
+
 
 class DenseMatrix(MatrixFrame):
+
     def __init__(self, Type, *args):
         if Type == 'H':
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -154,34 +197,34 @@ class DenseMatrix(MatrixFrame):
 
 class SparseMatrix(MatrixFrame):
     def __init__(self, Type: str, *args):
-        if Type == 'I': #identity gate
-            self.matrix = np.array([0,0,1], [1,1,1])
-        if Type == 'H': #hadamard gate
-            self.matrix = 1 / math.sqrt(2) * np.array([0,0,1], [0,1,1], [1,0,1],[1,1,-1])
-        if Type == 'TP' or Type == 'MM': #tensor product or matrix multiplication
-            self.matrix = args[0] #'matrix' to be first argument fed into the operation
+        if Type == 'I':  # identity gate
+            self.matrix = np.array([0, 0, 1], [1, 1, 1])
+        if Type == 'H':  # hadamard gate
+            self.matrix = 1 / math.sqrt(2) * np.array([0, 0, 1], [0, 1, 1], [1, 0, 1], [1, 1, -1])
+        if Type == 'TP' or Type == 'MM':  # tensor product or matrix multiplication
+            self.matrix = args[0]  # 'matrix' to be first argument fed into the operation
         if Type == 'CNOT':
             pass
         if Type == 'CV':
             pass
         if Type == 'M0':
-            self.matrix = np.array([0,0,1], [1,1,0])
+            self.matrix = np.array([0, 0, 1], [1, 1, 0])
         if Type == 'M1':
-            self.matrix = np.array([1,1,1])
+            self.matrix = np.array([1, 1, 1])
         self.dim = self.size_matrix()[0]
 
     def size_matrix(self):
-        ncol = self.matrix[-1][0]+1 #number of columns is the coloumn value of the last entry in the sparse matrix
-        nr = 0 #number of rows is the maximum row value across the array (+1 because of Python indexing)
+        ncol = self.matrix[-1][0] + 1  # number of columns is the coloumn value of the last entry in the sparse matrix
+        nr = 0  # number of rows is the maximum row value across the array (+1 because of Python indexing)
         for j in range(len(self.matrix)):
             if self.matrix[j][1] > nr:
                 nr = self.matrix[j][1]
-        nrow = nr+1
+        nrow = nr + 1
         return (ncol, nrow)
 
     @classmethod
     def tensor_prod(cls, m1, m2):
-        m2_col = self.size_matrix(m2)[0] #STcol/SM1col = SM2col etc.
+        m2_col = self.size_matrix(m2)[0]  # STcol/SM1col = SM2col etc.
         m2_row = self.size_matrix(m2)[1]
 
         tensorprod = []
@@ -201,14 +244,14 @@ class SparseMatrix(MatrixFrame):
         dict2 = {(row, col): val for row, c, v in m2}
 
         dict = {}
-        for (r1, c1), v1 in dict1.items(): #iterate over SM1
-            for (r2, c2), v2 in dict2.items(): #and SM2
-                if c1 == r2: #when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
-                    dict[(r1, c2)] = dict.get((r1, c2), 0) + v1 * v2 #there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
+        for (r1, c1), v1 in dict1.items():  # iterate over SM1
+            for (r2, c2), v2 in dict2.items():  # and SM2
+                if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
+                    dict[(r1, c2)] = dict.get((r1, c2),
+                                              0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
 
-        matmul = [[r, c, v] for (r, c), v in dict.items()] #return in sparse matric form
+        matmul = [[r, c, v] for (r, c), v in dict.items()]  # return in sparse matric form
         return matmul
-
 
     def output(self, inputs):
         return matrix_multiply(self.matrix, inputs)
@@ -257,23 +300,25 @@ class LazyMatrix(MatrixFrame):
         new_matrix = LazyMatrix('MM', mm)
         return new_matrix
 
-    def cnot(self, n, c, t):
+    def cnot(self, d, c, t):
+        digits = copy.deepcopy(d)
         cn = []
 
-        index = QuantumComputer.CNOT_logic(c, t)
+        index = super().CNOT_logic(digits, c, t)
 
         for i in range(0, len(index)):
             cn.append(lambda x, y=i: x[index[y]])
 
         return cn
 
-    def cv(self, n, c, t):
+    def cv(self, d, c, t):
+        digits = copy.deepcopy(d)
         cv = []
 
-        digits = QuantumComputer.produce_digits(n)
+        index = super().CV_logic(digits, c, t)
 
-        for i in range(0, 2 ** n):
-            if digits[i][c] == 1 and digits[i][t] == 1:
+        for i in range(0, len(digits)):
+            if index[i] == 1:
                 cv.append(lambda x, y=i: 1j * x[y])
             else:
                 cv.append(lambda x, y=i: x[y])
@@ -294,6 +339,10 @@ class LazyMatrixSingle(MatrixFrame):
 
 
 # computer
-# comp2 = QuantumComputer(2,'Dense')
+comp2 = QuantumComputer(2, 'Lazy')
 
-comp3 = QuantumComputer(3, 'Lazy')
+# comp3 = QuantumComputer(3,'Lazy')
+
+
+
+
