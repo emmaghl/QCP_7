@@ -97,7 +97,6 @@ class MatrixFrame(object):
 
 
 class DenseMatrix(MatrixFrame):
-
     def __init__(self, Type, *args):
         if Type == 'H':
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
