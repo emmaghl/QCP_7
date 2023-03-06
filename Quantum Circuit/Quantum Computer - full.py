@@ -183,7 +183,7 @@ class QuantumComputer(Interface):
         # plt.show()
 
 
-class MatrixFrame(object):
+class MatrixFrame(ABC):
 
     def __init__(self):
         pass
@@ -222,6 +222,13 @@ class MatrixFrame(object):
     def CZ_logic(self, digits, c, t):
         return self.CV_logic(digits, c, t)
 
+    @abstractmethod
+    def tensor_prod(self, M1, M2):
+        pass
+
+    @abstractmethod
+    def matrix_multiply(self, M1, M2):
+        pass
 
 class DenseMatrix(MatrixFrame):
 
