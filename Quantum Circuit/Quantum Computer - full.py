@@ -25,15 +25,14 @@ class QuantumComputer(Interface):
         if matrix_type == "Lazy":
             self.Matrix = LazyMatrix
 
-        # set up basis and quantum register
+        # set up quantum register
         self.Q_Register()
-        # print(self.psi)
-        # self.Basis()
 
         # single input gates
         self.I = self.Matrix('I')
         self.H = self.Matrix('H')
         self.P = lambda theta: self.Matrix('P', theta)
+        # How does single_gate deal with the extra argument required for P?
 
         # measuring gates
         self.M0 = self.Matrix('M0')
@@ -46,13 +45,35 @@ class QuantumComputer(Interface):
         self.single_inputs = ["H", "P", "M0", "M1"]
         self.matrices = [self.H, self.P, self.M0, self.M1]
 
-        self.double_inputs = ["CV", "CNOT"]
+        self.double_inputs = ["CV", "CNOT", "CZ"]
 
-        self.cnot = self.Matrix('CNOT', self.binary, 1, 0)
-        print(self.cnot.output([1, 2, 3, 5]))
+        # tests
+        print("qubit 0 in state 0")
+        self.measure(0, 0)
+        print("qubit 0 in state 1")
+        self.measure(0, 1)
+        print("qubit 1 in state 0")
+        self.measure(1, 0)
+        print("qubit 1 in state 1")
+        self.measure(1, 1)
 
-        self.cv = self.Matrix('CV', self.binary, 1, 0)
-        print(self.cv.output([1, 2, 3, 5]))
+        inputs = [(["H"], [[0]]), (["CNOT"], [[0, 1]])]
+        circ = self.gate_logic(inputs)
+        self.psi = circ.output(self.psi)
+        # Make gate_logic produce objects
+
+        print("\n")
+        print("qubit 0 in state 0")
+        self.measure(0, 0)
+        print("qubit 0 in state 1")
+        self.measure(0, 1)
+        print("qubit 1 in state 0")
+        self.measure(1, 0)
+        print("qubit 1 in state 1")
+        self.measure(1, 1)
+
+        # self.cv = self.Matrix('CV',self.binary,1,0)
+        # print(self.cv.output([1,2,3,5]))
 
     def Q_Register(self):
         coeffs = []
@@ -70,13 +91,6 @@ class QuantumComputer(Interface):
         self.psi = coeffs[0]
         for i in range(1, self.N):
             self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])
-
-    def Basis(self):
-        self.Q = []
-        for i in range(0, 2 ** self.N):
-            self.Q.append(np.zeros(2 ** self.N))
-            self.Q[i][i] = 1
-            self.Q[i].shape = (2 ** self.N, 1)
 
     def produce_digits(self):
         digits = []
@@ -96,6 +110,77 @@ class QuantumComputer(Interface):
                     digit.append(1)
             digits.append(digit)
         return digits
+
+    def single_gates(self, gate, qnum):
+        M = [0] * self.N
+
+        for i in range(0, len(self.single_inputs)):
+            for j in range(0, len(gate)):
+                if self.single_inputs[i] == gate[j]:
+                    for k in range(0, len(qnum[j])):
+                        if gate[j] == "P":
+                            pass
+                        else:
+                            M[qnum[j][k]] = self.matrices[i]
+
+        for i in range(0, len(M)):
+            if type(M[i]) != np.ndarray and type(M[i]) != self.Matrix:
+                M[i] = self.I
+
+        m = M[0]
+        for i in range(1, len(M)):
+            m = self.Matrix.tensor_prod(m, M[i])
+
+        return m
+
+    def double_gates(self, gate, qnum):
+
+        if gate[0] == "CV":
+            return self.Matrix("CV", self.binary, qnum[0][0], qnum[0][1])
+        if gate[0] == "CNOT":
+            return self.Matrix("CNOT", self.binary, qnum[0][0], qnum[0][1])
+        if gate[0] == "CZ":
+            return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
+
+    def gate_logic(self, inputs):
+        step_n = len(inputs)
+
+        M = []
+
+        for i in range(0, step_n):
+            for j in range(0, len(self.single_inputs)):
+                if self.single_inputs[j] in inputs[i][0]:
+                    M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+            for j in range(0, len(self.double_inputs)):
+                if self.double_inputs[j] in inputs[i][0]:
+                    M.append(self.double_gates(inputs[i][0], inputs[i][1]))
+
+        m = M[0]
+        for i in range(1, len(M)):
+            m = self.Matrix.matrix_multiply(m, M[i])
+
+        return m
+
+    def measure(self, qnum, state):
+        inner_register = self.Matrix.inner_prod(self.psi)
+
+        if state == 0:
+            matrix = self.single_gates(["M0"], [[qnum]])
+        elif state == 1:
+            matrix = self.single_gates(["M1"], [[qnum]])
+
+        QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
+        print(QP)
+
+        x = []
+        for i in range(0, 1000):
+            if np.random.random() < QP:
+                x.append(state)
+            else:
+                x.append(1 - state)
+
+        # plt.hist(x)
+        # plt.show()
 
 
 class MatrixFrame(object):
@@ -135,7 +220,7 @@ class MatrixFrame(object):
         return index
 
     def CZ_logic(self, digits, c, t):
-        pass
+        return self.CV_logic(digits, c, t)
 
 
 class DenseMatrix(MatrixFrame):
@@ -150,16 +235,27 @@ class DenseMatrix(MatrixFrame):
         if Type == 'TP' or Type == 'MM':
             self.matrix = args[0]
         if Type == 'CNOT':
-            pass
+            self.matrix = self.cnot(args[0], args[1], args[2])
         if Type == 'CV':
-            pass
+            self.matrix = self.cv(args[0], args[1], args[2])
+        if Type == 'CZ':
+            self.matrix = self.cz(args[0], args[1], args[2])
         if Type == 'M0':
             self.matrix = np.array([[1, 0], [0, 0]])
         if Type == 'M1':
             self.matrix = np.array([[0, 0], [0, 1]])
 
     @classmethod
-    def tensor_prod(cls, m1, m2):
+    def tensor_prod(cls, M1, M2):
+        if type(M1) == DenseMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == DenseMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
         R = []
         if len(m1.shape) > 1:
             for i in range(len(m1)):
@@ -179,11 +275,19 @@ class DenseMatrix(MatrixFrame):
                 ax = 1
             for i in range(1, len(m1)):
                 C = np.concatenate((C, R[i]), axis=ax)
-
-        return C
+        return DenseMatrix('TP', C)
 
     @classmethod
-    def matrix_multiply(cls, m1, m2):
+    def matrix_multiply(cls, M1, M2):
+        if type(M1) == DenseMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == DenseMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
         M = np.zeros(len(m1) * len(m2[0]), dtype='complex')
         M.shape = (len(m1), len(m2[0]))
 
@@ -191,11 +295,86 @@ class DenseMatrix(MatrixFrame):
             for j in range(len(m2[0])):
                 for k in range(len(m2)):
                     M[i][j] += m1[i][k] * m2[k][j]
+        return DenseMatrix('MM', M)
 
-        return M
+    @classmethod
+    def inner_prod(cls, M):
+        return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))
+
+    @classmethod
+    def trace(cls, M):
+        return np.trace(M.matrix)
+
+    def Basis(self, N):
+        Q = []
+        for i in range(0, 2 ** N):
+            Q.append(np.zeros(2 ** N))
+            Q[i][i] = 1
+            Q[i].shape = (2 ** N, 1)
+        return Q
+
+    def cnot(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cn = []
+
+        index = super().CNOT_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        basis = self.Basis(N)
+
+        for i in range(0, 2 ** N):
+            new_row = basis[index[i]]
+            new_row.shape = (1, 2 ** N)
+            cn.append(new_row)
+
+        cn = np.asarray(np.asmatrix(np.asarray(cn)))
+        return cn
+
+    def cv(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cv = []
+
+        index = super().CV_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        basis = self.Basis(N)
+
+        for i in range(0, N):
+            if index[i] == 1:
+                new_row = 1j * basis[i]
+            else:
+                new_row = basis[i]
+            new_row.shape = (1, 2 ** N)
+            cv.append(new_row)
+
+        cv = np.asarray(np.matrix(np.asarray(cv)))
+
+        return cv
+
+    def cz(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cz = []
+
+        index = super().CZ_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        basis = self.Basis(N)
+
+        for i in range(0, N):
+            if index[i] == 1:
+                new_row = -1 * basis[i]
+            else:
+                new_row = basis[i]
+            new_row.shape = (1, 2 ** N)
+            cz.append(new_row)
+
+        cz = np.asarray(np.matrix(np.asarray(cv)))
+
+        return cz
+
+    def output(self, inputs):
+        return DenseMatrix.matrix_multiply(self.matrix, inputs)
 
 
 class SparseMatrix(MatrixFrame):
+
     def __init__(self, Type: str, *args):
         if Type == 'I':  # identity gate
             self.matrix = np.array([0, 0, 1], [1, 1, 1])
@@ -272,6 +451,8 @@ class LazyMatrix(MatrixFrame):
             self.matrix = self.cnot(args[0], args[1], args[2])
         if Type == 'CV':
             self.matrix = self.cv(args[0], args[1], args[2])
+        if Type == 'CZ':
+            self.matrix = self.cz(args[0], args[1], args[2])
         if Type == 'M0':
             self.matrix = [lambda x: x[0], lambda x: 0]
         if Type == 'M1':
@@ -300,6 +481,14 @@ class LazyMatrix(MatrixFrame):
         new_matrix = LazyMatrix('MM', mm)
         return new_matrix
 
+    @classmethod
+    def inner_prod(cls, M):
+        pass
+
+    @classmethod
+    def trace(cls, M):
+        pass
+
     def cnot(self, d, c, t):
         digits = copy.deepcopy(d)
         cn = []
@@ -325,7 +514,11 @@ class LazyMatrix(MatrixFrame):
 
         return cv
 
+    def cz(self, d, c, t):
+        pass
+
     def output(self, inputs):
+        # add conversion for vector input
         out = []
         for i in range(0, self.dim):
             out.append(self.matrix[i](inputs))
@@ -339,7 +532,7 @@ class LazyMatrixSingle(MatrixFrame):
 
 
 # computer
-comp2 = QuantumComputer(2, 'Lazy')
+comp2 = QuantumComputer(2, 'Dense')
 
 # comp3 = QuantumComputer(3,'Lazy')
 
