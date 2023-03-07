@@ -310,7 +310,6 @@ class Quantum_Computer:
             cn.append(new_row)
 
         cn = np.asarray(np.asmatrix(np.asarray(cn)))
-        print(cn)
 
         return cn
 
@@ -350,7 +349,6 @@ class Quantum_Computer:
             cz.append(new_row)
 
         cz = np.asarray(np.matrix(np.asarray(cz)))
-        print(cz)
 
         return cz
 
