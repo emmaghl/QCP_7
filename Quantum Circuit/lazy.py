@@ -1,9 +1,8 @@
 import numpy as np
 
-
 class LazyMatrix(object):
 
-    def __init__(self, Type, *args):
+    def __init__(self, Type: str, *args):
         if Type == 'I':
             self.matrix = [lambda x: x[0], lambda x: x[1]]
         if Type == 'H':
@@ -14,15 +13,18 @@ class LazyMatrix(object):
 
     @classmethod
     def tensor_prod(cls, m1, m2):
-        tp = []
-        for i in range(0, m1.dim):
-            for j in range(0, m2.dim):
-                tp.append(lambda x, y=i, z=j: m1.matrix[y](
-                    [m2.matrix[z]([x[m2.dim * k + l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
+        SM2col = self.Size_Sparse(SM2)[0] #STcol/SM1col = SM2col etc.
+        SM2row = self.Size_Sparse(SM2)[1]
 
-        new_matrix = LazyMatrix('TP', tp)
+        STensor = []
+        for j in range(len(SM1)):
+            for i in range(len(SM2)):
+                column = SM2col * SM1[j][0] + SM2[i][0]
+                row = SM2row * SM1[j][1] + SM2[i][1]
+                value = SM1[j][2] * SM2[i][2]
+                STensor.append([column, row, value])
 
-        return new_matrix
+        return STensor
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
@@ -35,12 +37,22 @@ class LazyMatrix(object):
 
         return new_matrix
 
+
+
+
+
     def output(self, inputs):
         out = []
         for i in range(0, self.dim):
             out.append(self.matrix[i](inputs))
 
         return out
+
+
+
+
+
+
 
 
 # example of how to use:

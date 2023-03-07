@@ -34,8 +34,11 @@ class Quantum_Computer:
         self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]) #reversable xor: |00> -> |00>, |01> -> |11>
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) #¯\_(ツ)_/¯
 
-        self.single_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T"] #maps the string input to the relevant matrix and creates an array
-        self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T]
+        self.M0 = np.array([[1, 0], [0, 0]])  # self.Mat_Mal(self.Zero,np.transpose(self.Zero))
+        self.M1 = np.array([[0, 0], [0, 1]])  # self.Mat_Mul(self.One,np.transpose(self.One))
+
+        self.single_inputs = ["H", "RNot", "P", "X", "Y", "Z", "T","M0","M1"] #maps the string input to the relevant matrix and creates an array
+        self.matrices = [self.Hadamard, self.RNot, self.Phase, self.X, self.Y, self.Z, self.T,self.M0,self.M1]
 
         self.double_inputs = ["CV", "CNOT", "CZ"]
 
@@ -111,21 +114,24 @@ class Quantum_Computer:
 
         return M
 
+
     def Q_Register(self):
-        """! What the class/method does
-            @param list the parameters and what they do
-            @return  what the function returns
-        """
-        # returns an array of 2**n complex coefficients and ensures normalisation.
-        j = 2 ** self.Register_Size
-        coeffs = (0 + 0 * 1j) * np.zeros(j)
-        for i in range(j):
-            theta = np.random.random() * np.pi * 2
-            coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j
+        N = self.Register_Size
+        coeffs = []
 
-        self.psi = coeffs
-        self.psi.shape = (j, 1)
+        for i in range(0, N):
+            alpha = np.random.random() + np.random.random() * 1j
+            beta = np.random.random() + np.random.random() * 1j
+            normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
 
+            alpha /= normF
+            beta /= normF
+
+            coeffs.append(np.array([[alpha], [beta]]))
+
+        self.psi = coeffs[0]
+        for i in range(1, N):
+            self.psi = self.Tensor_Prod(self.psi, coeffs[i])
 
     def Basis(self):
         """! What the class/method does
@@ -401,6 +407,26 @@ class Quantum_Computer:
         qubits = self.Norm(np.matmul(matrix, qubits))
         return qubits
 
+    def measure(self, state, qnum):
+        inner_register = self.Mat_Mul(self.psi, np.transpose(np.conj(self.psi)))
+
+        if state == 0:
+            matrix = self.Single_Gates(["M0"], [[qnum]])
+        elif state == 1:
+            matrix = self.Single_Gates(["M1"], [[qnum]])
+
+        QP = np.trace(self.Mat_Mul(matrix, inner_register))
+        # print(QP)
+
+        x = []
+        for i in range(0, 1000):
+            if np.random.random() < QP:
+                x.append(state)
+            else:
+                x.append(1 - state)
+
+        plt.hist(x)
+        plt.show()
 # main
 
 

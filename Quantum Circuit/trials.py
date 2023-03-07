@@ -5,7 +5,7 @@ import cmath
 a graveyard of trials
 '''
 
-
+#
 
 
 #
@@ -118,3 +118,19 @@ def Basis(self):
     for i in range(len(Q)):
         self.Q.append(np.transpose(Q[i]))  # transposes all the incoming basis states
         '''
+
+
+def Q_Register(self):
+    """! What the class/method does
+        @param list the parameters and what they do
+        @return  what the function returns
+    """
+    # returns an array of 2**n complex coefficients and ensures normalisation.
+    j = 2 ** self.Register_Size
+    coeffs = (0 + 0 * 1j) * np.zeros(j)
+    for i in range(j):
+        theta = np.random.random() * np.pi * 2
+        coeffs[i] = (np.cos(theta) + np.sin(theta) * 1j) / j
+
+    self.psi = coeffs
+    self.psi.shape = (j, 1)
