@@ -27,11 +27,11 @@ class Quantum_Computer:
 
         #more gates (unused as of 16/02)
         self.X = np.array([[0, 1], [1, 0]]) #Flips the |0> to |1> and vice versa
-        self.Y = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex) #converts |0> to i|1> and |1> to -i|0>
+        self.Y = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex) #converts |0> to i|1> and |1> to -i|0>
         self.Z = np.array([[1, 0], [0, -1]]) #sends |1> to -|1> and |0> to |0>
         self.RNot = 1 / np.sqrt(2) * np.array([[1, -1], [1, 1]]) #sends |0> to 0.5^(-0.5)(|0>+|1>) and |1> to 0.5^(-0.5)(|1>-|0>)
-        self.T = np.array([[1,0],[0,1 / np.sqrt(2) * (1+1j)]], dtype=complex) #square root of phase (rotates by pi/8)
-        self.TD = np.array([[1,0],[0,1 / np.sqrt(2) * (1-1j)]], dtype=complex)
+        self.T = np.array([[1,0],[0,np.exp(1j*np.pi/4)]], dtype=complex) #square root of phase (rotates by pi/8)
+        self.TD = np.array([[1,0],[0,np.exp(-1j*np.pi/4)]], dtype=complex)
 
         self.CNot = np.array([[1,0,0,0],[0,1,0,0],[0,0,0,1],[0,0,1,0]]) #reversable xor: |00> -> |00>, |01> -> |11>
         self.Swap = np.array([[1, 0, 0, 0], [0, 0, 1, 0], [0, 1, 0, 0], [0, 0, 0, 1]]) #¯\_(ツ)_/¯
@@ -114,7 +114,7 @@ class Quantum_Computer:
             @return  what the function returns
         """
         assert np.shape(Q1)[1] == np.shape(Q2)[0], "can't perform matrix multiplication"
-        M = np.zeros(len(Q1)*len(Q2[0]))
+        M = np.zeros(len(Q1)*len(Q2[0]), dtype=np.complex)
         M.shape = (len(Q1), len(Q2[0]))
 
         for i in range(len(Q1)): #rows of Q1
@@ -236,10 +236,12 @@ class Quantum_Computer:
                     for k in range(0, len(qnum[j])):
                         M[qnum[j][k]] = self.matrices[i]
 
+
         for i in range(0, len(M)):
             if type(M[i]) != np.ndarray:
                 M[i] = self.I
 
+        M = np.flip(M, axis=0)
         m = M[0]
         for i in range(1, len(M)):
             m = self.Tensor_Prod(m, M[i])
@@ -284,7 +286,7 @@ class Quantum_Computer:
                 else:
                     digit.append(1)
             digits.append(digit)
-        return digits
+        return np.flip(digits, axis=1)
 
     def __CNOT(self, c, t):  # c is the position of the control qubit, t is the position of the target qubit
         """! What the class/method does
@@ -307,7 +309,8 @@ class Quantum_Computer:
             new_row.shape = (1, 2 ** N)
             cn.append(new_row)
 
-        cn = np.asmatrix(np.asarray(cn))
+        cn = np.asarray(np.asmatrix(np.asarray(cn)))
+        print(cn)
 
         return cn
 
@@ -329,7 +332,7 @@ class Quantum_Computer:
             new_row.shape = (1, 2 ** N)
             cv.append(new_row)
 
-        cv = np.asmatrix(np.asarray(cv))
+        cv = np.asarray(np.asmatrix(np.asarray(cv)))
 
         return cv
 
@@ -347,6 +350,7 @@ class Quantum_Computer:
             cz.append(new_row)
 
         cz = np.asarray(np.matrix(np.asarray(cz)))
+        print(cz)
 
         return cz
 
@@ -407,11 +411,13 @@ class Quantum_Computer:
                 if self.double_inputs[j] in inputs[i][0]:
                     M.append(self.__Double_Gates(inputs[i][0], inputs[i][1]))
 
-        #FLip matricies! For correct ordering....
+
+
+        #Flip ordering!
         M = np.flip(M, axis=0)
         m = M[0]
         for i in range(1, len(M)):
-            m = np.matmul(m, M[i])
+            m = self.Mat_Mul(m, M[i])
 
         return m
 

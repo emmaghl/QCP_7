@@ -3,11 +3,11 @@ from QuantumComputer import Quantum_Computer
 import numpy as np
 np.set_printoptions(linewidth=np.inf, precision=2, suppress=True)
 
-def glue_circuits(matricies: list[np.ndarray]) -> np.ndarray:
+def glue_circuits(matricies: list[np.ndarray], qc: Quantum_Computer) -> np.ndarray:
     ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
     m = np.identity(len(matricies[0]))
     for matrix in np.flip(matricies, axis=0):
-        m = np.matmul(m, matrix)
+        m = qc.Mat_Mul(m, matrix)
     return m
 
 def example():
@@ -42,20 +42,20 @@ def example():
     print(glue_circuits(circuits))
 
 def GroverAlgorithm_2Qubit():
-    '''A function implementing a two qubit version of Grover's algorithm.'''
     qc = Quantum_Computer(2)
 
     # Defines the gates for grover's algorithm
-    init_states = [(["H", "H"], [[0], [1]])]
+    init_states = [(["H", "H"], [[0], [1]])
+                   ]
 
     oracle = [(["CZ"], [[0, 1]])]
 
     amplify_amplitude = [
-            (["H", "H"], [[0], [1]]),
-            (["X", "X"], [[0], [1]]),
-            (["CZ"], [[1, 0]]),
-            (["X", "X"], [[0], [1]]),
-            (["H", "H"], [[0], [1]])
+        (["H", "H"], [[0], [1]]),
+        (["X", "X"], [[0], [1]]),
+        (["CZ"], [[1, 0]]),
+        (["X", "X"], [[0], [1]]),
+        (["H", "H"], [[0], [1]])
     ]
 
     # Constructs circuit from pieces defined above (will be glued together later to give the complete matrix)
@@ -74,7 +74,57 @@ def GroverAlgorithm_2Qubit():
     print("With the matrix representation:")
     print(glued_circuits)
     print("\nOutput state vector:")
+    print(glued_circuits.shape)
     print(glued_circuits.dot([1, 0, 0, 0]))
+
+def GroverAlgorithm_3Qubit():
+    '''A function implementing a two qubit version of Grover's algorithm.'''
+    qc = Quantum_Computer(3)
+
+    # Defines the gates for grover's algorithm
+    init_states = [(["H"], [[0]]),
+                   (["H"], [[1]]),
+                   (["H"], [[2]])]
+
+    oracle = [(["CZ"], [[0, 2]])]
+
+    # Constructs circuit from pieces defined above (will be glued together later to give the complete matrix)
+    circuits = [
+        qc.Gate_Logic(init_states),
+        qc.Gate_Logic(oracle),
+        qc.Gate_Logic([
+            (["H"], [[0]]),
+            (["H"], [[1]]),
+            (["H"], [[2]]),
+            (["X"], [[0]]),
+            (["X"], [[1]]),
+            (["X"], [[2]]),
+            (["H"], [[2]]),
+        ]),
+        qc.Make_Gate_Logic(CCnot(0, 1, 2), "T"),
+        qc.Gate_Logic([
+            (["H"], [[2]]),
+            (["X"], [[0]]),
+            (["X"], [[1]]),
+            (["X"], [[2]]),
+            (["H"], [[0]]),
+            (["H"], [[1]]),
+            (["H"], [[2]])
+        ])
+    ]
+
+
+    # Prints circuit and matrix.
+    qc.print_circuit()
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits = glue_circuits(circuits, qc)
+    print("With the matrix representation:")
+    print(glued_circuits)
+    print("\nOutput probabilities:")
+    outVec = np.matmul(glued_circuits,[1, 0, 0, 0, 0, 0, 0, 0])
+    print(np.array([100*outVec[i]*np.conjugate(outVec[i]) for i in range(len(outVec))], dtype=np.float32))
 
 def glue_lists(*lists) -> list:
     '''Adds elments from list_2 to list_1.'''
@@ -236,10 +286,13 @@ def GroverAlgorithm_Mini_Suduko():
     num_qubits = 6
     qc = Quantum_Computer(num_qubits)
 
-
     # Defines the gates for grover's algorithm
     init_states = [
-        qc.Gate_Logic([ (["H", "H", "H"], [[0], [1], [2]]) ]),
+        qc.Gate_Logic([
+            (["H"], [[0]]),
+            (["H"], [[1]]),
+            (["H"], [[2]])
+        ]),
         qc.Gate_Logic([ (["H"], [[4]]) ]),
         qc.Gate_Logic([ (["X"], [[4]]) ])
     ]
@@ -270,11 +323,27 @@ def GroverAlgorithm_Mini_Suduko():
 
 
     amplify_amplitude = [
-        qc.Gate_Logic([ (["H", "H", "H"], [[0], [1], [2]]) ]),
-        qc.Gate_Logic([ (["X", "X", "X"], [[0], [1], [2]]) ]),
+        qc.Gate_Logic([
+            (["H"], [[0]]),
+            (["H"], [[1]]),
+            (["H"], [[2]])
+        ]),
+        qc.Gate_Logic([
+            (["X"], [[0]]),
+            (["X"], [[1]]),
+            (["X"], [[2]])
+        ]),
         qc.Gate_Logic(CCz(0, 1, 2), "Z"),
-        qc.Gate_Logic([ (["X", "X", "X"], [[0], [1], [2]]) ]),
-        qc.Gate_Logic([ (["H", "H", "H"], [[0], [1], [2]]) ])
+        qc.Gate_Logic([
+            (["X"], [[0]]),
+            (["X"], [[1]]),
+            (["X"], [[2]])
+        ]),
+        qc.Gate_Logic([
+            (["H"], [[0]]),
+            (["H"], [[1]]),
+            (["H"], [[2]])
+        ]),
     ]
 
     oracle = glue_lists(classical_chossing, kick_back, reset)
@@ -293,9 +362,35 @@ def GroverAlgorithm_Mini_Suduko():
     outVec = glued_circuits.dot(startVec)
     print(np.array([100*outVec[i]*np.conjugate(outVec[i]) for i in range(len(outVec))], dtype=np.float32))
 
+def testing():
+    qc = Quantum_Computer(1)
+
+    # Defines the gates for grover's algorithm
+    circuits = [
+        qc.Gate_Logic([
+            (["Y"], [[0]]), (["Z"], [[0]])
+        ])
+    ]
+
+    # Prints circuit and matrix.
+    #qc.print_circuit()
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits = glue_circuits(circuits, qc)
+
+    print("With the matrix representation:")
+    print(glued_circuits)
+    print("\nOutput probabilities:")
+    outVec = np.matmul(glued_circuits,[1, 0])
+    #print(np.array([100*outVec[i]*np.conjugate(outVec[i]) for i in range(len(outVec))], dtype=np.float32))
+    print(np.array([outVec[i] for i in range(len(outVec))]))
+
 def main():
     #example()
-    GroverAlgorithm_Mini_Suduko()
+    #GroverAlgorithm_Mini_Suduko()
+    GroverAlgorithm_3Qubit()
+    #testing()
 
 
 if __name__=="__main__":
