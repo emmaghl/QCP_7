@@ -6,7 +6,7 @@ np.set_printoptions(linewidth=np.inf, precision=2, suppress=True)
 
 def glue_circuits(matricies: list[DenseMatrix]) -> np.ndarray:
     ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
-    m = np.identity(8)
+    m = np.identity(len(matricies[0].matrix[0]))
 
     for matrix in np.flip(matricies, axis=0):
         #print(matrix.matrix)
@@ -41,7 +41,7 @@ def CCnot(control_1, control_2, target) -> np.array:
 
 def GroverAlgorithm_3Qubit():
     '''A function implementing a two qubit version of Grover's algorithm.'''
-    qc = QuantumComputer(3, 'Lazy')
+    qc = QuantumComputer(3, 'Dense')
 
     # Defines the gates for grover's algorithm
     init_states = [(["H"], [[0]]),
