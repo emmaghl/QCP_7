@@ -2,17 +2,17 @@ import os
 import sys
 
 class PrintingCircuit():
+    '''Handles the printing of the Quantum Register to the terminal/cmd in an ASCII format.'''
 
     def __init__(self, circuit: list[vars], num_qubits: int, SPACE_HOZ: int = 5, SPACE_HOZ_MIDDLE: int = 3):
         '''WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
         Prints the quantum circuit in an ascii format on the terminal.
 
-        SPACE_HOZ determines the space printed between time_steps, and SPACE_HOZ_MIDDLE positions the label of the gate
-        within it's time_step space. These are for controlling the aesthetics of the printed circuit.
+        <b>SPACE_HOZ</b> determines the space printed between time_steps; and <br>
+        <b>SPACE_HOZ_MIDDLE</b> positions the label of the gate within it's time_step space. These are for controlling the aesthetics of the printed circuit.
         '''
         if SPACE_HOZ_MIDDLE >= SPACE_HOZ:
-            raise Exception(f"Error thrown due to {SPACE_HOZ_MIDDLE} >= {SPACE_HOZ}. "
-                            f"Horizontal space between gates must be larger than setting the horizontal middle.")
+            raise Exception(f"Error thrown due to {SPACE_HOZ_MIDDLE} >= {SPACE_HOZ}. Horizontal space between gates must be larger than setting the horizontal middle.")
 
         self.circuit = circuit
         self.num_qubits = num_qubits
@@ -50,7 +50,7 @@ class PrintingCircuit():
 
     def __print_singleGate(self, time_step: list[vars], x: int):
         for i in range(len(time_step[0])): #Loop through all single gates
-            self.__print_at(x*self.__SPACE_HOZ+self.__SPACE_HOZ_MIDDLE, time_step[1][i][0]*2, time_step[0][i][0])
+            self.__print_at(x*self.__SPACE_HOZ+self.__SPACE_HOZ_MIDDLE, time_step[1][i][0]*2, time_step[0][i])
 
     def __connect_nodes(self, x_terminal_pos: int, y_pos: int, target: str, control: str = "\u2022"):
         self.__print_at(x_terminal_pos, y_pos[1]*2, target)

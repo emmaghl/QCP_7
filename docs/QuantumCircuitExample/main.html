@@ -31,7 +31,7 @@ import numpy as np
 
 def glue_circuits(matricies: list[np.ndarray]) -&gt; np.ndarray:
     &#39;&#39;&#39;
-    Glues together circuits from left to right. In terms of matricies, multiply_matricies([a, b, c]), returns c*b*a.
+    Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.
     &#39;&#39;&#39;
     m = np.identity(len(matricies[0]))
     for matrix in np.flip(matricies, axis=0):
@@ -203,14 +203,14 @@ if __name__==&#34;__main__&#34;:
 <span>def <span class="ident">glue_circuits</span></span>(<span>matricies: list) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Glues together circuits from left to right. In terms of matricies, multiply_matricies([a, b, c]), returns c<em>b</em>a.</p></div>
+<div class="desc"><p>Glues together circuits from left to right. In terms of matricies, <code>multiply_matricies([a, b, c])</code>, returns <code>c*b*a</code>.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def glue_circuits(matricies: list[np.ndarray]) -&gt; np.ndarray:
     &#39;&#39;&#39;
-    Glues together circuits from left to right. In terms of matricies, multiply_matricies([a, b, c]), returns c*b*a.
+    Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.
     &#39;&#39;&#39;
     m = np.identity(len(matricies[0]))
     for matrix in np.flip(matricies, axis=0):

@@ -2,13 +2,14 @@ import os
 import sys
 
 class PrintingCircuit():
+    '''Handles the printing of the Quantum Register to the terminal/cmd in an ASCII format.'''
 
     def __init__(self, circuit: list[vars], num_qubits: int, SPACE_HOZ: int = 5, SPACE_HOZ_MIDDLE: int = 3):
         '''WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
         Prints the quantum circuit in an ascii format on the terminal.
 
-        SPACE_HOZ determines the space printed between time_steps, and SPACE_HOZ_MIDDLE positions the label of the gate
-        within it's time_step space. These are for controlling the aesthetics of the printed circuit.
+        <b>SPACE_HOZ</b> determines the space printed between time_steps; and <br>
+        <b>SPACE_HOZ_MIDDLE</b> positions the label of the gate within it's time_step space. These are for controlling the aesthetics of the printed circuit.
         '''
         if SPACE_HOZ_MIDDLE >= SPACE_HOZ:
             raise Exception(f"Error thrown due to {SPACE_HOZ_MIDDLE} >= {SPACE_HOZ}. "

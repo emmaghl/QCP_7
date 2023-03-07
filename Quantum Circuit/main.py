@@ -1,66 +1,80 @@
-from QuantumComputer import Quantum_Computer
+from sparse import Sparse_Quantum_Computer
+#from QuantumComputer import Quantum_Computer
+from QuantumComputerV2 import QuantumComputer, DenseMatrix
 import numpy as np
+np.set_printoptions(linewidth=np.inf, precision=2, suppress=True)
 
-def glue_circuits(matricies: list[np.ndarray]) -> np.ndarray:
-    '''
-    Glues together circuits from left to right. In terms of matricies, multiply_matricies([a, b, c]), returns c*b*a.
-    '''
-    m = np.identity(len(matricies[0]))
+def glue_circuits(matricies: list[DenseMatrix]) -> np.ndarray:
+    ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
+    m = np.identity(len(matricies[0].matrix[0]))
+
     for matrix in np.flip(matricies, axis=0):
-        m = np.matmul(m, matrix)
+        #print(matrix.matrix)
+        m = np.matmul(m, matrix.matrix )
     return m
 
-def example():
-    ''' An example of implementing a 3 qubit system, using dense matricies, and then printing the circuit to the terminal.'''
-    qc = Quantum_Computer(3)
+def glue_lists(*lists) -> list:
+    '''Adds elments from list_2 to list_1.'''
+    big_list = []
+    [[big_list.append(i) for i in list] for list in lists]
+    return big_list
 
-    # Defines toffoli gate
-    toffoli_steps = [
-        (["H"], [[2]]), (["CV"], [[1, 2]]),
-        (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
-        (["CV"], [[1, 2]]), (["CV"], [[1, 2]]), (["CV"], [[1, 2]]),
-        (["H"], [[1]]), (["CV"], [[0, 1]]), (["CV"], [[0, 1]]), (["H"], [[1]]),
-        (["CV"], [[0, 2]]), (["H"], [[2]])
+def CCnot(control_1, control_2, target) -> np.array:
+    gate_built = [
+        (["H"], [[target]]),
+        (["CV"], [[control_2, target]]),
+        (["H"], [[control_2]]),
+        (["CV"], [[control_1, control_2]]),
+        (["CV"], [[control_1, control_2]]),
+        (["H"], [[control_2]]),
+        (["CV"], [[control_2, target]]),
+        (["CV"], [[control_2, target]]),
+        (["CV"], [[control_2, target]]),
+        (["H"], [[control_2]]),
+        (["CV"], [[control_1, control_2]]),
+        (["CV"], [[control_1, control_2]]),
+        (["H"], [[control_2]]),
+        (["CV"], [[control_1, target]]),
+        (["H"], [[target]])
     ]
+    return gate_built
 
-    # An example with an undefined gate G, repeating two hadamard gates (2nd element) and a bunch of others.
-    gates = [(["H"], [[2]]), (["H", "H"], [[2], [1]]), (["CNOT"], [[1, 2]]),
-             (["X"], [[1]]), (["CNOT"], [[1, 0]]), (["CV"], [[2, 1]]), (["CNOT"], [[0, 2]]),
-             (["G"], [[0, 2]])]
-
-    circuits = [
-        qc.Make_Gate_Logic(toffoli_steps, "To"),
-        qc.Gate_Logic(gates),
-        qc.Make_Gate_Logic(toffoli_steps, "To")
-    ]
-    qc.print_circuit()
-
-    print("With the matrix representation:")
-    print(glue_circuits(circuits))
-
-def GroverAlgorithm():
+def GroverAlgorithm_3Qubit():
     '''A function implementing a two qubit version of Grover's algorithm.'''
-    qc = Quantum_Computer(2)
+    qc = QuantumComputer(3, 'Dense')
 
     # Defines the gates for grover's algorithm
-    init_states = [(["H", "H"], [[0], [1]])]
+    init_states = [(["H"], [[0]]),
+                   (["H"], [[1]]),
+                   (["H"], [[2]])]
 
-    oracle = [(["CZ"], [[0, 1]])]
-
-    amplify_amplitude = [
-            (["H", "H"], [[0], [1]]),
-            (["X", "X"], [[0], [1]]),
-            (["CZ"], [[1, 0]]),
-            (["X", "X"], [[0], [1]]),
-            (["H", "H"], [[0], [1]])
-    ]
+    oracle = [(["CZ"], [[0, 2]])]
 
     # Constructs circuit from pieces defined above (will be glued together later to give the complete matrix)
     circuits = [
-        qc.Gate_Logic(init_states),
-        qc.Gate_Logic(oracle),
-        qc.Gate_Logic(amplify_amplitude)
+        qc.gate_logic(init_states),
+        qc.gate_logic(oracle),
+        qc.gate_logic([
+            (["H"], [[0]]),
+            (["H"], [[1]]),
+            (["H"], [[2]]),
+            (["X"], [[0]]),
+            (["X"], [[1]]),
+            (["X"], [[2]]),
+            (["H"], [[2]]),
+        ]),
+        qc.gate_logic(CCnot(0, 1, 2), "T"),
+        qc.gate_logic([
+            (["H"], [[2]]),
+            (["X"], [[0]]),
+            (["X"], [[1]]),
+            (["X"], [[2]]),
+            (["H"], [[0]]),
+            (["H"], [[1]]),
+            (["H"], [[2]])
+        ])
     ]
+
 
     # Prints circuit and matrix.
     qc.print_circuit()
@@ -70,12 +84,13 @@ def GroverAlgorithm():
     glued_circuits = glue_circuits(circuits)
     print("With the matrix representation:")
     print(glued_circuits)
-    print("\nOutput state vector:")
-    print(glued_circuits.dot([1, 0, 0, 0]))
+    print("\nOutput probabilities:")
+    outVec = np.matmul(glued_circuits,[1, 0, 0, 0, 0, 0, 0, 0])
+    print(np.array([100*outVec[i]*np.conjugate(outVec[i]) for i in range(len(outVec))], dtype=np.float32))
 
 def main():
-    #GroverAlgorithm()
-    example()
+    GroverAlgorithm_3Qubit()
+
 
 if __name__=="__main__":
     main()

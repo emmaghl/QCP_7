@@ -1,5 +1,5 @@
 # Quantum Computer - complete version
-
+from PrintingCircuit import PrintingCircuit
 import numpy as np
 import copy
 import time
@@ -42,13 +42,15 @@ class QuantumComputer(Interface):
         self.M1 = self.Matrix('M1')
 
         # produce binary digits for 2 input gate logic
-        self.binary = self.produce_digits()
+        self.binary = self.produce_digits2()
 
         # gate inputs
         self.single_inputs = ["H", "P", "X", "Y", "Z", "M0", "M1"]
         self.matrices = [self.H, self.P, self.X, self.Y, self.Z, self.M0, self.M1]
 
         self.double_inputs = ["CV", "CNOT", "CZ"]
+
+        self.__gate_history = []
 
         # tests
         '''
@@ -97,6 +99,14 @@ class QuantumComputer(Interface):
         for i in range(1, self.N):
             self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])
 
+    def print_circuit(self):
+        '''
+        WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
+            Prints the quantum circuit in an ascii format on the terminal.
+        '''
+        pc = PrintingCircuit(self.__gate_history, self.N)
+        pc.print_circuit_ascii()
+
     def produce_digits(self):
         digits = []
         for i in range(0, 2 ** self.N):
@@ -114,8 +124,8 @@ class QuantumComputer(Interface):
                 else:
                     digit.insert(0, 1)
             digits.append(digit)
-        print(digits)
-        # print(np.flip(digits, axis=1))
+        #print(digits)
+        #print(np.flip(digits, axis=1))
         return digits
 
     def produce_digits2(self):
@@ -135,7 +145,7 @@ class QuantumComputer(Interface):
                 else:
                     digit.append(1)
             digits.append(digit)
-        print(np.flip(digits, axis=1))
+        #print(np.flip(digits, axis=1))
         return digits
 
     def single_gates(self, gate, qnum):
@@ -169,8 +179,14 @@ class QuantumComputer(Interface):
         if gate[0] == "CZ":
             return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
 
-    def gate_logic(self, inputs):
+    def gate_logic(self, inputs, add_gate_name: str = ""):
         step_n = len(inputs)
+
+        # Add the gates to the gate history for printing later.
+        if add_gate_name == "": # If not defining a custom name
+            [self.__gate_history.append(i) for i in inputs]
+        else: # If defining a gate with a custom Name
+            self.__gate_history.append(([add_gate_name], [[0, self.N-1]]))
 
         M = []
 
@@ -182,6 +198,7 @@ class QuantumComputer(Interface):
                 if self.double_inputs[j] in inputs[i][0]:
                     M.append(self.double_gates(inputs[i][0], inputs[i][1]))
 
+        M = np.flip(M, axis=0)
         m = M[0]
         for i in range(1, len(M)):
             m = self.Matrix.matrix_multiply(m, M[i])
@@ -197,7 +214,6 @@ class QuantumComputer(Interface):
             matrix = self.single_gates(["M1"], [[qnum]])
 
         QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
-        print(QP)
 
         x = []
         for i in range(0, 1000):
@@ -288,8 +304,7 @@ class DenseMatrix(MatrixFrame):
             self.matrix = self.cz(args[0], args[1], args[2])
 
         if Type == 'M0':
-            self.matrix
-            np.array([[1, 0], [0, 0]])
+            self.matrix = np.array([[1, 0], [0, 0]])
         if Type == 'M1':
             self.matrix = np.array([[0, 0], [0, 1]])
 
@@ -385,7 +400,7 @@ class DenseMatrix(MatrixFrame):
         N = int(np.log(len(index)) / np.log(2))
         basis = self.Basis(N)
 
-        for i in range(0, N):
+        for i in range(0, 2**N):
             if index[i] == 1:
                 new_row = 1j * basis[i]
             else:
@@ -402,11 +417,10 @@ class DenseMatrix(MatrixFrame):
         cz = []
 
         index = super().CZ_logic(digits, c, t)
-        print(index)
         N = int(np.log(len(index)) / np.log(2))
         basis = self.Basis(N)
 
-        for i in range(0, N):
+        for i in range(0, 2**N):
             if index[i] == 1:
                 new_row = -1 * basis[i]
             else:
@@ -482,7 +496,7 @@ class SparseMatrix(MatrixFrame):
         return matmul
 
     def output(self, inputs):
-        return matrix_multiply(self.matrix, inputs)
+        return self.matrix_multiply(self.matrix, inputs)
 
 
 class LazyMatrix(MatrixFrame):
