@@ -51,6 +51,7 @@ class QuantumComputer(Interface):
         self.double_inputs = ["CV", "CNOT", "CZ"]
 
         self.__gate_history = []
+        self.__gate_matrix_history = []
 
         # tests
         '''
@@ -145,7 +146,6 @@ class QuantumComputer(Interface):
                 else:
                     digit.append(1)
             digits.append(digit)
-        #print(np.flip(digits, axis=1))
         return digits
 
     def single_gates(self, gate, qnum):
@@ -225,8 +225,24 @@ class QuantumComputer(Interface):
         # plt.hist(x)
         # plt.show()
 
-    def measure_all(self):
-        pass
+    def glue_circuits(self, matricies) -> np.ndarray:
+        ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
+        m = np.identity(2** self.N)
+
+        for matrix in np.flip(matricies, axis=0):
+            m = np.matmul(m, matrix.matrix)
+        return m
+
+    def measure_all(self, glued_circuit):
+        temp_vec = np.zeros((2**self.N))
+        temp_vec[0] = 1
+        outVec = np.matmul(glued_circuit,temp_vec)
+        props = {}
+        for i, basis in enumerate(self.binary):
+            string_basis = ''.join([str(j) for j in basis])
+            props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
+
+        return props
 
 
 class MatrixFrame(ABC):
@@ -243,6 +259,15 @@ class MatrixFrame(ABC):
                 num += 2 ** (N - j - 1) * digits[i][j]
             numbers.append(num)
         return numbers
+
+    def reverse_digits(self, d):
+        temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
+        temp = np.flip(temp, axis=0)
+        unpack = []
+        for i in temp:
+            for j in i:
+                unpack.append(j)
+        return unpack
 
     def CNOT_logic(self, digits, c, t):
         N = int(np.log(len(digits)) / np.log(2))
@@ -309,7 +334,7 @@ class DenseMatrix(MatrixFrame):
             self.matrix = np.array([[0, 0], [0, 1]])
 
     @classmethod
-    def tensor_prod(cls, M1, M2):
+    def tensor_prod(cls, M2, M1):
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
         else:
