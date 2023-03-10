@@ -47,35 +47,6 @@ def CCCnot(control_1, control_2, control_3, target, auxilary) -> np.array:
         CCnot(control_1, control_3, auxilary)
     )
 
-def test_CCCnot():
-    qc = QuantumComputer(3, 'Dense')
-
-    # Defines the gates for grover's algorithm
-    init_states = [
-        #(["X"], [[2]]),
-        (["CNOT"], [[1, 2]])
-        #(["CZ"], [[0, 1]])
-    ]
-
-    circuits = [
-        qc.gate_logic(init_states),
-        #qc.gate_logic(CCnot(0, 1, 2))
-    ]
-
-    qc.print_circuit()
-
-    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
-    # to amplify the |11> states.
-    glued_circuits = glue_circuits(circuits)
-    print("With the matrix representation:")
-    print(glued_circuits)
-    print("\nOutput probabilities:")
-    probs = qc.measure_all(glued_circuits)
-    print(probs)
-
-    plt.bar(probs.keys(), probs.values(), 1)
-    plt.show()
-
 def GroverAlgorithm_Mini_Suduko():
     num_qubits = 6
     qc = QuantumComputer(num_qubits)
@@ -156,6 +127,36 @@ def GroverAlgorithm_Mini_Suduko():
     outVec = glued_circuits.dot(startVec)
     print(np.array([100*outVec[i]*np.conjugate(outVec[i]) for i in range(len(outVec))], dtype=np.float32))
 
+
+def test_CCCnot():
+    qc = QuantumComputer(3, 'Dense')
+
+    # Defines the gates for grover's algorithm
+    init_states = [
+        (["X"], [[0]]),
+        (["CNOT"], [[0, 1]])
+        #(["CZ"], [[0, 1]])
+    ]
+
+    circuits = [
+        qc.gate_logic(init_states),
+        #qc.gate_logic(CCnot(0, 1, 2))
+    ]
+
+    qc.print_circuit()
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits = glue_circuits(circuits)
+    print("With the matrix representation:")
+    print(glued_circuits)
+    print("\nOutput probabilities:")
+    probs = qc.measure_all(glued_circuits)
+    print(probs)
+
+    plt.bar(probs.keys(), probs.values(), 1)
+    plt.show()
+
 def GroverAlgorithm_3Qubit():
     '''A function implementing a two qubit version of Grover's algorithm.'''
     qc = QuantumComputer(3, 'Dense')
@@ -209,9 +210,90 @@ def GroverAlgorithm_3Qubit():
     plt.bar(probs.keys(), probs.values(), 1)
     plt.show()
 
+def emma_test_one():
+    qc = QuantumComputer(3, 'Dense')
+
+    # Defines the gates for grover's algorithm
+    init_states = [
+        (["X"], [[0]]),
+        (["CNOT"], [[0, 1]])
+    ]
+
+    circuits = [
+        qc.gate_logic(init_states),
+    ]
+
+    qc.print_circuit()
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits = glue_circuits(circuits)
+    print("With the matrix representation:")
+    print(glued_circuits)
+    print("\nOutput probabilities:")
+    probs = qc.measure_all(glued_circuits)
+    print(probs)
+
+    plt.bar(probs.keys(), probs.values(), 1)
+    plt.show()
+
+def emma_test_two():
+    qc = QuantumComputer(3, 'Dense')
+
+    # Defines the gates for grover's algorithm
+    init_states = [
+        (["CNOT"], [[0, 1]])
+    ]
+
+    circuits = [
+        qc.gate_logic(init_states),
+    ]
+
+    qc.print_circuit()
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits = glue_circuits(circuits)
+    print("With the matrix representation:")
+    print(glued_circuits)
+    print("\nOutput probabilities:")
+    probs = qc.measure_all(glued_circuits)
+    print(probs)
+
+    plt.bar(probs.keys(), probs.values(), 1)
+    plt.show()
+
+def emma_test_three():
+    qc = QuantumComputer(3, 'Dense')
+
+    # Defines the gates for grover's algorithm
+    init_states = [
+        (["X"], [[1]]),
+        (["X"], [[2]])
+    ]
+
+    circuits = [
+        qc.gate_logic(init_states),
+    ]
+
+    qc.print_circuit()
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits = glue_circuits(circuits)
+    print("With the matrix representation:")
+    print(glued_circuits)
+    print("\nOutput probabilities:")
+    probs = qc.measure_all(glued_circuits)
+    print(probs)
+
+    plt.bar(probs.keys(), probs.values(), 1)
+    plt.show()
+
 def main():
-    GroverAlgorithm_3Qubit()
-    #test_CCCnot()
+    #emma_test_one()
+    #emma_test_two()
+    emma_test_three()
 
 
 if __name__=="__main__":
