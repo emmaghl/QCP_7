@@ -42,7 +42,7 @@ class QuantumComputer(Interface):
         self.M1 = self.Matrix('M1')
 
         # produce binary digits for 2 input gate logic
-        self.binary = self.produce_digits2()
+        self.binary = self.produce_digits()
 
         # gate inputs
         self.single_inputs = ["H", "P", "X", "Y", "Z", "M0", "M1"]
@@ -107,12 +107,12 @@ class QuantumComputer(Interface):
         pc = PrintingCircuit(self.__gate_history, self.N)
         pc.print_circuit_ascii()
 
-    def produce_digits(self):
+    def produce_digits(self):  # this is the flipped basis, working on
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
             if i < (2 ** self.N) / 2:
-                digit.insert(0, 0)
+                digit.append(0)
             else:
                 digit.insert(0, 1)
             for j in range(1, self.N):
@@ -120,12 +120,11 @@ class QuantumComputer(Interface):
                 for k in range(0, len(digit)):
                     x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
                 if x < (2 ** self.N) / (2 ** (j + 1)):
-                    digit.insert(0, 0)
+                    digit.append(0)
                 else:
-                    digit.insert(0, 1)
+                    digit.append(1)
             digits.append(digit)
-        #print(digits)
-        #print(np.flip(digits, axis=1))
+        digits = np.flip(digits, axis=1)
         return digits
 
     def produce_digits2(self):
@@ -233,7 +232,7 @@ class QuantumComputer(Interface):
         outVec = np.matmul(glued_circuit,temp_vec)
         props = {}
         for i, basis in enumerate(self.binary):
-            string_basis = ''.join([str(j) for j in basis])
+            string_basis = ''.join([str(j) for j in basis[::-1]])
             props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
 
         return props

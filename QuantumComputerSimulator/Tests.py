@@ -69,7 +69,7 @@ class Test():
         probs = qc.get_probabilities(glued_circuits)
         assert (probs['110'] == 1), f"Incorrect basis orientation of basis! It should be that |110> = 1, instead it's {probs['110']}. Most likely that |011> is measured instead: |001> = {probs['011']}"
 
-    def catch_incorrect_user_input(self):
+    def catch_incorrect_user_input_DENSE(self):
         '''Input an incorrect format for the matrix'''
         qc = QuantumComputer(2, "Dense")
         try:
@@ -79,7 +79,8 @@ class Test():
         else:
             assert (False), "Didn't catch user input error`1"
 
-    def CNOT_gate_and_Tensor_Product(self):
+    def CNOT_gate_and_Tensor_Product_DENSE(self):
+        '''Checks if the ordering of the tensor product is consistent with CNOT'''
         qc = QuantumComputer(3, 'Dense')
 
         init_states = [
@@ -96,4 +97,28 @@ class Test():
         glued_circuits = self.__glue_circuits(circuits)
         probs = qc.get_probabilities(glued_circuits)
 
-        assert (probs['011'] == 1), "CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit."
+        assert (probs['011'] == 1), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, |011> = {probs['011']}"
+
+    def order_of_tensor_product(self):
+        '''Checks the ordering of tensor product with two single gates.'''
+        qc = QuantumComputer(2, 'Dense')
+
+        init_states = [
+            (["X"], [[1]]),
+            (["Y"], [[0]])
+        ]
+
+        circuits = [
+            qc.gate_logic(init_states),
+        ]
+
+        glued_circuits = self.__glue_circuits(circuits)
+
+        matrix_to_compare = np.array([
+            [0, 0, 0, 0-1j],
+            [0, 0, 0+1j, 0],
+            [0, 0-1j, 0, 0],
+            [0+1j, 0, 0, 0]
+        ])
+
+        assert (np.all(glued_circuits == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{glued_circuits}"

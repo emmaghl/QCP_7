@@ -12,7 +12,7 @@ class MatrixFrame(ABC):
         for i in range(0, 2 ** N):
             num = 0
             for j in range(0, N):
-                num += 2 ** (N - j - 1) * digits[i][j]
+                num += 2 ** j * digits[i][j]
             numbers.append(num)
         return numbers
 
@@ -25,14 +25,15 @@ class MatrixFrame(ABC):
                 unpack.append(j)
         return unpack
 
-    def CNOT_logic(self, digits, c, t):
-        N = int(np.log(len(digits)) / np.log(2))
+    def CNOT_logic(self, digits_in, c, t):
+        N = int(np.log(len(digits_in)) / np.log(2))
 
+        digits_out = digits_in
         for i in range(0, 2 ** N):
-            if digits[i][c] == 1:
-                digits[i][t] = 1 - digits[i][t] % 2
+            if digits_in[i][c] == 1:
+                digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-        index = self.recog_digits(digits)
+        index = self.recog_digits(digits_out)
 
         return index
 

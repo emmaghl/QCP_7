@@ -16,7 +16,7 @@ class DenseMatrix(MatrixFrame):
         if Type == 'X':
             self.matrix = np.array([[0, 1], [1, 0]])
         if Type == 'Y':
-            self.matrix = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex)
+            self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == 'Z':
             self.matrix = np.array([[1, 0], [0, -1]])
 
