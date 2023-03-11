@@ -211,12 +211,12 @@ def GroverAlgorithm_3Qubit():
     plt.show()
 
 def emma_test_one():
-    qc = QuantumComputer(3, 'Dense')
+    qc = QuantumComputer(4, 'Dense')
 
     # Defines the gates for grover's algorithm
     init_states = [
-        (["X"], [[0]]),
-        (["CNOT"], [[0, 1]])
+        (["X"], [[2]]),
+        (["CNOT"], [[2, 1]])
     ]
 
     circuits = [
@@ -229,13 +229,9 @@ def emma_test_one():
     # to amplify the |11> states.
     glued_circuits = glue_circuits(circuits)
     print("With the matrix representation:")
-    print(glued_circuits)
     print("\nOutput probabilities:")
     probs = qc.measure_all(glued_circuits)
     print(probs)
-    #
-    plt.bar(probs.keys(), probs.values(), 1)
-    plt.show()
 
 def emma_test_two():
     qc = QuantumComputer(3, 'Dense')
@@ -287,9 +283,6 @@ def emma_test_three():
     print("\nOutput probabilities:")
     probs = qc.measure_all(glued_circuits)
     print(probs)
-
-    plt.bar(probs.keys(), probs.values(), 1)
-    plt.show()
 
 def emma_test_four():
 
@@ -351,8 +344,8 @@ def emma_test_five():
 
 def main():
     emma_test_one()
-    # emma_test_two()
-    # emma_test_three()
+    #emma_test_two()
+    #emma_test_three()
     # emma_test_four()
     # emma_test_five()
 

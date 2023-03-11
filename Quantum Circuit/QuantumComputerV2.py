@@ -240,7 +240,7 @@ class QuantumComputer(Interface):
         outVec = np.matmul(glued_circuit,temp_vec)
         props = {}
         for i, basis in enumerate(self.binary):
-            string_basis = ''.join([str(j) for j in basis])
+            string_basis = ''.join([str(j) for j in basis[::-1]])
             props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
 
         return props
@@ -357,7 +357,7 @@ class DenseMatrix(MatrixFrame):
         if Type == 'X':
             self.matrix = np.array([[0, 1], [1, 0]])
         if Type == 'Y':
-            self.matrix = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex)
+            self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == 'Z':
             self.matrix = np.array([[1, 0], [0, -1]])
 
