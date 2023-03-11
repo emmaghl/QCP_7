@@ -40,8 +40,13 @@ class Interface(ABC):
 
 class QuantumComputer(Interface):
 
-    def __init__(self, qubits, matrix_type=&#34;Dense&#34;):
+    def __init__(self, qubits: int, matrix_type:str = &#34;Dense&#34;):
+        &#39;&#39;&#39;Simulates quantum circuits via Dense, Sparse and Lazy methods.&#39;&#39;&#39;
+        check.check_type(qubits, int)
         self.N = qubits
+
+        check.check_type(matrix_type, str)
+        check.check_in_list(matrix_type, [&#34;Dense&#34;, &#34;Sparse&#34;, &#34;Lazy&#34;])
 
         if matrix_type == &#34;Dense&#34;:
             self.Matrix = DenseMatrix
@@ -67,7 +72,7 @@ class QuantumComputer(Interface):
         self.M1 = self.Matrix(&#39;M1&#39;)
 
         # produce binary digits for 2 input gate logic
-        self.binary = self.produce_digits2()
+        self.binary = self.produce_digits()
 
         # gate inputs
         self.single_inputs = [&#34;H&#34;, &#34;P&#34;, &#34;X&#34;, &#34;Y&#34;, &#34;Z&#34;, &#34;M0&#34;, &#34;M1&#34;]
@@ -132,12 +137,12 @@ class QuantumComputer(Interface):
         pc = PrintingCircuit(self.__gate_history, self.N)
         pc.print_circuit_ascii()
 
-    def produce_digits(self):
+    def produce_digits(self):  # this is the flipped basis, working on
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
             if i &lt; (2 ** self.N) / 2:
-                digit.insert(0, 0)
+                digit.append(0)
             else:
                 digit.insert(0, 1)
             for j in range(1, self.N):
@@ -145,12 +150,11 @@ class QuantumComputer(Interface):
                 for k in range(0, len(digit)):
                     x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
                 if x &lt; (2 ** self.N) / (2 ** (j + 1)):
-                    digit.insert(0, 0)
+                    digit.append(0)
                 else:
-                    digit.insert(0, 1)
+                    digit.append(1)
             digits.append(digit)
-        #print(digits)
-        #print(np.flip(digits, axis=1))
+        digits = np.flip(digits, axis=1)
         return digits
 
     def produce_digits2(self):
@@ -204,7 +208,8 @@ class QuantumComputer(Interface):
             return self.Matrix(&#34;CZ&#34;, self.binary, qnum[0][0], qnum[0][1])
 
     def gate_logic(self, inputs, add_gate_name: str = &#34;&#34;):
-
+        &#39;&#39;&#39;Add gates to the circuit in time step tuples.&#39;&#39;&#39;
+        check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
 
         step_n = len(inputs)
@@ -252,13 +257,22 @@ class QuantumComputer(Interface):
         # plt.hist(x)
         # plt.show()
 
-    def get_probabilities(self, glued_circuit, input_vector = np.nan):
-        temp_vec = np.zeros((2**self.N))
+    def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
+        num_qubits = 2**self.N
+        check.check_type(glued_circuit, np.ndarray)
+        check.check_array_shape(glued_circuit, (num_qubits, num_qubits))
+
+        temp_vec = np.zeros((num_qubits))
         temp_vec[0] = 1
+        if not np.isnan(input_vector):
+            check.check_type(input_vector, np.ndarray)
+            check.check_array_shape(input_vector, (num_qubits))
+            temp_vec = input_vector
+
         outVec = np.matmul(glued_circuit,temp_vec)
         props = {}
         for i, basis in enumerate(self.binary):
-            string_basis = &#39;&#39;.join([str(j) for j in basis])
+            string_basis = &#39;&#39;.join([str(j) for j in basis[::-1]])
             props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
 
         return props
@@ -275,9 +289,8 @@ class QuantumComputer(Interface):
                 check.check_in_list(gate, self.single_inputs + self.double_inputs)
             for gate_positions in time_step[1]:
                 check.check_type(gate_positions, list)
-
-
-
+                for numbers in gate_positions:
+                    check.check_type(numbers, int)
 
 
 
@@ -354,19 +367,25 @@ inheritance.</p></div>
 </dd>
 <dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer"><code class="flex name class">
 <span>class <span class="ident">QuantumComputer</span></span>
-<span>(</span><span>qubits, matrix_type='Dense')</span>
+<span>(</span><span>qubits: int, matrix_type: str = 'Dense')</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+inheritance.</p>
+<p>Simulates quantum circuits via Dense, Sparse and Lazy methods.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">class QuantumComputer(Interface):
 
-    def __init__(self, qubits, matrix_type=&#34;Dense&#34;):
+    def __init__(self, qubits: int, matrix_type:str = &#34;Dense&#34;):
+        &#39;&#39;&#39;Simulates quantum circuits via Dense, Sparse and Lazy methods.&#39;&#39;&#39;
+        check.check_type(qubits, int)
         self.N = qubits
+
+        check.check_type(matrix_type, str)
+        check.check_in_list(matrix_type, [&#34;Dense&#34;, &#34;Sparse&#34;, &#34;Lazy&#34;])
 
         if matrix_type == &#34;Dense&#34;:
             self.Matrix = DenseMatrix
@@ -392,7 +411,7 @@ inheritance.</p></div>
         self.M1 = self.Matrix(&#39;M1&#39;)
 
         # produce binary digits for 2 input gate logic
-        self.binary = self.produce_digits2()
+        self.binary = self.produce_digits()
 
         # gate inputs
         self.single_inputs = [&#34;H&#34;, &#34;P&#34;, &#34;X&#34;, &#34;Y&#34;, &#34;Z&#34;, &#34;M0&#34;, &#34;M1&#34;]
@@ -457,12 +476,12 @@ inheritance.</p></div>
         pc = PrintingCircuit(self.__gate_history, self.N)
         pc.print_circuit_ascii()
 
-    def produce_digits(self):
+    def produce_digits(self):  # this is the flipped basis, working on
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
             if i &lt; (2 ** self.N) / 2:
-                digit.insert(0, 0)
+                digit.append(0)
             else:
                 digit.insert(0, 1)
             for j in range(1, self.N):
@@ -470,12 +489,11 @@ inheritance.</p></div>
                 for k in range(0, len(digit)):
                     x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
                 if x &lt; (2 ** self.N) / (2 ** (j + 1)):
-                    digit.insert(0, 0)
+                    digit.append(0)
                 else:
-                    digit.insert(0, 1)
+                    digit.append(1)
             digits.append(digit)
-        #print(digits)
-        #print(np.flip(digits, axis=1))
+        digits = np.flip(digits, axis=1)
         return digits
 
     def produce_digits2(self):
@@ -529,7 +547,8 @@ inheritance.</p></div>
             return self.Matrix(&#34;CZ&#34;, self.binary, qnum[0][0], qnum[0][1])
 
     def gate_logic(self, inputs, add_gate_name: str = &#34;&#34;):
-
+        &#39;&#39;&#39;Add gates to the circuit in time step tuples.&#39;&#39;&#39;
+        check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
 
         step_n = len(inputs)
@@ -577,13 +596,22 @@ inheritance.</p></div>
         # plt.hist(x)
         # plt.show()
 
-    def get_probabilities(self, glued_circuit, input_vector = np.nan):
-        temp_vec = np.zeros((2**self.N))
+    def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
+        num_qubits = 2**self.N
+        check.check_type(glued_circuit, np.ndarray)
+        check.check_array_shape(glued_circuit, (num_qubits, num_qubits))
+
+        temp_vec = np.zeros((num_qubits))
         temp_vec[0] = 1
+        if not np.isnan(input_vector):
+            check.check_type(input_vector, np.ndarray)
+            check.check_array_shape(input_vector, (num_qubits))
+            temp_vec = input_vector
+
         outVec = np.matmul(glued_circuit,temp_vec)
         props = {}
         for i, basis in enumerate(self.binary):
-            string_basis = &#39;&#39;.join([str(j) for j in basis])
+            string_basis = &#39;&#39;.join([str(j) for j in basis[::-1]])
             props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
 
         return props
@@ -599,7 +627,9 @@ inheritance.</p></div>
                 check.check_type(gate, str)
                 check.check_in_list(gate, self.single_inputs + self.double_inputs)
             for gate_positions in time_step[1]:
-                check.check_type(gate_positions, list)</code></pre>
+                check.check_type(gate_positions, list)
+                for numbers in gate_positions:
+                    check.check_type(numbers, int)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -658,13 +688,14 @@ inheritance.</p></div>
 <span>def <span class="ident">gate_logic</span></span>(<span>self, inputs, add_gate_name: str = '')</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Add gates to the circuit in time step tuples.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def gate_logic(self, inputs, add_gate_name: str = &#34;&#34;):
-
+    &#39;&#39;&#39;Add gates to the circuit in time step tuples.&#39;&#39;&#39;
+    check.check_type(add_gate_name, str)
     self.__validate_gate_logic_inputs(inputs)
 
     step_n = len(inputs)
@@ -694,7 +725,7 @@ inheritance.</p></div>
 </details>
 </dd>
 <dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.get_probabilities"><code class="name flex">
-<span>def <span class="ident">get_probabilities</span></span>(<span>self, glued_circuit, input_vector=nan)</span>
+<span>def <span class="ident">get_probabilities</span></span>(<span>self, glued_circuit: numpy.ndarray, input_vector: numpy.ndarray = nan)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -702,13 +733,22 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def get_probabilities(self, glued_circuit, input_vector = np.nan):
-    temp_vec = np.zeros((2**self.N))
+<pre><code class="python">def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
+    num_qubits = 2**self.N
+    check.check_type(glued_circuit, np.ndarray)
+    check.check_array_shape(glued_circuit, (num_qubits, num_qubits))
+
+    temp_vec = np.zeros((num_qubits))
     temp_vec[0] = 1
+    if not np.isnan(input_vector):
+        check.check_type(input_vector, np.ndarray)
+        check.check_array_shape(input_vector, (num_qubits))
+        temp_vec = input_vector
+
     outVec = np.matmul(glued_circuit,temp_vec)
     props = {}
     for i, basis in enumerate(self.binary):
-        string_basis = &#39;&#39;.join([str(j) for j in basis])
+        string_basis = &#39;&#39;.join([str(j) for j in basis[::-1]])
         props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
 
     return props</code></pre>
@@ -772,12 +812,12 @@ Prints the quantum circuit in an ascii format on the terminal.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def produce_digits(self):
+<pre><code class="python">def produce_digits(self):  # this is the flipped basis, working on
     digits = []
     for i in range(0, 2 ** self.N):
         digit = []
         if i &lt; (2 ** self.N) / 2:
-            digit.insert(0, 0)
+            digit.append(0)
         else:
             digit.insert(0, 1)
         for j in range(1, self.N):
@@ -785,12 +825,11 @@ Prints the quantum circuit in an ascii format on the terminal.</p></div>
             for k in range(0, len(digit)):
                 x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
             if x &lt; (2 ** self.N) / (2 ** (j + 1)):
-                digit.insert(0, 0)
+                digit.append(0)
             else:
-                digit.insert(0, 1)
+                digit.append(1)
         digits.append(digit)
-    #print(digits)
-    #print(np.flip(digits, axis=1))
+    digits = np.flip(digits, axis=1)
     return digits</code></pre>
 </details>
 </dd>

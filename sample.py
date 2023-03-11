@@ -212,6 +212,7 @@ if __name__=="__main__":
             GroverAlgorithm_3Qubit(show_plots=False)
         elif user_input == '2':
             GroverAlgorithm_Mini_Suduko(show_plots=False)
+
     elif '--test' in sys.argv:
         print("Running tests...")
         Test()

@@ -40,7 +40,7 @@ class MatrixFrame(ABC):
         for i in range(0, 2 ** N):
             num = 0
             for j in range(0, N):
-                num += 2 ** (N - j - 1) * digits[i][j]
+                num += 2 ** j * digits[i][j]
             numbers.append(num)
         return numbers
 
@@ -53,14 +53,15 @@ class MatrixFrame(ABC):
                 unpack.append(j)
         return unpack
 
-    def CNOT_logic(self, digits, c, t):
-        N = int(np.log(len(digits)) / np.log(2))
+    def CNOT_logic(self, digits_in, c, t):
+        N = int(np.log(len(digits_in)) / np.log(2))
 
+        digits_out = digits_in
         for i in range(0, 2 ** N):
-            if digits[i][c] == 1:
-                digits[i][t] = 1 - digits[i][t] % 2
+            if digits_in[i][c] == 1:
+                digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-        index = self.recog_digits(digits)
+        index = self.recog_digits(digits_out)
 
         return index
 
@@ -116,7 +117,7 @@ inheritance.</p></div>
         for i in range(0, 2 ** N):
             num = 0
             for j in range(0, N):
-                num += 2 ** (N - j - 1) * digits[i][j]
+                num += 2 ** j * digits[i][j]
             numbers.append(num)
         return numbers
 
@@ -129,14 +130,15 @@ inheritance.</p></div>
                 unpack.append(j)
         return unpack
 
-    def CNOT_logic(self, digits, c, t):
-        N = int(np.log(len(digits)) / np.log(2))
+    def CNOT_logic(self, digits_in, c, t):
+        N = int(np.log(len(digits_in)) / np.log(2))
 
+        digits_out = digits_in
         for i in range(0, 2 ** N):
-            if digits[i][c] == 1:
-                digits[i][t] = 1 - digits[i][t] % 2
+            if digits_in[i][c] == 1:
+                digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-        index = self.recog_digits(digits)
+        index = self.recog_digits(digits_out)
 
         return index
 
@@ -175,7 +177,7 @@ inheritance.</p></div>
 <h3>Methods</h3>
 <dl>
 <dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic"><code class="name flex">
-<span>def <span class="ident">CNOT_logic</span></span>(<span>self, digits, c, t)</span>
+<span>def <span class="ident">CNOT_logic</span></span>(<span>self, digits_in, c, t)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -183,14 +185,15 @@ inheritance.</p></div>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def CNOT_logic(self, digits, c, t):
-    N = int(np.log(len(digits)) / np.log(2))
+<pre><code class="python">def CNOT_logic(self, digits_in, c, t):
+    N = int(np.log(len(digits_in)) / np.log(2))
 
+    digits_out = digits_in
     for i in range(0, 2 ** N):
-        if digits[i][c] == 1:
-            digits[i][t] = 1 - digits[i][t] % 2
+        if digits_in[i][c] == 1:
+            digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-    index = self.recog_digits(digits)
+    index = self.recog_digits(digits_out)
 
     return index</code></pre>
 </details>
@@ -257,7 +260,7 @@ def matrix_multiply(self, M1, M2):
     for i in range(0, 2 ** N):
         num = 0
         for j in range(0, N):
-            num += 2 ** (N - j - 1) * digits[i][j]
+            num += 2 ** j * digits[i][j]
         numbers.append(num)
     return numbers</code></pre>
 </details>

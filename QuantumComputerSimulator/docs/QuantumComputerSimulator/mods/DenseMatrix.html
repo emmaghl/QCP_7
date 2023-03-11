@@ -44,7 +44,7 @@ class DenseMatrix(MatrixFrame):
         if Type == &#39;X&#39;:
             self.matrix = np.array([[0, 1], [1, 0]])
         if Type == &#39;Y&#39;:
-            self.matrix = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex)
+            self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == &#39;Z&#39;:
             self.matrix = np.array([[1, 0], [0, -1]])
 
@@ -247,7 +247,7 @@ inheritance.</p></div>
         if Type == &#39;X&#39;:
             self.matrix = np.array([[0, 1], [1, 0]])
         if Type == &#39;Y&#39;:
-            self.matrix = np.array([[0, 0 + 1j], [0 - 1j, 0]], dtype=complex)
+            self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == &#39;Z&#39;:
             self.matrix = np.array([[1, 0], [0, -1]])
 
