@@ -105,7 +105,26 @@ class Test():
         except Exception:
             pass
         else:
-            assert (False), &#34;Didn&#39;t catch user input error`1&#34;</code></pre>
+            assert (False), &#34;Didn&#39;t catch user input error`1&#34;
+
+    def CNOT_gate_and_Tensor_Product(self):
+        qc = QuantumComputer(3, &#39;Dense&#39;)
+
+        init_states = [
+            ([&#34;X&#34;], [[0]]),
+            ([&#34;CNOT&#34;], [[0, 1]])
+        ]
+
+        circuits = [
+            qc.gate_logic(init_states),
+        ]
+
+        # Prints the matrix representation of the circuits, and the output vector when the |00&gt; is sent in. Should be able
+        # to amplify the |11&gt; states.
+        glued_circuits = self.__glue_circuits(circuits)
+        probs = qc.get_probabilities(glued_circuits)
+
+        assert (probs[&#39;011&#39;] == 1), &#34;CNOT gate isn&#39;t working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit.&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -202,10 +221,58 @@ which will verify that the circuit should be operating as expected. Functions we
         except Exception:
             pass
         else:
-            assert (False), &#34;Didn&#39;t catch user input error`1&#34;</code></pre>
+            assert (False), &#34;Didn&#39;t catch user input error`1&#34;
+
+    def CNOT_gate_and_Tensor_Product(self):
+        qc = QuantumComputer(3, &#39;Dense&#39;)
+
+        init_states = [
+            ([&#34;X&#34;], [[0]]),
+            ([&#34;CNOT&#34;], [[0, 1]])
+        ]
+
+        circuits = [
+            qc.gate_logic(init_states),
+        ]
+
+        # Prints the matrix representation of the circuits, and the output vector when the |00&gt; is sent in. Should be able
+        # to amplify the |11&gt; states.
+        glued_circuits = self.__glue_circuits(circuits)
+        probs = qc.get_probabilities(glued_circuits)
+
+        assert (probs[&#39;011&#39;] == 1), &#34;CNOT gate isn&#39;t working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit.&#34;</code></pre>
 </details>
 <h3>Methods</h3>
 <dl>
+<dt id="QuantumComputerSimulator.Tests.Test.CNOT_gate_and_Tensor_Product"><code class="name flex">
+<span>def <span class="ident">CNOT_gate_and_Tensor_Product</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def CNOT_gate_and_Tensor_Product(self):
+    qc = QuantumComputer(3, &#39;Dense&#39;)
+
+    init_states = [
+        ([&#34;X&#34;], [[0]]),
+        ([&#34;CNOT&#34;], [[0, 1]])
+    ]
+
+    circuits = [
+        qc.gate_logic(init_states),
+    ]
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00&gt; is sent in. Should be able
+    # to amplify the |11&gt; states.
+    glued_circuits = self.__glue_circuits(circuits)
+    probs = qc.get_probabilities(glued_circuits)
+
+    assert (probs[&#39;011&#39;] == 1), &#34;CNOT gate isn&#39;t working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit.&#34;</code></pre>
+</details>
+</dd>
 <dt id="QuantumComputerSimulator.Tests.Test.catch_incorrect_user_input"><code class="name flex">
 <span>def <span class="ident">catch_incorrect_user_input</span></span>(<span>self)</span>
 </code></dt>
@@ -304,6 +371,7 @@ which will verify that the circuit should be operating as expected. Functions we
 <li>
 <h4><code><a title="QuantumComputerSimulator.Tests.Test" href="#QuantumComputerSimulator.Tests.Test">Test</a></code></h4>
 <ul class="">
+<li><code><a title="QuantumComputerSimulator.Tests.Test.CNOT_gate_and_Tensor_Product" href="#QuantumComputerSimulator.Tests.Test.CNOT_gate_and_Tensor_Product">CNOT_gate_and_Tensor_Product</a></code></li>
 <li><code><a title="QuantumComputerSimulator.Tests.Test.catch_incorrect_user_input" href="#QuantumComputerSimulator.Tests.Test.catch_incorrect_user_input">catch_incorrect_user_input</a></code></li>
 <li><code><a title="QuantumComputerSimulator.Tests.Test.correct_basis_Dense" href="#QuantumComputerSimulator.Tests.Test.correct_basis_Dense">correct_basis_Dense</a></code></li>
 <li><code><a title="QuantumComputerSimulator.Tests.Test.matrix_multiply_Dense" href="#QuantumComputerSimulator.Tests.Test.matrix_multiply_Dense">matrix_multiply_Dense</a></code></li>
