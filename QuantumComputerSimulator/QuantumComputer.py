@@ -14,8 +14,10 @@ class QuantumComputer(Interface):
 
     def __init__(self, qubits: int, matrix_type:str = "Dense"):
         '''Simulates quantum circuits via Dense, Sparse and Lazy methods.'''
+        check.check_type(qubits, int)
         self.N = qubits
 
+        check.check_type(matrix_type, str)
         check.check_in_list(matrix_type, ["Dense", "Sparse", "Lazy"])
 
         if matrix_type == "Dense":
@@ -178,7 +180,8 @@ class QuantumComputer(Interface):
             return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
 
     def gate_logic(self, inputs, add_gate_name: str = ""):
-
+        '''Add gates to the circuit in time step tuples.'''
+        check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
 
         step_n = len(inputs)
@@ -226,9 +229,18 @@ class QuantumComputer(Interface):
         # plt.hist(x)
         # plt.show()
 
-    def get_probabilities(self, glued_circuit, input_vector = np.nan):
-        temp_vec = np.zeros((2**self.N))
+    def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
+        num_qubits = 2**self.N
+        check.check_type(glued_circuit, np.ndarray)
+        check.check_array_shape(glued_circuit, (num_qubits, num_qubits))
+
+        temp_vec = np.zeros((num_qubits))
         temp_vec[0] = 1
+        if not np.isnan(input_vector):
+            check.check_type(input_vector, np.ndarray)
+            check.check_array_shape(input_vector, (num_qubits))
+            temp_vec = input_vector
+
         outVec = np.matmul(glued_circuit,temp_vec)
         props = {}
         for i, basis in enumerate(self.binary):
@@ -249,9 +261,8 @@ class QuantumComputer(Interface):
                 check.check_in_list(gate, self.single_inputs + self.double_inputs)
             for gate_positions in time_step[1]:
                 check.check_type(gate_positions, list)
-
-
-
+                for numbers in gate_positions:
+                    check.check_type(numbers, int)
 
 
 

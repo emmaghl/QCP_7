@@ -10,7 +10,7 @@ class Test():
     which will verify that the circuit should be operating as expected. Functions were added throughout the duration of the project.
     '''
     def __init__(self):
-        # Gets all methods to test
+        # Gets all methods to test (except for private methods with _ in front.
         list_methods = [method for method in dir(Test) if method.startswith('_') is False]
 
         # Loops through printing all methods and checking running them
@@ -32,7 +32,7 @@ class Test():
             m = np.matmul(m, matrix.matrix)
         return m
 
-    def matrix_multiply_Dense(self):
+    def matrix_multiply_DENSE(self):
         dm = DenseMatrix
         matrix1 = np.array([
             [-1, 5, 3,],
@@ -52,7 +52,7 @@ class Test():
         ], dtype = complex)
         assert np.all(final == final_compare), f"Multiplication of matricies from Dense class failed. The result should return -> \n {final_compare}\nInstead it returned -> \n {final}"
 
-    def correct_basis_Dense(self):
+    def correct_basis_DENSE(self):
         qc = QuantumComputer(3, 'Dense')
 
         init_states = [
@@ -73,11 +73,39 @@ class Test():
         '''Input an incorrect format for the matrix'''
         qc = QuantumComputer(2, "Dense")
         try:
-            qc.gate_logic( (["H"], [[0]]) ) # Should be an array not tuple
+            qc.gate_logic( (["H"], [[0]]) )
         except Exception:
             pass
         else:
-            assert (False), "Didn't catch user input error`1"
+            assert (False), "Didn't catch user input error: not entering a list."
+
+        try:
+            qc.gate_logic( [(["NOT IN GROUP"], [[0]])] )
+        except Exception:
+            pass
+        else:
+            assert (False), "Didn't catch user input error: entering invalid gate"
+
+        try:
+            qc.gate_logic( [(("H"), [[0]])] )
+        except Exception:
+            pass
+        else:
+            assert (False), "Didn't catch user input error: gate is in tuple, not list"
+
+        try:
+            qc.gate_logic( [(["H"], [[0.5]])] )
+        except Exception:
+            pass
+        else:
+            assert (False), "Didn't catch user input error: gate position is float"
+
+        try:
+            qc.gate_logic( [(["H"], [0])] )
+        except Exception:
+            pass
+        else:
+            assert (False), "Didn't catch user input error: gate position not in list"
 
     def CNOT_gate_and_Tensor_Product_DENSE(self):
         '''Checks if the ordering of the tensor product is consistent with CNOT'''
@@ -99,7 +127,7 @@ class Test():
 
         assert (probs['011'] == 1), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, |011> = {probs['011']}"
 
-    def order_of_tensor_product(self):
+    def order_of_tensor_product_DENSE(self):
         '''Checks the ordering of tensor product with two single gates.'''
         qc = QuantumComputer(2, 'Dense')
 

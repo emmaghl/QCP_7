@@ -10,7 +10,7 @@ class check():
     @staticmethod
     def check_type(obj: object, type_to_check):
         '''Checks the type of the object'''
-        assert (type(obj) == type_to_check), f"Type of \n{obj}\n was found to be {type(obj)}. Instead, the type should be {type_to_check}"
+        assert (type(obj) == type_to_check), f"Type of {obj} was found to be {type(obj)}. Instead, the type should be {type_to_check}"
 
     @staticmethod
     def check_in_list(obj: object, list_to_check: list):
