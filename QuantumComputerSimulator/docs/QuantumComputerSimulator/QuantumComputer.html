@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>QuantumComputerSimulator.QuantumComputer API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>QuantumComputerSimulator.QuantumComputer</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from QuantumComputerSimulator.mods.PrintingCircuit import PrintingCircuit
+from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
+from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix
+from QuantumComputerSimulator.mods.LazyMatrix import LazyMatrix
+from QuantumComputerSimulator.check import check
+
+import numpy as np
+from abc import ABC
+
+class Interface(ABC):
+    pass
+
+class QuantumComputer(Interface):
+
+    def __init__(self, qubits, matrix_type=&#34;Dense&#34;):
+        self.N = qubits
+
+        if matrix_type == &#34;Dense&#34;:
+            self.Matrix = DenseMatrix
+        if matrix_type == &#34;Sparse&#34;:
+            self.Matrix = SparseMatrix
+        if matrix_type == &#34;Lazy&#34;:
+            self.Matrix = LazyMatrix
+
+        # set up quantum register
+        self.Q_Register()
+
+        # single input gates
+        self.I = self.Matrix(&#39;I&#39;)
+        self.H = self.Matrix(&#39;H&#39;)
+        self.P = lambda theta: self.Matrix(&#39;P&#39;, theta)
+        self.X = self.Matrix(&#39;X&#39;)
+        self.Y = self.Matrix(&#39;Y&#39;)
+        self.Z = self.Matrix(&#39;Z&#39;)
+        # How does single_gate deal with the extra argument required for P?
+
+        # measuring gates
+        self.M0 = self.Matrix(&#39;M0&#39;)
+        self.M1 = self.Matrix(&#39;M1&#39;)
+
+        # produce binary digits for 2 input gate logic
+        self.binary = self.produce_digits2()
+
+        # gate inputs
+        self.single_inputs = [&#34;H&#34;, &#34;P&#34;, &#34;X&#34;, &#34;Y&#34;, &#34;Z&#34;, &#34;M0&#34;, &#34;M1&#34;]
+        self.matrices = [self.H, self.P, self.X, self.Y, self.Z, self.M0, self.M1]
+
+        self.double_inputs = [&#34;CV&#34;, &#34;CNOT&#34;, &#34;CZ&#34;]
+
+        self.__gate_history = []
+
+        # tests
+        &#39;&#39;&#39;
+        print(&#34;qubit 0 in state 0&#34;)
+        self.measure(0,0)
+        print(&#34;qubit 0 in state 1&#34;)
+        self.measure(0,1)
+        print(&#34;qubit 1 in state 0&#34;)
+        self.measure(1,0)
+        print(&#34;qubit 1 in state 1&#34;)
+        self.measure(1,1)
+
+        inputs = [([&#34;H&#34;],[[0]]),([&#34;CNOT&#34;],[[0,1]])]
+        circ = self.gate_logic(inputs)
+        self.psi = circ.output(self.psi)
+        #Make gate_logic produce objects
+
+        print(&#34;\n&#34;)
+        print(&#34;qubit 0 in state 0&#34;)
+        self.measure(0,0)
+        print(&#34;qubit 0 in state 1&#34;)
+        self.measure(0,1)
+        print(&#34;qubit 1 in state 0&#34;)
+        self.measure(1,0)
+        print(&#34;qubit 1 in state 1&#34;)
+        self.measure(1,1)
+        &#39;&#39;&#39;
+
+        # self.cv = self.Matrix(&#39;CV&#39;,self.binary,1,0)
+        # print(self.cv.output([1,2,3,5]))
+
+    def Q_Register(self):
+        coeffs = []
+
+        for i in range(0, self.N):
+            alpha = np.random.random() + np.random.random() * 1j
+            beta = np.random.random() + np.random.random() * 1j
+            normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
+
+            alpha /= normF
+            beta /= normF
+
+            coeffs.append(np.array([[alpha], [beta]]))
+
+        self.psi = coeffs[0]
+        for i in range(1, self.N):
+            self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])
+
+    def print_circuit(self):
+        &#39;&#39;&#39;
+        WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
+            Prints the quantum circuit in an ascii format on the terminal.
+        &#39;&#39;&#39;
+        pc = PrintingCircuit(self.__gate_history, self.N)
+        pc.print_circuit_ascii()
+
+    def produce_digits(self):
+        digits = []
+        for i in range(0, 2 ** self.N):
+            digit = []
+            if i &lt; (2 ** self.N) / 2:
+                digit.insert(0, 0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, self.N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+                if x &lt; (2 ** self.N) / (2 ** (j + 1)):
+                    digit.insert(0, 0)
+                else:
+                    digit.insert(0, 1)
+            digits.append(digit)
+        #print(digits)
+        #print(np.flip(digits, axis=1))
+        return digits
+
+    def produce_digits2(self):
+        digits = []
+        for i in range(0, 2 ** self.N):
+            digit = []
+            if i &lt; (2 ** self.N) / 2:
+                digit.append(0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, self.N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+                if x &lt; (2 ** self.N) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        return digits
+
+    def single_gates(self, gate, qnum):
+        M = [0] * self.N
+
+        for i in range(0, len(self.single_inputs)):
+            for j in range(0, len(gate)):
+                if self.single_inputs[i] == gate[j]:
+                    for k in range(0, len(qnum[j])):
+                        if gate[j] == &#34;P&#34;:
+                            pass
+                        else:
+                            M[qnum[j][k]] = self.matrices[i]
+
+        for i in range(0, len(M)):
+            if type(M[i]) != np.ndarray and type(M[i]) != self.Matrix:
+                M[i] = self.I
+
+        m = M[0]
+        for i in range(1, len(M)):
+            m = self.Matrix.tensor_prod(m, M[i])
+
+        return m
+
+    def double_gates(self, gate, qnum):
+
+        if gate[0] == &#34;CV&#34;:
+            return self.Matrix(&#34;CV&#34;, self.binary, qnum[0][0], qnum[0][1])
+        if gate[0] == &#34;CNOT&#34;:
+            return self.Matrix(&#34;CNOT&#34;, self.binary, qnum[0][0], qnum[0][1])
+        if gate[0] == &#34;CZ&#34;:
+            return self.Matrix(&#34;CZ&#34;, self.binary, qnum[0][0], qnum[0][1])
+
+    def gate_logic(self, inputs, add_gate_name: str = &#34;&#34;):
+
+        self.__validate_gate_logic_inputs(inputs)
+
+        step_n = len(inputs)
+
+        # Add the gates to the gate history for printing later.
+        if add_gate_name == &#34;&#34;: # If not defining a custom name
+            [self.__gate_history.append(i) for i in inputs]
+        else: # If defining a gate with a custom Name
+            self.__gate_history.append(([add_gate_name], [[0, self.N-1]]))
+
+        M = []
+
+        for i in range(0, step_n):
+            for j in range(0, len(self.single_inputs)):
+                if self.single_inputs[j] in inputs[i][0]:
+                    M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+            for j in range(0, len(self.double_inputs)):
+                if self.double_inputs[j] in inputs[i][0]:
+                    M.append(self.double_gates(inputs[i][0], inputs[i][1]))
+
+        M = np.flip(M, axis=0)
+        m = M[0]
+        for i in range(1, len(M)):
+            m = self.Matrix.matrix_multiply(m, M[i])
+
+        return m
+
+    def measure_any(self, qnum, state):
+        inner_register = self.Matrix.inner_prod(self.psi)
+
+        if state == 0:
+            matrix = self.single_gates([&#34;M0&#34;], [[qnum]])
+        elif state == 1:
+            matrix = self.single_gates([&#34;M1&#34;], [[qnum]])
+
+        QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
+
+        x = []
+        for i in range(0, 1000):
+            if np.random.random() &lt; QP:
+                x.append(state)
+            else:
+                x.append(1 - state)
+
+        # plt.hist(x)
+        # plt.show()
+
+    def get_probabilities(self, glued_circuit, input_vector = np.nan):
+        temp_vec = np.zeros((2**self.N))
+        temp_vec[0] = 1
+        outVec = np.matmul(glued_circuit,temp_vec)
+        props = {}
+        for i, basis in enumerate(self.binary):
+            string_basis = &#39;&#39;.join([str(j) for j in basis])
+            props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
+
+        return props
+
+    def __validate_gate_logic_inputs(self, inputs):
+        check.check_type(inputs, list)
+
+        for time_step in inputs:
+            check.check_type(time_step, tuple)
+            check.check_type(time_step[0], list)
+            check.check_type(time_step[1], list)
+            for gate in time_step[0]: #Looping through gates, check to see they&#39;re recognisable.
+                check.check_type(gate, str)
+                check.check_in_list(gate, self.single_inputs + self.double_inputs)
+            for gate_positions in time_step[1]:
+                check.check_type(gate_positions, list)
+
+
+
+
+
+
+
+# computer
+&#39;&#39;&#39;comp2 = QuantumComputer(4, &#39;Dense&#39;)
+
+input1 = [([&#34;CZ&#34;], [[1, 0]])]
+
+circ = comp2.gate_logic(input1)&#39;&#39;&#39;
+
+# print(circ.matrix)
+
+
+&#39;&#39;&#39;
+comp = QuantumComputer(3,&#39;Dense&#39;)
+
+input1 = [([&#34;H&#34;],[[0,1,2]])]
+input2 = [([&#34;H&#34;],[[0]]),([&#34;H&#34;],[[1]]),([&#34;H&#34;],[[2]])]
+
+input3 = [([&#34;H&#34;,&#34;Y&#34;],[[0,2],[1]])]
+input4 = [([&#34;H&#34;],[[0]]),([&#34;Y&#34;],[[1]]),([&#34;H&#34;],[[2]])]
+
+circ1 = comp.gate_logic(input1)
+circ2 = comp.gate_logic(input2)
+
+circ3 = comp.gate_logic(input3)
+circ4 = comp.gate_logic(input4)
+
+print(circ3.matrix)
+print(circ4.matrix)
+
+#print(circ1.matrix)
+#print(circ2.matrix)
+
+#new_psi1 = comp.output(circ1)
+#new_psi2 = comp.output(circ2)
+
+#comp3 = QuantumComputer(3,&#39;Lazy&#39;)
+
+&#39;&#39;&#39;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="QuantumComputerSimulator.QuantumComputer.Interface"><code class="flex name class">
+<span>class <span class="ident">Interface</span></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Interface(ABC):
+    pass</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>abc.ABC</li>
+</ul>
+<h3>Subclasses</h3>
+<ul class="hlist">
+<li><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer">QuantumComputer</a></li>
+</ul>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer"><code class="flex name class">
+<span>class <span class="ident">QuantumComputer</span></span>
+<span>(</span><span>qubits, matrix_type='Dense')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class QuantumComputer(Interface):
+
+    def __init__(self, qubits, matrix_type=&#34;Dense&#34;):
+        self.N = qubits
+
+        if matrix_type == &#34;Dense&#34;:
+            self.Matrix = DenseMatrix
+        if matrix_type == &#34;Sparse&#34;:
+            self.Matrix = SparseMatrix
+        if matrix_type == &#34;Lazy&#34;:
+            self.Matrix = LazyMatrix
+
+        # set up quantum register
+        self.Q_Register()
+
+        # single input gates
+        self.I = self.Matrix(&#39;I&#39;)
+        self.H = self.Matrix(&#39;H&#39;)
+        self.P = lambda theta: self.Matrix(&#39;P&#39;, theta)
+        self.X = self.Matrix(&#39;X&#39;)
+        self.Y = self.Matrix(&#39;Y&#39;)
+        self.Z = self.Matrix(&#39;Z&#39;)
+        # How does single_gate deal with the extra argument required for P?
+
+        # measuring gates
+        self.M0 = self.Matrix(&#39;M0&#39;)
+        self.M1 = self.Matrix(&#39;M1&#39;)
+
+        # produce binary digits for 2 input gate logic
+        self.binary = self.produce_digits2()
+
+        # gate inputs
+        self.single_inputs = [&#34;H&#34;, &#34;P&#34;, &#34;X&#34;, &#34;Y&#34;, &#34;Z&#34;, &#34;M0&#34;, &#34;M1&#34;]
+        self.matrices = [self.H, self.P, self.X, self.Y, self.Z, self.M0, self.M1]
+
+        self.double_inputs = [&#34;CV&#34;, &#34;CNOT&#34;, &#34;CZ&#34;]
+
+        self.__gate_history = []
+
+        # tests
+        &#39;&#39;&#39;
+        print(&#34;qubit 0 in state 0&#34;)
+        self.measure(0,0)
+        print(&#34;qubit 0 in state 1&#34;)
+        self.measure(0,1)
+        print(&#34;qubit 1 in state 0&#34;)
+        self.measure(1,0)
+        print(&#34;qubit 1 in state 1&#34;)
+        self.measure(1,1)
+
+        inputs = [([&#34;H&#34;],[[0]]),([&#34;CNOT&#34;],[[0,1]])]
+        circ = self.gate_logic(inputs)
+        self.psi = circ.output(self.psi)
+        #Make gate_logic produce objects
+
+        print(&#34;\n&#34;)
+        print(&#34;qubit 0 in state 0&#34;)
+        self.measure(0,0)
+        print(&#34;qubit 0 in state 1&#34;)
+        self.measure(0,1)
+        print(&#34;qubit 1 in state 0&#34;)
+        self.measure(1,0)
+        print(&#34;qubit 1 in state 1&#34;)
+        self.measure(1,1)
+        &#39;&#39;&#39;
+
+        # self.cv = self.Matrix(&#39;CV&#39;,self.binary,1,0)
+        # print(self.cv.output([1,2,3,5]))
+
+    def Q_Register(self):
+        coeffs = []
+
+        for i in range(0, self.N):
+            alpha = np.random.random() + np.random.random() * 1j
+            beta = np.random.random() + np.random.random() * 1j
+            normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
+
+            alpha /= normF
+            beta /= normF
+
+            coeffs.append(np.array([[alpha], [beta]]))
+
+        self.psi = coeffs[0]
+        for i in range(1, self.N):
+            self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])
+
+    def print_circuit(self):
+        &#39;&#39;&#39;
+        WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
+            Prints the quantum circuit in an ascii format on the terminal.
+        &#39;&#39;&#39;
+        pc = PrintingCircuit(self.__gate_history, self.N)
+        pc.print_circuit_ascii()
+
+    def produce_digits(self):
+        digits = []
+        for i in range(0, 2 ** self.N):
+            digit = []
+            if i &lt; (2 ** self.N) / 2:
+                digit.insert(0, 0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, self.N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+                if x &lt; (2 ** self.N) / (2 ** (j + 1)):
+                    digit.insert(0, 0)
+                else:
+                    digit.insert(0, 1)
+            digits.append(digit)
+        #print(digits)
+        #print(np.flip(digits, axis=1))
+        return digits
+
+    def produce_digits2(self):
+        digits = []
+        for i in range(0, 2 ** self.N):
+            digit = []
+            if i &lt; (2 ** self.N) / 2:
+                digit.append(0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, self.N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+                if x &lt; (2 ** self.N) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        return digits
+
+    def single_gates(self, gate, qnum):
+        M = [0] * self.N
+
+        for i in range(0, len(self.single_inputs)):
+            for j in range(0, len(gate)):
+                if self.single_inputs[i] == gate[j]:
+                    for k in range(0, len(qnum[j])):
+                        if gate[j] == &#34;P&#34;:
+                            pass
+                        else:
+                            M[qnum[j][k]] = self.matrices[i]
+
+        for i in range(0, len(M)):
+            if type(M[i]) != np.ndarray and type(M[i]) != self.Matrix:
+                M[i] = self.I
+
+        m = M[0]
+        for i in range(1, len(M)):
+            m = self.Matrix.tensor_prod(m, M[i])
+
+        return m
+
+    def double_gates(self, gate, qnum):
+
+        if gate[0] == &#34;CV&#34;:
+            return self.Matrix(&#34;CV&#34;, self.binary, qnum[0][0], qnum[0][1])
+        if gate[0] == &#34;CNOT&#34;:
+            return self.Matrix(&#34;CNOT&#34;, self.binary, qnum[0][0], qnum[0][1])
+        if gate[0] == &#34;CZ&#34;:
+            return self.Matrix(&#34;CZ&#34;, self.binary, qnum[0][0], qnum[0][1])
+
+    def gate_logic(self, inputs, add_gate_name: str = &#34;&#34;):
+
+        self.__validate_gate_logic_inputs(inputs)
+
+        step_n = len(inputs)
+
+        # Add the gates to the gate history for printing later.
+        if add_gate_name == &#34;&#34;: # If not defining a custom name
+            [self.__gate_history.append(i) for i in inputs]
+        else: # If defining a gate with a custom Name
+            self.__gate_history.append(([add_gate_name], [[0, self.N-1]]))
+
+        M = []
+
+        for i in range(0, step_n):
+            for j in range(0, len(self.single_inputs)):
+                if self.single_inputs[j] in inputs[i][0]:
+                    M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+            for j in range(0, len(self.double_inputs)):
+                if self.double_inputs[j] in inputs[i][0]:
+                    M.append(self.double_gates(inputs[i][0], inputs[i][1]))
+
+        M = np.flip(M, axis=0)
+        m = M[0]
+        for i in range(1, len(M)):
+            m = self.Matrix.matrix_multiply(m, M[i])
+
+        return m
+
+    def measure_any(self, qnum, state):
+        inner_register = self.Matrix.inner_prod(self.psi)
+
+        if state == 0:
+            matrix = self.single_gates([&#34;M0&#34;], [[qnum]])
+        elif state == 1:
+            matrix = self.single_gates([&#34;M1&#34;], [[qnum]])
+
+        QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
+
+        x = []
+        for i in range(0, 1000):
+            if np.random.random() &lt; QP:
+                x.append(state)
+            else:
+                x.append(1 - state)
+
+        # plt.hist(x)
+        # plt.show()
+
+    def get_probabilities(self, glued_circuit, input_vector = np.nan):
+        temp_vec = np.zeros((2**self.N))
+        temp_vec[0] = 1
+        outVec = np.matmul(glued_circuit,temp_vec)
+        props = {}
+        for i, basis in enumerate(self.binary):
+            string_basis = &#39;&#39;.join([str(j) for j in basis])
+            props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
+
+        return props
+
+    def __validate_gate_logic_inputs(self, inputs):
+        check.check_type(inputs, list)
+
+        for time_step in inputs:
+            check.check_type(time_step, tuple)
+            check.check_type(time_step[0], list)
+            check.check_type(time_step[1], list)
+            for gate in time_step[0]: #Looping through gates, check to see they&#39;re recognisable.
+                check.check_type(gate, str)
+                check.check_in_list(gate, self.single_inputs + self.double_inputs)
+            for gate_positions in time_step[1]:
+                check.check_type(gate_positions, list)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="QuantumComputerSimulator.QuantumComputer.Interface" href="#QuantumComputerSimulator.QuantumComputer.Interface">Interface</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.Q_Register"><code class="name flex">
+<span>def <span class="ident">Q_Register</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Q_Register(self):
+    coeffs = []
+
+    for i in range(0, self.N):
+        alpha = np.random.random() + np.random.random() * 1j
+        beta = np.random.random() + np.random.random() * 1j
+        normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
+
+        alpha /= normF
+        beta /= normF
+
+        coeffs.append(np.array([[alpha], [beta]]))
+
+    self.psi = coeffs[0]
+    for i in range(1, self.N):
+        self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.double_gates"><code class="name flex">
+<span>def <span class="ident">double_gates</span></span>(<span>self, gate, qnum)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def double_gates(self, gate, qnum):
+
+    if gate[0] == &#34;CV&#34;:
+        return self.Matrix(&#34;CV&#34;, self.binary, qnum[0][0], qnum[0][1])
+    if gate[0] == &#34;CNOT&#34;:
+        return self.Matrix(&#34;CNOT&#34;, self.binary, qnum[0][0], qnum[0][1])
+    if gate[0] == &#34;CZ&#34;:
+        return self.Matrix(&#34;CZ&#34;, self.binary, qnum[0][0], qnum[0][1])</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.gate_logic"><code class="name flex">
+<span>def <span class="ident">gate_logic</span></span>(<span>self, inputs, add_gate_name: str = '')</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def gate_logic(self, inputs, add_gate_name: str = &#34;&#34;):
+
+    self.__validate_gate_logic_inputs(inputs)
+
+    step_n = len(inputs)
+
+    # Add the gates to the gate history for printing later.
+    if add_gate_name == &#34;&#34;: # If not defining a custom name
+        [self.__gate_history.append(i) for i in inputs]
+    else: # If defining a gate with a custom Name
+        self.__gate_history.append(([add_gate_name], [[0, self.N-1]]))
+
+    M = []
+
+    for i in range(0, step_n):
+        for j in range(0, len(self.single_inputs)):
+            if self.single_inputs[j] in inputs[i][0]:
+                M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+        for j in range(0, len(self.double_inputs)):
+            if self.double_inputs[j] in inputs[i][0]:
+                M.append(self.double_gates(inputs[i][0], inputs[i][1]))
+
+    M = np.flip(M, axis=0)
+    m = M[0]
+    for i in range(1, len(M)):
+        m = self.Matrix.matrix_multiply(m, M[i])
+
+    return m</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.get_probabilities"><code class="name flex">
+<span>def <span class="ident">get_probabilities</span></span>(<span>self, glued_circuit, input_vector=nan)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_probabilities(self, glued_circuit, input_vector = np.nan):
+    temp_vec = np.zeros((2**self.N))
+    temp_vec[0] = 1
+    outVec = np.matmul(glued_circuit,temp_vec)
+    props = {}
+    for i, basis in enumerate(self.binary):
+        string_basis = &#39;&#39;.join([str(j) for j in basis])
+        props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
+
+    return props</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.measure_any"><code class="name flex">
+<span>def <span class="ident">measure_any</span></span>(<span>self, qnum, state)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def measure_any(self, qnum, state):
+    inner_register = self.Matrix.inner_prod(self.psi)
+
+    if state == 0:
+        matrix = self.single_gates([&#34;M0&#34;], [[qnum]])
+    elif state == 1:
+        matrix = self.single_gates([&#34;M1&#34;], [[qnum]])
+
+    QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
+
+    x = []
+    for i in range(0, 1000):
+        if np.random.random() &lt; QP:
+            x.append(state)
+        else:
+            x.append(1 - state)
+
+    # plt.hist(x)
+    # plt.show()</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.print_circuit"><code class="name flex">
+<span>def <span class="ident">print_circuit</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>WARNING: Need to call <code>print_circuit_ascii</code> from terminal/cmd and will clear the terminal screen.
+Prints the quantum circuit in an ascii format on the terminal.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def print_circuit(self):
+    &#39;&#39;&#39;
+    WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
+        Prints the quantum circuit in an ascii format on the terminal.
+    &#39;&#39;&#39;
+    pc = PrintingCircuit(self.__gate_history, self.N)
+    pc.print_circuit_ascii()</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.produce_digits"><code class="name flex">
+<span>def <span class="ident">produce_digits</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def produce_digits(self):
+    digits = []
+    for i in range(0, 2 ** self.N):
+        digit = []
+        if i &lt; (2 ** self.N) / 2:
+            digit.insert(0, 0)
+        else:
+            digit.insert(0, 1)
+        for j in range(1, self.N):
+            x = i
+            for k in range(0, len(digit)):
+                x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+            if x &lt; (2 ** self.N) / (2 ** (j + 1)):
+                digit.insert(0, 0)
+            else:
+                digit.insert(0, 1)
+        digits.append(digit)
+    #print(digits)
+    #print(np.flip(digits, axis=1))
+    return digits</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.produce_digits2"><code class="name flex">
+<span>def <span class="ident">produce_digits2</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def produce_digits2(self):
+    digits = []
+    for i in range(0, 2 ** self.N):
+        digit = []
+        if i &lt; (2 ** self.N) / 2:
+            digit.append(0)
+        else:
+            digit.insert(0, 1)
+        for j in range(1, self.N):
+            x = i
+            for k in range(0, len(digit)):
+                x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+            if x &lt; (2 ** self.N) / (2 ** (j + 1)):
+                digit.append(0)
+            else:
+                digit.append(1)
+        digits.append(digit)
+    return digits</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer.single_gates"><code class="name flex">
+<span>def <span class="ident">single_gates</span></span>(<span>self, gate, qnum)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def single_gates(self, gate, qnum):
+    M = [0] * self.N
+
+    for i in range(0, len(self.single_inputs)):
+        for j in range(0, len(gate)):
+            if self.single_inputs[i] == gate[j]:
+                for k in range(0, len(qnum[j])):
+                    if gate[j] == &#34;P&#34;:
+                        pass
+                    else:
+                        M[qnum[j][k]] = self.matrices[i]
+
+    for i in range(0, len(M)):
+        if type(M[i]) != np.ndarray and type(M[i]) != self.Matrix:
+            M[i] = self.I
+
+    m = M[0]
+    for i in range(1, len(M)):
+        m = self.Matrix.tensor_prod(m, M[i])
+
+    return m</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="QuantumComputerSimulator" href="index.html">QuantumComputerSimulator</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="QuantumComputerSimulator.QuantumComputer.Interface" href="#QuantumComputerSimulator.QuantumComputer.Interface">Interface</a></code></h4>
+</li>
+<li>
+<h4><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer">QuantumComputer</a></code></h4>
+<ul class="two-column">
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.Q_Register" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.Q_Register">Q_Register</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.double_gates" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.double_gates">double_gates</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.gate_logic" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.gate_logic">gate_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.get_probabilities" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.get_probabilities">get_probabilities</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.measure_any" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.measure_any">measure_any</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.print_circuit" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.print_circuit">print_circuit</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.produce_digits" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.produce_digits">produce_digits</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.produce_digits2" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.produce_digits2">produce_digits2</a></code></li>
+<li><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer.single_gates" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer.single_gates">single_gates</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,4 +1,4 @@
-from QuantumComputerV2 import QuantumComputer
+from QuantumComputer import QuantumComputer
 
 def example():
     ''' An example of implementing a 3 qubit system, using dense matricies, and then printing the circuit to the terminal.'''
