@@ -42,7 +42,7 @@ class QuantumComputer(Interface):
         self.M1 = self.Matrix('M1')
 
         # produce binary digits for 2 input gate logic
-        self.binary = self.produce_digits2()
+        self.binary = self.produce_digits()
 
         # gate inputs
         self.single_inputs = ["H", "P", "X", "Y", "Z", "M0", "M1"]
@@ -108,28 +108,7 @@ class QuantumComputer(Interface):
         pc = PrintingCircuit(self.__gate_history, self.N)
         pc.print_circuit_ascii()
 
-    def produce_digits(self):
-        digits = []
-        for i in range(0, 2 ** self.N):
-            digit = []
-            if i < (2 ** self.N) / 2:
-                digit.insert(0, 0)
-            else:
-                digit.insert(0, 1)
-            for j in range(1, self.N):
-                x = i
-                for k in range(0, len(digit)):
-                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
-                if x < (2 ** self.N) / (2 ** (j + 1)):
-                    digit.insert(0, 0)
-                else:
-                    digit.insert(0, 1)
-            digits.append(digit)
-        #print(digits)
-        #print(np.flip(digits, axis=1))
-        return digits
-
-    def produce_digits2(self):
+    def produce_digits(self):  # this is the flipped basis, working on
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
@@ -146,6 +125,28 @@ class QuantumComputer(Interface):
                 else:
                     digit.append(1)
             digits.append(digit)
+        digits = np.flip(digits, axis=1)
+        print(f"digits2{digits}")
+        return digits
+
+    def produce_digits2(self): #this is the standard unflipped basis
+        digits = []
+        for i in range(0, 2 ** self.N):
+            digit = []
+            if i < (2 ** self.N) / 2:
+                digit.append(0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, self.N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+                if x < (2 ** self.N) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        print(f"digits2{digits}")
         return digits
 
     def single_gates(self, gate, qnum):
@@ -222,8 +223,8 @@ class QuantumComputer(Interface):
             else:
                 x.append(1 - state)
 
-        # plt.hist(x)
-        # plt.show()
+        plt.hist(x)
+        plt.show()
 
     def glue_circuits(self, matricies) -> np.ndarray:
         ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
@@ -250,17 +251,57 @@ class MatrixFrame(ABC):
     def __init__(self):
         pass
 
-    def recog_digits(self, digits):
+    def recog_digits(self, digits): # rewritten for basis in reverse order
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
         for i in range(0, 2 ** N):
             num = 0
             for j in range(0, N):
-                num += 2 ** (N - j - 1) * digits[i][j]
+                num += 2 ** j * digits[i][j]
             numbers.append(num)
         return numbers
 
-    def reverse_digits(self, d):
+    def produce_digits2(self, N): #unused unflipped basis
+        self.N = N
+        digits = []
+        for i in range(0, 2 ** self.N):
+            digit = []
+            if i < (2 ** self.N) / 2:
+                digit.append(0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, self.N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+                if x < (2 ** N) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        return digits
+
+    def produce_digits(self):  # this is the flipped basis
+        digits = []
+        for i in range(0, 2 ** N):
+            digit = []
+            if i < (2 ** N) / 2:
+                digit.append(0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, N):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (2 ** N) / (2 ** (k + 1))
+                if x < (2 ** N) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        digits = np.flip(digits, axis=1)
+        return digits
+
+    def reverse_digits(self, d): #unused
         temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
         temp = np.flip(temp, axis=0)
         unpack = []
@@ -269,14 +310,15 @@ class MatrixFrame(ABC):
                 unpack.append(j)
         return unpack
 
-    def CNOT_logic(self, digits, c, t):
-        N = int(np.log(len(digits)) / np.log(2))
+    def CNOT_logic(self, digits_in, c, t):
+        N = int(np.log(len(digits_in)) / np.log(2))
 
+        digits_out = digits_in
         for i in range(0, 2 ** N):
-            if digits[i][c] == 1:
-                digits[i][t] = 1 - digits[i][t] % 2
+            if digits_in[i][c] == 1:
+                digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-        index = self.recog_digits(digits)
+        index = self.recog_digits(digits_out)
 
         return index
 
@@ -289,6 +331,7 @@ class MatrixFrame(ABC):
             else:
                 index.append(0)
         return index
+
 
     def CZ_logic(self, digits, c, t):
         return self.CV_logic(digits, c, t)
@@ -401,13 +444,14 @@ class DenseMatrix(MatrixFrame):
             Q[i].shape = (2 ** N, 1)
         return Q
 
-    def cnot(self, d, c, t):
+    def cnot(self, d, c, t): #tensor product swapped
         digits = copy.deepcopy(d)
         cn = []
 
         index = super().CNOT_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
         basis = self.Basis(N)
+
 
         for i in range(0, 2 ** N):
             new_row = basis[index[i]]
@@ -416,6 +460,7 @@ class DenseMatrix(MatrixFrame):
 
         cn = np.asarray(np.asmatrix(np.asarray(cn)))
         return cn
+
 
     def cv(self, d, c, t):
         digits = copy.deepcopy(d)

@@ -233,7 +233,7 @@ def emma_test_one():
     print("\nOutput probabilities:")
     probs = qc.measure_all(glued_circuits)
     print(probs)
-
+    #
     plt.bar(probs.keys(), probs.values(), 1)
     plt.show()
 
@@ -254,14 +254,15 @@ def emma_test_two():
     # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
     # to amplify the |11> states.
     glued_circuits = glue_circuits(circuits)
+    print("test 2")
     print("With the matrix representation:")
     print(glued_circuits)
     print("\nOutput probabilities:")
     probs = qc.measure_all(glued_circuits)
     print(probs)
 
-    plt.bar(probs.keys(), probs.values(), 1)
-    plt.show()
+    # plt.bar(probs.keys(), probs.values(), 1)
+    # plt.show()
 
 def emma_test_three():
     qc = QuantumComputer(3, 'Dense')
@@ -290,10 +291,70 @@ def emma_test_three():
     plt.bar(probs.keys(), probs.values(), 1)
     plt.show()
 
+def emma_test_four():
+
+    qc4 = QuantumComputer(3, 'Dense')
+
+    # Defines the gates for grover's algorithm
+    init_states4 = [
+        (["CNOT"], [[0, 2]])
+    ]
+
+    circuits4 = [
+        qc4.gate_logic(init_states4),
+    ]
+
+    qc4.print_circuit()
+    qc4.produce_digits2()
+    qc4.produce_digits()
+
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits4 = glue_circuits(circuits4)
+    print("test 4")
+    print("With the matrix representation:")
+    print(glued_circuits4)
+    print("\nOutput probabilities:")
+    probs4 = qc4.measure_all(glued_circuits4)
+    print(probs4)
+
+    # plt.bar(probs.keys(), probs.values(), 1)
+    # plt.show()
+
+def emma_test_five():
+
+    qc4 = QuantumComputer(2, 'Dense')
+
+    # Defines the gates for grover's algorithm
+    init_states4 = [
+        (["CNOT"], [[0, 1]])
+    ]
+
+    circuits4 = [
+        qc4.gate_logic(init_states4),
+    ]
+
+    qc4.print_circuit()
+
+
+    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
+    # to amplify the |11> states.
+    glued_circuits4 = glue_circuits(circuits4)
+    print("test 4")
+    print("With the matrix representation:")
+    print(glued_circuits4)
+    print("\nOutput probabilities:")
+    probs4 = qc4.measure_all(glued_circuits4)
+    print(probs4)
+
+
 def main():
-    #emma_test_one()
-    #emma_test_two()
-    emma_test_three()
+    emma_test_one()
+    # emma_test_two()
+    # emma_test_three()
+    # emma_test_four()
+    # emma_test_five()
 
 
 if __name__=="__main__":
