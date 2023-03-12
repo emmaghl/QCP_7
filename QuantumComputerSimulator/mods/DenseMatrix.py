@@ -12,24 +12,20 @@ class DenseMatrix(MatrixFrame):
             self.matrix = np.array([[1, 0], [0, 1]])
         if Type == 'P':
             self.matrix = np.array([[1, 0], [1, np.exp(1j * args[0])]])
-
         if Type == 'X':
             self.matrix = np.array([[0, 1], [1, 0]])
         if Type == 'Y':
             self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == 'Z':
             self.matrix = np.array([[1, 0], [0, -1]])
-
         if Type == 'TP' or Type == 'MM':
             self.matrix = args[0]
-
         if Type == 'CNOT':
             self.matrix = self.cnot(args[0], args[1], args[2])
         if Type == 'CV':
             self.matrix = self.cv(args[0], args[1], args[2])
         if Type == 'CZ':
             self.matrix = self.cz(args[0], args[1], args[2])
-
         if Type == 'M0':
             self.matrix = np.array([[1, 0], [0, 0]])
         if Type == 'M1':
