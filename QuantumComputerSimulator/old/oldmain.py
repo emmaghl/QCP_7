@@ -5,8 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 np.set_printoptions(linewidth=np.inf, precision=2, suppress=True)
 
-
-
 def glue_lists(*lists) -> list:
     '''Adds elments from list_2 to list_1.'''
     big_list = []
