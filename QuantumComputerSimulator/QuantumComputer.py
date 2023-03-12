@@ -254,6 +254,7 @@ class QuantumComputer(Interface):
 
         for time_step in inputs:
             check.check_type(time_step, tuple)
+            check.check_array_length(time_step, 2)
             check.check_type(time_step[0], list)
             check.check_type(time_step[1], list)
             for gate in time_step[0]: #Looping through gates, check to see they're recognisable.
