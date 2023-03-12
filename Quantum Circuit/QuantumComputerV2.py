@@ -1,5 +1,5 @@
 # Quantum Computer - complete version
-from PrintingCircuit import PrintingCircuit
+#from PrintingCircuit import PrintingCircuit
 import numpy as np
 import copy
 import time
@@ -25,8 +25,9 @@ class QuantumComputer(Interface):
         if matrix_type == "Lazy":
             self.Matrix = LazyMatrix
 
-        # set up quantum register
+        # set up basis and quantum register
         self.Q_Register()
+        self.Basis()
 
         # single input gates
         self.I = self.Matrix('I')
@@ -42,7 +43,7 @@ class QuantumComputer(Interface):
         self.M1 = self.Matrix('M1')
 
         # produce binary digits for 2 input gate logic
-        self.binary = self.produce_digits2()
+        self.binary = self.produce_digits()
 
         # gate inputs
         self.single_inputs = ["H", "P", "X", "Y", "Z", "M0", "M1"]
@@ -99,6 +100,14 @@ class QuantumComputer(Interface):
         for i in range(1, self.N):
             self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])
 
+    def Basis(self):
+        Q = []
+        for i in range(0, 2 ** self.N):
+            Q.append(np.zeros(2 ** self.N))
+            Q[i][i] = 1
+            Q[i].shape = (2 ** self.N, 1)
+        self.basis = Q
+
     def print_circuit(self):
         '''
         WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
@@ -124,9 +133,7 @@ class QuantumComputer(Interface):
                 else:
                     digit.insert(0, 1)
             digits.append(digit)
-        #print(digits)
-        #print(np.flip(digits, axis=1))
-        return digits
+        return np.flip(digits, axis=1)
 
     def produce_digits2(self):
         digits = []
@@ -173,11 +180,11 @@ class QuantumComputer(Interface):
     def double_gates(self, gate, qnum):
 
         if gate[0] == "CV":
-            return self.Matrix("CV", self.binary, qnum[0][0], qnum[0][1])
+            return self.Matrix("CV", self.binary, self.basis, qnum[0][0], qnum[0][1])
         if gate[0] == "CNOT":
-            return self.Matrix("CNOT", self.binary, qnum[0][0], qnum[0][1])
+            return self.Matrix("CNOT", self.binary, self.basis, qnum[0][0], qnum[0][1])
         if gate[0] == "CZ":
-            return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
+            return self.Matrix("CZ", self.binary, self.basis, qnum[0][0], qnum[0][1])
 
     def gate_logic(self, inputs, add_gate_name: str = ""):
         step_n = len(inputs)
@@ -297,11 +304,11 @@ class DenseMatrix(MatrixFrame):
             self.matrix = args[0]
 
         if Type == 'CNOT':
-            self.matrix = self.cnot(args[0], args[1], args[2])
+            self.matrix = self.cnot(args[0], args[1], args[2],args[3])
         if Type == 'CV':
-            self.matrix = self.cv(args[0], args[1], args[2])
+            self.matrix = self.cv(args[0], args[1], args[2],args[3])
         if Type == 'CZ':
-            self.matrix = self.cz(args[0], args[1], args[2])
+            self.matrix = self.cz(args[0], args[1], args[2],args[3])
 
         if Type == 'M0':
             self.matrix = np.array([[1, 0], [0, 0]])
@@ -368,21 +375,13 @@ class DenseMatrix(MatrixFrame):
     def trace(cls, M):
         return np.trace(M.matrix)
 
-    def Basis(self, N):
-        Q = []
-        for i in range(0, 2 ** N):
-            Q.append(np.zeros(2 ** N))
-            Q[i][i] = 1
-            Q[i].shape = (2 ** N, 1)
-        return Q
-
-    def cnot(self, d, c, t):
+    def cnot(self, d, b, c, t):
         digits = copy.deepcopy(d)
         cn = []
 
         index = super().CNOT_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
-        basis = self.Basis(N)
+        basis = b
 
         for i in range(0, 2 ** N):
             new_row = basis[index[i]]
@@ -392,13 +391,13 @@ class DenseMatrix(MatrixFrame):
         cn = np.asarray(np.asmatrix(np.asarray(cn)))
         return cn
 
-    def cv(self, d, c, t):
+    def cv(self, d, b, c, t):
         digits = copy.deepcopy(d)
         cv = []
 
         index = super().CV_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
-        basis = self.Basis(N)
+        basis = b
 
         for i in range(0, 2**N):
             if index[i] == 1:
@@ -412,13 +411,13 @@ class DenseMatrix(MatrixFrame):
 
         return cv
 
-    def cz(self, d, c, t):
+    def cz(self, d, b, c, t):
         digits = copy.deepcopy(d)
         cz = []
 
         index = super().CZ_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
-        basis = self.Basis(N)
+        basis = b
 
         for i in range(0, 2**N):
             if index[i] == 1:
@@ -605,13 +604,13 @@ class LazyMatrixSingle(MatrixFrame):
 
 
 # computer
-comp2 = QuantumComputer(4, 'Dense')
+comp2 = QuantumComputer(3, 'Dense')
 
-input1 = [(["CZ"], [[1, 0]])]
+input1 = [(["CZ"], [[2, 1]])]
 
 circ = comp2.gate_logic(input1)
 
-# print(circ.matrix)
+print(circ.matrix)
 
 
 '''
