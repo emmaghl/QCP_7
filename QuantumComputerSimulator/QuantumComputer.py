@@ -129,24 +129,24 @@ class QuantumComputer(Interface):
         digits = np.flip(digits, axis=1)
         return digits
 
-    def produce_digits2(self):
-        digits = []
-        for i in range(0, 2 ** self.N):
-            digit = []
-            if i < (2 ** self.N) / 2:
-                digit.append(0)
-            else:
-                digit.insert(0, 1)
-            for j in range(1, self.N):
-                x = i
-                for k in range(0, len(digit)):
-                    x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
-                if x < (2 ** self.N) / (2 ** (j + 1)):
-                    digit.append(0)
-                else:
-                    digit.append(1)
-            digits.append(digit)
-        return digits
+    # def produce_digits2(self):
+    #     digits = []
+    #     for i in range(0, 2 ** self.N):
+    #         digit = []
+    #         if i < (2 ** self.N) / 2:
+    #             digit.append(0)
+    #         else:
+    #             digit.insert(0, 1)
+    #         for j in range(1, self.N):
+    #             x = i
+    #             for k in range(0, len(digit)):
+    #                 x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
+    #             if x < (2 ** self.N) / (2 ** (j + 1)):
+    #                 digit.append(0)
+    #             else:
+    #                 digit.append(1)
+    #         digits.append(digit)
+    #     return digits
 
     def single_gates(self, gate, qnum):
         M = [0] * self.N

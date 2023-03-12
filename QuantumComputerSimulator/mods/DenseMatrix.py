@@ -35,24 +35,6 @@ class DenseMatrix(MatrixFrame):
         if Type == 'M1':
             self.matrix = np.array([[0, 0], [0, 1]])
 
-    def produce_digits2(self):
-        digits = []
-        for i in range(0, 8):
-            digit = []
-            if i < (8) / 2:
-                digit.append(0)
-            else:
-                digit.insert(0, 1)
-            for j in range(1, 8):
-                x = i
-                for k in range(0, len(digit)):
-                    x -= digit[k] * (8) / (2 ** (k + 1))
-                if x < (8) / (2 ** (j + 1)):
-                    digit.append(0)
-                else:
-                    digit.append(1)
-            digits.append(digit)
-        return digits
 
     @classmethod
     def tensor_prod(cls, M2, M1):
@@ -128,18 +110,14 @@ class DenseMatrix(MatrixFrame):
 
         index = super().CNOT_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
-        # = np.asarray(self.produce_digits2()
-        #print(basis)
-        #basis = self.Basis(N)
         basis = self.Basis(N)
-        #print(basis)
 
         for i in range(0, 2 ** N):
             new_row = basis[index[i]]
             new_row.shape = (1, 2 ** N)
             cn.append(new_row)
 
-        cn = np.asarray(np.asmatrix(np.asarray(cn)))
+        cn = np.asarray(np.asmatrix(np.asarray(cn))) # need to see if can neaten this up
         return cn
 
     def cv(self, d, c, t):
