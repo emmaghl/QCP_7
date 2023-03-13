@@ -70,7 +70,7 @@ print('Initialised qubits =', register)
 
 B_bases =  np.random.randint(2, size=n) 
 
-def measure_any(self, qnum, state):
+def measure_any(qnum, state):
         inner_register = self.Matrix.inner_prod(self.register)
         if state == 0:
             matrix = qc.gate_logic( [(["M0"], [[qnum]])] )
@@ -103,6 +103,7 @@ for i in range(n):
         
 print('Step 4 complete')
 print('B Bases =', B_bases)
+print('Measured B bits =', measurement)
 # Step 5 ---------------------------------------------------------------------------------------------------------------------------------------------------------------        
         
 B_Key = []
