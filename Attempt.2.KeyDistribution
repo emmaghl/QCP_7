@@ -164,6 +164,23 @@ for i in s:
 print('A random sample= ', sample_A)   
 print('B random sample= ', sample_B)
 
-  
+# Step 7 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+j = len(sample_A)
+l = len(sample_B) 
+
+if j == l: 
+        pass
+else: 
+        print('Error in sample length') 
+
+for i in range(j): 
+    m = sample_A[i]
+    o = sample_B[i] 
+    if m == o:
+         p = 'Secret Key is probably secure'
+    else: 
+         p = 'Secret Key is probably not secure'
+print(p)     
 
         
