@@ -179,7 +179,7 @@ class QuantumComputer(Interface):
         if gate[0] == "CZ":
             return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
 
-    def gate_logic(self, inputs, add_gate_name: str = ""):
+    def gate_logic(self, inputs, add_gate_name: str = "") -> np.array:
         '''Add gates to the circuit in time step tuples.'''
         check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
