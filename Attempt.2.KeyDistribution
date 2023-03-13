@@ -81,7 +81,7 @@ def measure_any(qnum, state):
         elif state == 1:
             matrix = qc.gate_logic( [(["M1"], [[qnum]])] )
             matrix = matrix.matrix
-        QProb = self.Matrix.trace(matrix.dot(inner_register))
+        QProb = np.trace(matrix.dot(inner_register))
         if (np.random.rand() < QProb ):
                 result = 0
         else: 
