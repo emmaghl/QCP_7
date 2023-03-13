@@ -46,18 +46,18 @@ for i in range(n):
         if k == 0:
             pass                                                             
         else:    
-            circuit = qc.gate_logic( (["X"], [[i]]) )
+            circuit = qc.gate_logic( [(["X"], [[i]])] )
             circuit = circuit.matrix                      
             register = circuit.dot(register)
     if j == 1:                      
         if k == 0: 
-            circuit = qc.gate_logic( (["H"], [[i]]) )
+            circuit = qc.gate_logic( [(["H"], [[i]])] )
             circuit = circuit.matrix                         
             register = circuit.dot(register)
         else: 
-            circuit_1 = qc.gate_logic( (["X"], [[i]]) ) 
+            circuit_1 = qc.gate_logic( [(["X"], [[i]])] ) 
             circuit_1 = circuit_1.matrix 
-            circuit_2 = qc.gate_logic( (["H"], [[i]]) )
+            circuit_2 = qc.gate_logic( [(["H"], [[i]])] )
             circuit_2 = circuit_2.matrix
             circuit = circuit_2.dot(circuit_1)
             register = circuit.dot(register) 
@@ -74,7 +74,7 @@ for i in range(n):
         measurement.append(result)
         
     else: 
-        circuit = qc.gate_logic( (["H"], [[i]]) ) 
+        circuit = qc.gate_logic( [(["H"], [[i]])] ) 
         circuit = circuit.matrix                         
         register = circuit.dot(register) 
         result = measure_any(register, i, 0) 
