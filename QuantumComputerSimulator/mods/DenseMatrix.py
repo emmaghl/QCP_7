@@ -132,7 +132,7 @@ class DenseMatrix(MatrixFrame):
             new_row.shape = (1, 2 ** N)
             cv.append(new_row)
 
-        cv = np.asarray(np.matrix(np.asarray(cv)))
+        cv = np.asarray(np.asmatrix(np.asarray(cv)))
 
         return cv
 
@@ -152,7 +152,7 @@ class DenseMatrix(MatrixFrame):
             new_row.shape = (1, 2 ** N)
             cz.append(new_row)
 
-        cz = np.asarray(np.matrix(np.asarray(cz)))
+        cz = np.asarray(np.asmatrix(np.asarray(cz)))
 
         return cz
 
