@@ -18,8 +18,9 @@ import random
 
 # Step 6 - Compare random sample of key to check, then discard, to see if there was any interception. 
 
-n = 5               #ideally have this so the user can interface
-        
+n = 5 #ideally have this so the user can interface
+qc = QuantumComputer(n, 'Dense')
+
 # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
         
 A_bits = np.random.randint(2, size=n)  
