@@ -25,18 +25,20 @@ qc = QuantumComputer(n, 'Dense')
         
 A_bits = np.random.randint(2, size=n)  
 
-print('A_bits =', A_bits)
+print('Step 1 complete')
+print('A bits =', A_bits)
         
 #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 A_bases = np.random.randint(2, size=n)  
 
-print('A_bases =', A_bases)
+print('Step 2 complete')
+print('A bases =', A_bases)
         
 
 #Step 3 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-register = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]).T
+register = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]).T  #this is qubits starting in 0 state, 32 inputs, as 2**5 = 32
 #print (register)
     
 for i in range(n): 
@@ -62,24 +64,45 @@ for i in range(n):
             circuit = circuit_2.dot(circuit_1)
             register = circuit.dot(register) 
 
+print('Step 3 complete')
+print('Initialised qubits =', register)
 # Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 B_bases =  np.random.randint(2, size=n) 
-                  
+
+def measure_any(self, qnum, state):
+        inner_register = self.Matrix.inner_prod(self.register)
+        if state == 0:
+            matrix = qc.gate_logic( [(["M0"], [[qnum]])] )
+            matrix = matrix.matrix
+        elif state == 1:
+            matrix = qc.gate_logic( [(["M1"], [[qnum]])] )
+            matrix = matrix.matrix
+        QProb = self.Matrix.trace(matrix.dot(inner_register))
+        if (np.random.rand() < QProb ):
+                result = 0
+        else: 
+                result = 1
+        return result
+        
+print('Measurement function has been defined without crashing, follow up will test') 
+                 
 measurement = []
 for i in range(n): 
     g = B_bases[i]
     if g == 0:
-        result = measure_any(register, i, 0)
+        result = measure_any(i, 0)
         measurement.append(result)
         
     else: 
         circuit = qc.gate_logic( [(["H"], [[i]])] ) 
         circuit = circuit.matrix                         
         register = circuit.dot(register) 
-        result = measure_any(register, i, 0) 
+        result = measure_any(i, 0) 
         measurement.append(result)
         
+print('Step 4 complete')
+print('B Bases =', B_bases)
 # Step 5 ---------------------------------------------------------------------------------------------------------------------------------------------------------------        
         
 B_Key = []
