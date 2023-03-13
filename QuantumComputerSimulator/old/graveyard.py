@@ -134,3 +134,12 @@ def Q_Register(self):
 
     self.psi = coeffs
     self.psi.shape = (j, 1)
+
+'''
+for i in range(0, step_n):
+    for j in range(0, len(self.single_inputs)):
+        if self.single_inputs[j] in inputs[i][0]:
+            M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+    for j in range(0, len(self.double_inputs)):
+        if self.double_inputs[j] in inputs[i][0]:
+            M.append(self.double_gates(inputs[i][0], inputs[i][1]))'''

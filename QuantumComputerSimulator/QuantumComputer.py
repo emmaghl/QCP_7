@@ -54,35 +54,7 @@ class QuantumComputer(Interface):
 
         self.__gate_history = []
 
-        # tests
-        '''
-        print("qubit 0 in state 0")
-        self.measure(0,0)
-        print("qubit 0 in state 1")
-        self.measure(0,1)
-        print("qubit 1 in state 0")
-        self.measure(1,0)
-        print("qubit 1 in state 1")
-        self.measure(1,1)
 
-        inputs = [(["H"],[[0]]),(["CNOT"],[[0,1]])]
-        circ = self.gate_logic(inputs)
-        self.psi = circ.output(self.psi)
-        #Make gate_logic produce objects
-
-        print("\n")
-        print("qubit 0 in state 0")
-        self.measure(0,0)
-        print("qubit 0 in state 1")
-        self.measure(0,1)
-        print("qubit 1 in state 0")
-        self.measure(1,0)
-        print("qubit 1 in state 1")
-        self.measure(1,1)
-        '''
-
-        # self.cv = self.Matrix('CV',self.binary,1,0)
-        # print(self.cv.output([1,2,3,5]))
 
     def Q_Register(self):
         coeffs = []
@@ -129,24 +101,6 @@ class QuantumComputer(Interface):
         digits = np.flip(digits, axis=1)
         return digits
 
-    # def produce_digits2(self):
-    #     digits = []
-    #     for i in range(0, 2 ** self.N):
-    #         digit = []
-    #         if i < (2 ** self.N) / 2:
-    #             digit.append(0)
-    #         else:
-    #             digit.insert(0, 1)
-    #         for j in range(1, self.N):
-    #             x = i
-    #             for k in range(0, len(digit)):
-    #                 x -= digit[k] * (2 ** self.N) / (2 ** (k + 1))
-    #             if x < (2 ** self.N) / (2 ** (j + 1)):
-    #                 digit.append(0)
-    #             else:
-    #                 digit.append(1)
-    #         digits.append(digit)
-    #     return digits
 
     def single_gates(self, gate, qnum):
         M = [0] * self.N
@@ -195,12 +149,35 @@ class QuantumComputer(Interface):
         M = []
 
         for i in range(0, step_n):
+            gate_type = []
             for j in range(0, len(self.single_inputs)):
                 if self.single_inputs[j] in inputs[i][0]:
-                    M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+                    gate_type.append('single')
+
             for j in range(0, len(self.double_inputs)):
                 if self.double_inputs[j] in inputs[i][0]:
-                    M.append(self.double_gates(inputs[i][0], inputs[i][1]))
+                    gate_type.append('double')
+
+            gate_single = []
+            gate_double = []
+            for j in range(0, len(gate_type)):
+                if gate_type[j] == 'single':
+                    gate_single.append(True)
+                else:
+                    gate_single.append(False)
+                if gate_type[j] == 'double':
+                    gate_double.append(True)
+                else:
+                    gate_double.append(False)
+
+            if all(gate_single) == True:
+                M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+            elif all(gate_double) == True:
+                M.append(self.double_gates(inputs[i][0], inputs[i][1]))
+            else:
+                print(
+                    "Input error: single gates and double gates must be in separate steps. Returning identity matrix instead.")
+                return self.Matrix('I')
 
         M = np.flip(M, axis=0)
         m = M[0]
