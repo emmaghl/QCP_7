@@ -1,6 +1,6 @@
-from PrintingCircuit import PrintingCircuit
+from QuantumComputerSimulator.mods.PrintingCircuit import PrintingCircuit
 import numpy as np
-import time
+
 
 class Sparse_Quantum_Computer:
 

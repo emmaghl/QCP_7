@@ -1,6 +1,6 @@
-from PrintingCircuit import PrintingCircuit
+from QuantumComputerSimulator.mods.PrintingCircuit import PrintingCircuit
 import numpy as np
-from abc import ABC, abstractmethod
+
 
 class Quantum_Computer:
 

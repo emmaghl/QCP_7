@@ -1,0 +1,721 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>QuantumComputerSimulator.mods.DenseMatrix API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>QuantumComputerSimulator.mods.DenseMatrix</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">from QuantumComputerSimulator.mods.MatrixFrame import MatrixFrame
+
+import numpy as np
+import copy
+
+class DenseMatrix(MatrixFrame):
+
+    def __init__(self, Type, *args):
+        if Type == &#39;H&#39;:
+            self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
+        if Type == &#39;I&#39;:
+            self.matrix = np.array([[1, 0], [0, 1]])
+        if Type == &#39;P&#39;:
+            self.matrix = np.array([[1, 0], [1, np.exp(1j * args[0])]])
+
+        if Type == &#39;X&#39;:
+            self.matrix = np.array([[0, 1], [1, 0]])
+        if Type == &#39;Y&#39;:
+            self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
+        if Type == &#39;Z&#39;:
+            self.matrix = np.array([[1, 0], [0, -1]])
+
+        if Type == &#39;TP&#39; or Type == &#39;MM&#39;:
+            self.matrix = args[0]
+
+        if Type == &#39;CNOT&#39;:
+            self.matrix = self.cnot(args[0], args[1], args[2])
+        if Type == &#39;CV&#39;:
+            self.matrix = self.cv(args[0], args[1], args[2])
+        if Type == &#39;CZ&#39;:
+            self.matrix = self.cz(args[0], args[1], args[2])
+
+        if Type == &#39;M0&#39;:
+            self.matrix = np.array([[1, 0], [0, 0]])
+        if Type == &#39;M1&#39;:
+            self.matrix = np.array([[0, 0], [0, 1]])
+
+    def produce_digits2(self):
+        digits = []
+        for i in range(0, 8):
+            digit = []
+            if i &lt; (8) / 2:
+                digit.append(0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, 8):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (8) / (2 ** (k + 1))
+                if x &lt; (8) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        return digits
+
+    @classmethod
+    def tensor_prod(cls, M2, M1):
+        if type(M1) == DenseMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == DenseMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
+        R = []
+        if len(m1.shape) &gt; 1:
+            for i in range(len(m1)):
+                R.append(m1[i][0] * m2)
+                for j in range(1, len(m1[i])):
+                    R[i] = np.concatenate((R[i], (m1[i][j] * m2)), axis=1)
+            C = R[0]
+            for i in range(1, len(m1)):
+                C = np.concatenate((C, R[i]), axis=0)
+        else:
+            for i in range(len(m1)):
+                R.append(m1[i] * m2)
+            C = R[0]
+            if m1.shape[0] &gt; 0:
+                ax = 0
+            else:
+                ax = 1
+            for i in range(1, len(m1)):
+                C = np.concatenate((C, R[i]), axis=ax)
+        return DenseMatrix(&#39;TP&#39;, C)
+
+    @classmethod
+    def matrix_multiply(cls, M1, M2):
+        if type(M1) == DenseMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == DenseMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
+        M = np.zeros(len(m1) * len(m2[0]), dtype=&#39;complex&#39;)
+        M.shape = (len(m1), len(m2[0]))
+
+        for i in range(len(m1)):
+            for j in range(len(m2[0])):
+                for k in range(len(m2)):
+                    M[i][j] += m1[i][k] * m2[k][j]
+        return DenseMatrix(&#39;MM&#39;, M)
+
+    @classmethod
+    def inner_prod(cls, M):
+        return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))
+
+    @classmethod
+    def trace(cls, M):
+        return np.trace(M.matrix)
+
+    def Basis(self, N):
+        Q = []
+        for i in range(0, 2 ** N):
+            Q.append(np.zeros(2 ** N))
+            Q[i][i] = 1
+            Q[i].shape = (2 ** N, 1)
+        return Q
+
+    def cnot(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cn = []
+
+        index = super().CNOT_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        # = np.asarray(self.produce_digits2()
+        #print(basis)
+        #basis = self.Basis(N)
+        basis = self.Basis(N)
+        #print(basis)
+
+        for i in range(0, 2 ** N):
+            new_row = basis[index[i]]
+            new_row.shape = (1, 2 ** N)
+            cn.append(new_row)
+
+        cn = np.asarray(np.asmatrix(np.asarray(cn)))
+        return cn
+
+    def cv(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cv = []
+
+        index = super().CV_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        basis = self.Basis(N)
+
+        for i in range(0, 2**N):
+            if index[i] == 1:
+                new_row = 1j * basis[i]
+            else:
+                new_row = basis[i]
+            new_row.shape = (1, 2 ** N)
+            cv.append(new_row)
+
+        cv = np.asarray(np.matrix(np.asarray(cv)))
+
+        return cv
+
+    def cz(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cz = []
+
+        index = super().CZ_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        basis = self.Basis(N)
+
+        for i in range(0, 2**N):
+            if index[i] == 1:
+                new_row = -1 * basis[i]
+            else:
+                new_row = basis[i]
+            new_row.shape = (1, 2 ** N)
+            cz.append(new_row)
+
+        cz = np.asarray(np.matrix(np.asarray(cz)))
+
+        return cz
+
+    def output(self, inputs):
+        return DenseMatrix.matrix_multiply(self.matrix, inputs)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix"><code class="flex name class">
+<span>class <span class="ident">DenseMatrix</span></span>
+<span>(</span><span>Type, *args)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Helper class that provides a standard way to create an ABC using
+inheritance.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DenseMatrix(MatrixFrame):
+
+    def __init__(self, Type, *args):
+        if Type == &#39;H&#39;:
+            self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
+        if Type == &#39;I&#39;:
+            self.matrix = np.array([[1, 0], [0, 1]])
+        if Type == &#39;P&#39;:
+            self.matrix = np.array([[1, 0], [1, np.exp(1j * args[0])]])
+
+        if Type == &#39;X&#39;:
+            self.matrix = np.array([[0, 1], [1, 0]])
+        if Type == &#39;Y&#39;:
+            self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
+        if Type == &#39;Z&#39;:
+            self.matrix = np.array([[1, 0], [0, -1]])
+
+        if Type == &#39;TP&#39; or Type == &#39;MM&#39;:
+            self.matrix = args[0]
+
+        if Type == &#39;CNOT&#39;:
+            self.matrix = self.cnot(args[0], args[1], args[2])
+        if Type == &#39;CV&#39;:
+            self.matrix = self.cv(args[0], args[1], args[2])
+        if Type == &#39;CZ&#39;:
+            self.matrix = self.cz(args[0], args[1], args[2])
+
+        if Type == &#39;M0&#39;:
+            self.matrix = np.array([[1, 0], [0, 0]])
+        if Type == &#39;M1&#39;:
+            self.matrix = np.array([[0, 0], [0, 1]])
+
+    def produce_digits2(self):
+        digits = []
+        for i in range(0, 8):
+            digit = []
+            if i &lt; (8) / 2:
+                digit.append(0)
+            else:
+                digit.insert(0, 1)
+            for j in range(1, 8):
+                x = i
+                for k in range(0, len(digit)):
+                    x -= digit[k] * (8) / (2 ** (k + 1))
+                if x &lt; (8) / (2 ** (j + 1)):
+                    digit.append(0)
+                else:
+                    digit.append(1)
+            digits.append(digit)
+        return digits
+
+    @classmethod
+    def tensor_prod(cls, M2, M1):
+        if type(M1) == DenseMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == DenseMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
+        R = []
+        if len(m1.shape) &gt; 1:
+            for i in range(len(m1)):
+                R.append(m1[i][0] * m2)
+                for j in range(1, len(m1[i])):
+                    R[i] = np.concatenate((R[i], (m1[i][j] * m2)), axis=1)
+            C = R[0]
+            for i in range(1, len(m1)):
+                C = np.concatenate((C, R[i]), axis=0)
+        else:
+            for i in range(len(m1)):
+                R.append(m1[i] * m2)
+            C = R[0]
+            if m1.shape[0] &gt; 0:
+                ax = 0
+            else:
+                ax = 1
+            for i in range(1, len(m1)):
+                C = np.concatenate((C, R[i]), axis=ax)
+        return DenseMatrix(&#39;TP&#39;, C)
+
+    @classmethod
+    def matrix_multiply(cls, M1, M2):
+        if type(M1) == DenseMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == DenseMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
+        M = np.zeros(len(m1) * len(m2[0]), dtype=&#39;complex&#39;)
+        M.shape = (len(m1), len(m2[0]))
+
+        for i in range(len(m1)):
+            for j in range(len(m2[0])):
+                for k in range(len(m2)):
+                    M[i][j] += m1[i][k] * m2[k][j]
+        return DenseMatrix(&#39;MM&#39;, M)
+
+    @classmethod
+    def inner_prod(cls, M):
+        return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))
+
+    @classmethod
+    def trace(cls, M):
+        return np.trace(M.matrix)
+
+    def Basis(self, N):
+        Q = []
+        for i in range(0, 2 ** N):
+            Q.append(np.zeros(2 ** N))
+            Q[i][i] = 1
+            Q[i].shape = (2 ** N, 1)
+        return Q
+
+    def cnot(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cn = []
+
+        index = super().CNOT_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        # = np.asarray(self.produce_digits2()
+        #print(basis)
+        #basis = self.Basis(N)
+        basis = self.Basis(N)
+        #print(basis)
+
+        for i in range(0, 2 ** N):
+            new_row = basis[index[i]]
+            new_row.shape = (1, 2 ** N)
+            cn.append(new_row)
+
+        cn = np.asarray(np.asmatrix(np.asarray(cn)))
+        return cn
+
+    def cv(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cv = []
+
+        index = super().CV_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        basis = self.Basis(N)
+
+        for i in range(0, 2**N):
+            if index[i] == 1:
+                new_row = 1j * basis[i]
+            else:
+                new_row = basis[i]
+            new_row.shape = (1, 2 ** N)
+            cv.append(new_row)
+
+        cv = np.asarray(np.matrix(np.asarray(cv)))
+
+        return cv
+
+    def cz(self, d, c, t):
+        digits = copy.deepcopy(d)
+        cz = []
+
+        index = super().CZ_logic(digits, c, t)
+        N = int(np.log(len(index)) / np.log(2))
+        basis = self.Basis(N)
+
+        for i in range(0, 2**N):
+            if index[i] == 1:
+                new_row = -1 * basis[i]
+            else:
+                new_row = basis[i]
+            new_row.shape = (1, 2 ** N)
+            cz.append(new_row)
+
+        cz = np.asarray(np.matrix(np.asarray(cz)))
+
+        return cz
+
+    def output(self, inputs):
+        return DenseMatrix.matrix_multiply(self.matrix, inputs)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame">MatrixFrame</a></li>
+<li>abc.ABC</li>
+</ul>
+<h3>Static methods</h3>
+<dl>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_prod"><code class="name flex">
+<span>def <span class="ident">inner_prod</span></span>(<span>M)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def inner_prod(cls, M):
+    return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.matrix_multiply"><code class="name flex">
+<span>def <span class="ident">matrix_multiply</span></span>(<span>M1, M2)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def matrix_multiply(cls, M1, M2):
+    if type(M1) == DenseMatrix:
+        m1 = M1.matrix
+    else:
+        m1 = M1
+    if type(M2) == DenseMatrix:
+        m2 = M2.matrix
+    else:
+        m2 = M2
+
+    M = np.zeros(len(m1) * len(m2[0]), dtype=&#39;complex&#39;)
+    M.shape = (len(m1), len(m2[0]))
+
+    for i in range(len(m1)):
+        for j in range(len(m2[0])):
+            for k in range(len(m2)):
+                M[i][j] += m1[i][k] * m2[k][j]
+    return DenseMatrix(&#39;MM&#39;, M)</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.tensor_prod"><code class="name flex">
+<span>def <span class="ident">tensor_prod</span></span>(<span>M2, M1)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def tensor_prod(cls, M2, M1):
+    if type(M1) == DenseMatrix:
+        m1 = M1.matrix
+    else:
+        m1 = M1
+    if type(M2) == DenseMatrix:
+        m2 = M2.matrix
+    else:
+        m2 = M2
+
+    R = []
+    if len(m1.shape) &gt; 1:
+        for i in range(len(m1)):
+            R.append(m1[i][0] * m2)
+            for j in range(1, len(m1[i])):
+                R[i] = np.concatenate((R[i], (m1[i][j] * m2)), axis=1)
+        C = R[0]
+        for i in range(1, len(m1)):
+            C = np.concatenate((C, R[i]), axis=0)
+    else:
+        for i in range(len(m1)):
+            R.append(m1[i] * m2)
+        C = R[0]
+        if m1.shape[0] &gt; 0:
+            ax = 0
+        else:
+            ax = 1
+        for i in range(1, len(m1)):
+            C = np.concatenate((C, R[i]), axis=ax)
+    return DenseMatrix(&#39;TP&#39;, C)</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.trace"><code class="name flex">
+<span>def <span class="ident">trace</span></span>(<span>M)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def trace(cls, M):
+    return np.trace(M.matrix)</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.Basis"><code class="name flex">
+<span>def <span class="ident">Basis</span></span>(<span>self, N)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def Basis(self, N):
+    Q = []
+    for i in range(0, 2 ** N):
+        Q.append(np.zeros(2 ** N))
+        Q[i][i] = 1
+        Q[i].shape = (2 ** N, 1)
+    return Q</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cnot"><code class="name flex">
+<span>def <span class="ident">cnot</span></span>(<span>self, d, c, t)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cnot(self, d, c, t):
+    digits = copy.deepcopy(d)
+    cn = []
+
+    index = super().CNOT_logic(digits, c, t)
+    N = int(np.log(len(index)) / np.log(2))
+    # = np.asarray(self.produce_digits2()
+    #print(basis)
+    #basis = self.Basis(N)
+    basis = self.Basis(N)
+    #print(basis)
+
+    for i in range(0, 2 ** N):
+        new_row = basis[index[i]]
+        new_row.shape = (1, 2 ** N)
+        cn.append(new_row)
+
+    cn = np.asarray(np.asmatrix(np.asarray(cn)))
+    return cn</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cv"><code class="name flex">
+<span>def <span class="ident">cv</span></span>(<span>self, d, c, t)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cv(self, d, c, t):
+    digits = copy.deepcopy(d)
+    cv = []
+
+    index = super().CV_logic(digits, c, t)
+    N = int(np.log(len(index)) / np.log(2))
+    basis = self.Basis(N)
+
+    for i in range(0, 2**N):
+        if index[i] == 1:
+            new_row = 1j * basis[i]
+        else:
+            new_row = basis[i]
+        new_row.shape = (1, 2 ** N)
+        cv.append(new_row)
+
+    cv = np.asarray(np.matrix(np.asarray(cv)))
+
+    return cv</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cz"><code class="name flex">
+<span>def <span class="ident">cz</span></span>(<span>self, d, c, t)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def cz(self, d, c, t):
+    digits = copy.deepcopy(d)
+    cz = []
+
+    index = super().CZ_logic(digits, c, t)
+    N = int(np.log(len(index)) / np.log(2))
+    basis = self.Basis(N)
+
+    for i in range(0, 2**N):
+        if index[i] == 1:
+            new_row = -1 * basis[i]
+        else:
+            new_row = basis[i]
+        new_row.shape = (1, 2 ** N)
+        cz.append(new_row)
+
+    cz = np.asarray(np.matrix(np.asarray(cz)))
+
+    return cz</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.output"><code class="name flex">
+<span>def <span class="ident">output</span></span>(<span>self, inputs)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def output(self, inputs):
+    return DenseMatrix.matrix_multiply(self.matrix, inputs)</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.produce_digits2"><code class="name flex">
+<span>def <span class="ident">produce_digits2</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def produce_digits2(self):
+    digits = []
+    for i in range(0, 8):
+        digit = []
+        if i &lt; (8) / 2:
+            digit.append(0)
+        else:
+            digit.insert(0, 1)
+        for j in range(1, 8):
+            x = i
+            for k in range(0, len(digit)):
+                x -= digit[k] * (8) / (2 ** (k + 1))
+            if x &lt; (8) / (2 ** (j + 1)):
+                digit.append(0)
+            else:
+                digit.append(1)
+        digits.append(digit)
+    return digits</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="QuantumComputerSimulator.mods" href="index.html">QuantumComputerSimulator.mods</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix">DenseMatrix</a></code></h4>
+<ul class="two-column">
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.Basis" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.Basis">Basis</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cnot" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cnot">cnot</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cv" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cv">cv</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cz" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cz">cz</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_prod" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_prod">inner_prod</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.matrix_multiply" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.matrix_multiply">matrix_multiply</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.output" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.output">output</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.produce_digits2" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.produce_digits2">produce_digits2</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.tensor_prod" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.tensor_prod">tensor_prod</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.trace" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.trace">trace</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
