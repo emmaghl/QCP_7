@@ -1,0 +1,141 @@
+from QuantumComputerSimulator import QuantumComputer, Test
+
+import matplotlib.pyplot as plt
+import sys
+import numpy as np
+import time
+import random
+
+# Step 1 - generate a random bit string n long, this is the message, A_bits
+
+# Step 2 - generate a random bit string n long, this is the corresponding, A_bases
+
+# Step 3 - Set up each qubit corresponding to the combination of A_bases and A_bits
+
+# Step 4 - B_measure, set up B_bases to measure_measure each qubit against that bases
+
+# Step 5 - Compare the random choice of bases to achieve secret key of bits for both A and B! 
+
+# Step 6 - Compare random sample of key to check, then discard, to see if there was any interception. 
+
+n = 5               #ideally have this so the user can interface
+        
+# Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+        
+A_bits = np.random.randint(2, size=n)  
+
+print('A_bits =', A_bits)
+        
+#Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A_bases = np.random.randint(2, size=n)  
+
+print('A_bases =', A_bases)
+        
+
+#Step 3 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+register = np.array([[1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]).T
+#print (register)
+    
+for i in range(n): 
+    j = A_bases[i]
+    k = A_bits[i]   
+    if j == 0:                                                    
+        if k == 0:
+            pass                                                             
+        else:    
+            circuit = qc.gate_logic( (["X"], [[i]]) )
+            circuit = circuit.matrix                      
+            register = circuit.dot(register)
+    if j == 1:                      
+        if k == 0: 
+            circuit = qc.gate_logic( (["H"], [[i]]) )
+            circuit = circuit.matrix                         
+            register = circuit.dot(register)
+        else: 
+            circuit_1 = qc.gate_logic( (["X"], [[i]]) ) 
+            circuit_1 = circuit_1.matrix 
+            circuit_2 = qc.gate_logic( (["H"], [[i]]) )
+            circuit_2 = circuit_2.matrix
+            circuit = circuit_2.dot(circuit_1)
+            register = circuit.dot(register) 
+
+# Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+B_bases =  np.random.randint(2, size=n) 
+                  
+measurement = []
+for i in range(n): 
+    g = B_bases[i]
+    if g == 0:
+        result = measure_any(register, i, 0)
+        measurement.append(result)
+        
+    else: 
+        circuit = qc.gate_logic( (["H"], [[i]]) ) 
+        circuit = circuit.matrix                         
+        register = circuit.dot(register) 
+        result = measure_any(register, i, 0) 
+        measurement.append(result)
+        
+# Step 5 ---------------------------------------------------------------------------------------------------------------------------------------------------------------        
+        
+B_Key = []
+
+for i in range(n): 
+    a = A_bases[i] 
+    b = B_bases[i]
+    c = measurement[i]
+    if a == b: 
+        B_Key.append(c)
+    else: 
+        pass
+       
+A_Key = []
+for i in range(n): 
+    a = A_bases[i] 
+    b = B_bases[i]
+    c = A_bits[i]
+    if a == b: 
+        A_Key.append(c)
+    else: 
+        pass       
+
+# Step 6 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sample_A = [] 
+sample_B = []
+
+j = len(A_Key) 
+l = len(B_Key)
+
+if j == l: 
+    print('Lengths match')
+    print('Length of Key =', j)
+else: 
+    print('Error in Key length')
+    
+    
+number_of_samples = round(j*0.5)
+
+s = random.sample(range(0, j), number_of_samples)
+
+print (s) 
+
+for i in s: 
+    f = A_Key[i] 
+    h = B_Key[i]
+    if f == h: 
+        sample_A.append(f)
+        sample_B.append(h)
+    else: 
+        sample_A.append('intercepted')
+        sample_B.append('intercepted')
+
+print('A random sample= ', sample_A)   
+print('B random sample= ', sample_B)
+
+  
+
+        
