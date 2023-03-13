@@ -211,8 +211,8 @@ for i in t:
     B_secret_key.append(B_Key[i])
 
 print('Step 8 complete')
-print('A Key =', A_secret_key)
-print('B Key =', B_secret_key) 
+print('A Secret Key =', A_secret_key)
+print('B Secret Key =', B_secret_key) 
 print('These are not shared publicaly, but are used to encript messages') 
 
 # Step 9 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
