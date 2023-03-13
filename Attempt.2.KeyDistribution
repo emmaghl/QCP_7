@@ -16,7 +16,11 @@ import random
 
 # Step 5 - Compare the random choice of bases to achieve secret key of bits for both A and B! 
 
-# Step 6 - Compare random sample of key to check, then discard, to see if there was any interception. 
+# Step 6 - Create random sample of key to check.
+
+# Step 7 - Check sample keys for interception, 
+
+# Step 8 - Disgard sample keys to get secret key for both A and B 
 
 n = 5 #ideally have this so the user can interface
 qc = QuantumComputer(n, 'Dense')
@@ -26,7 +30,7 @@ qc = QuantumComputer(n, 'Dense')
 A_bits = np.random.randint(2, size=n)  
 
 print('Step 1 complete')
-print('A bits =', A_bits)
+print('A bits =', A_bits, 'These are only ever known to A')
         
 #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -157,6 +161,7 @@ for i in s:
     if f == h: 
         sample_A.append(f)
         sample_B.append(h)
+        
     else: 
         sample_A.append('intercepted')
         sample_B.append('intercepted')
@@ -183,4 +188,24 @@ for i in range(j):
          p = 'Secret Key is probably not secure'
 print(p)     
 
-        
+# Step 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+j = len(A_Key) 
+t = range(0, j) 
+t = list(t) 
+
+for i in s: 
+    t.remove(i)
+    
+A_secret_key = [] 
+B_secret_key = [] 
+    
+for i in t: 
+    A_secret_key.append(A_Key[i])
+    B_secret_key.append(B_Key[i])
+
+print('A Key =', A_secret_key)
+print('B Key =', B_secret_key) 
+print('These are not shared publicaly, but are used to encript messages') 
+
+       
