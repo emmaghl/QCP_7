@@ -71,7 +71,10 @@ print('Initialised qubits =', register)
 B_bases =  np.random.randint(2, size=n) 
 
 def measure_any(qnum, state):
-        inner_register = self.Matrix.inner_prod(self.register)
+        register_conjugate = np.conjugate(register)
+        register_ket = register_conjugate.T
+        inner_register = np.dot(register, register_ket)
+        
         if state == 0:
             matrix = qc.gate_logic( [(["M0"], [[qnum]])] )
             matrix = matrix.matrix
