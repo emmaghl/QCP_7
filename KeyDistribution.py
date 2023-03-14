@@ -29,7 +29,8 @@ import random
 def measure_any(qnum, state, register ):
     register_conjugate = np.conjugate(register)
     register_ket = register_conjugate.T
-    inner_register = np.dot(register, register_ket)
+    inner_register = qc.Matrix.matrix_multiply(register, register_ket)
+    inner_register = inner_register.matrix
 
     if state == 0:
         matrix = qc.gate_logic([(["M0"], [[qnum]])])
@@ -37,7 +38,11 @@ def measure_any(qnum, state, register ):
     elif state == 1:
         matrix = qc.gate_logic([(["M1"], [[qnum]])])
         matrix = matrix.matrix
-    QProb = np.trace(matrix.dot(inner_register))
+
+    inner_register_M = qc.Matrix.matrix_multiply(matrix, inner_register)
+    inner_register_M = inner_register_M.matrix
+    QProb = np.trace(inner_register_M)
+
     if (np.random.rand() < QProb):
         result = 0
     else:
@@ -86,19 +91,22 @@ def main():
             else:
                 circuit = qc.gate_logic( [(["X"], [[i]])] )
                 circuit = circuit.matrix
-                register = circuit.dot(register)
+                register = qc.Matrix.matrix_multiply(circuit, register)
+                register = register.matrix
         if j == 1:
             if k == 0:
                 circuit = qc.gate_logic( [(["H"], [[i]])] )
                 circuit = circuit.matrix
-                register = circuit.dot(register)
+                register = qc.Matrix.matrix_multiply(circuit, register)
+                register = register.matrix
             else:
                 circuit_1 = qc.gate_logic( [(["X"], [[i]])] )
                 circuit_1 = circuit_1.matrix
                 circuit_2 = qc.gate_logic( [(["H"], [[i]])] )
                 circuit_2 = circuit_2.matrix
                 circuit = circuit_2.dot(circuit_1)
-                register = circuit.dot(register)
+                register = qc.Matrix.matrix_multiply(circuit, register)
+                register = register.matrix
 
     print('Step 3 complete: Qubits encoded')
 
@@ -120,7 +128,8 @@ def main():
             else:
                 circuit = qc.gate_logic([(["H"], [[i]])])
                 circuit = circuit.matrix
-                register = circuit.dot(register)
+                register = qc.Matrix.matrix_multiply(circuit, register)
+                register = register.matrix
                 result = measure_any(i, 0, register)
                 register_intercept.append(result)
                 measurement_intercept.append(result)
@@ -141,9 +150,11 @@ def main():
                 register = register.T
             else:
                 if q == 0:
-                    register = np.kron(register, zero)
+                    register = qc.Matrix.tensor_prod(register, zero)
+                    register = register.matrix
                 else:
-                    register = np.kron(register, one)
+                    register = qc.Matrix.tensor_prod(register, one)
+                    register = register.matrix
         print('Interception completed:', C_bases, '!This is not publicly shared!')
     else:
         pass
@@ -162,7 +173,8 @@ def main():
         else:
             circuit = qc.gate_logic( [(["H"], [[i]])] )
             circuit = circuit.matrix
-            register = circuit.dot(register)
+            register = qc.Matrix.matrix_multiply( circuit, register)
+            register = register.matrix
             result = measure_any(i, 0, register)
             measurement.append(result)
 
@@ -247,6 +259,7 @@ def main():
             print('Secret Key is probably not secure')
             exit()
     print('Secret Key is probably secure')
+
 
 
     print('Step 7 complete:', p)
