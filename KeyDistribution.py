@@ -8,7 +8,7 @@ import random
 
 # Step 0 - Set up n qubit register
 
-# Step 1 - generate a random bit string n long, this is the message, A_bits
+# Step 1 - Generate a random bit string n long, this is the message, A_bits
 
 # Step 2 - generate a random bit string n long, this is the corresponding, A_bases
 
@@ -26,10 +26,9 @@ import random
 
 #n = 5 ideally have this so the user can interface
 
-n = int(input('Specify n: '))
+n = int(input('How long would you like your bit message to be?: '))
 
 qc = QuantumComputer(n, 'Dense')
-
 
 # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -37,33 +36,22 @@ register = np.array([[1, 0]])
 
 w = 2**(n) - 2
 
-print(w)
-
 for i in range(w): 
     register = np.append(register, [0])
 
+register = np.array([register]).T
 
-register = np.array([register]).T  
-
-#print (register)
-
-
-
+print('Step 0 complete: Qubit register setup')
 # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
         
 A_bits = np.random.randint(2, size=n)  
 
-print('Step 1 complete')
-print('A bits =', A_bits, 'This is not shared publically')
-        
+print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
 #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 A_bases = np.random.randint(2, size=n)  
 
-print('Step 2 complete')
-print('A bases =', A_bases)
-        
-
+print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
 #Step 3 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     
 for i in range(n): 
@@ -107,7 +95,7 @@ def measure_any(qnum, state):
             matrix = qc.gate_logic( [(["M1"], [[qnum]])] )
             matrix = matrix.matrix
         QProb = np.trace(matrix.dot(inner_register))
-        if (np.random.rand() < QProb ):
+        if (np.random.rand() < QProb):
                 result = 0
         else: 
                 result = 1
@@ -129,7 +117,7 @@ for i in range(n):
         
 print('Step 4 complete')
 print('B Bases =', B_bases)
-print('Measured B bits =', measurement, 'This is not shared publically')
+print('Measured B bits =', measurement, 'This is not shared publicly')
 # Step 5 ---------------------------------------------------------------------------------------------------------------------------------------------------------------        
         
 B_Key = []
@@ -154,8 +142,8 @@ for i in range(n):
         pass  
         
 print('Step 5 complete')
-print('A Key =', A_Key , 'This is not shared publically')
-print('B Key =', B_Key, 'This is not shared publically')
+print('A Key =', A_Key , 'This is not shared publicly')
+print('B Key =', B_Key, 'This is not shared publicly')
 
 # Step 6 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -166,8 +154,9 @@ j = len(A_Key)
 l = len(B_Key)
 
 if j == l: 
-    print('Lengths match')
-    print('Length of Key =', j)
+    #print('Lengths match')
+    #print('Length of Key =', j)
+    pass
 else: 
     print('Error in Key length')
     
@@ -189,10 +178,9 @@ for i in s:
         sample_A.append('intercepted')
         sample_B.append('intercepted')
 
-print('Step 6 complete') 
-print('Sample of qubits for A and B to share =', s)
-print('A random sample= ', sample_A)   
-print('B random sample= ', sample_B)
+print('Step 6 complete:', 'Sample of qubits for A and B to share =', s)
+print('A random sample= ', sample_A, 'These are shared publicly')
+print('B random sample= ', sample_B, 'These are shared publicly')
 
 # Step 7 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -213,8 +201,7 @@ for i in range(j):
          p = 'Secret Key is probably not secure'
      
 
-print('Step 7 complete') 
-print(p)
+print('Step 7 complete:', p)
 # Step 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 j = len(A_Key) 
@@ -231,10 +218,10 @@ for i in t:
     A_secret_key.append(A_Key[i])
     B_secret_key.append(B_Key[i])
 
-print('Step 8 complete')
-print('A Secret Key =', A_secret_key)
-print('B Secret Key =', B_secret_key) 
-print('These are not shared publicaly, but are used to encript messages') 
+print('Step 8 complete:')
+print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages')
+print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages')
+
 
 # Step 9 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 #Interception test next!!!
