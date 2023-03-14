@@ -134,7 +134,7 @@ class DenseMatrix(MatrixFrame):
 
     def cnot(self, d, c, t):
         '''
-        Produce the multi-input gate CNOT
+        Produce the multi-input gate CNOT, inherits from MatrixFrame and builds in dense method.
         :param d:
         :param c:
         :param t:
@@ -157,7 +157,7 @@ class DenseMatrix(MatrixFrame):
 
     def cv(self, d, c, t):
         '''
-
+        Build the control V gate, inherits from MatrixFrame and builds in dense method
         :param d:
         :param c:
         :param t:
