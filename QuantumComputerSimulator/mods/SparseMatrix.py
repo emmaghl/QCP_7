@@ -79,7 +79,7 @@ class SparseMatrix(MatrixFrame):
                 value = m1[j][2] * m2[i][2]
                 tensorprod.append([column, row, value])
 
-        return tensorprod
+        return SparseMatrix("TP", tensorprod)
 
     @classmethod
     def matrix_multiply(cls, M1, M2):
@@ -103,7 +103,7 @@ class SparseMatrix(MatrixFrame):
                                               0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
 
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
-        return matmul
+        return SparseMatrix("MM", matmul)
 
     def sparse_multiply(self, num: float, mat):
         '''multiplies a scalar by a sparse matrix'''
@@ -111,7 +111,7 @@ class SparseMatrix(MatrixFrame):
         mul = mat
         for i in range(len(mat)):
             mul[i][2] = num*mat[i][2]
-        return mul
+        return mul.matrix
 
     @classmethod
     def transpose(cls, M):
@@ -124,11 +124,11 @@ class SparseMatrix(MatrixFrame):
         for i in range(len(m)):
             row, column, entry = m[i]
             m_transpose[i] = [column, row, entry]
-        return m_transpose
+        return m_transpose.matrix
 
     @classmethod
     def inner_prod(cls, M):
-        return cls.matrix_multiply(M.matrix, cls.transpose(np.conj(M.matrix)))
+        return SparseMatrix.matrix_multiply(M.matrix, cls.transpose(np.conj(M.matrix)))
 
     @classmethod
     def trace(cls, M):
