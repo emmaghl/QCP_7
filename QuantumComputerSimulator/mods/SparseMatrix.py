@@ -36,11 +36,22 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def size_matrix(cls,M):
-        ncol = M[-1][0] + 1  # number of columns is the column value of the last entry in the sparse matrix
+        if type(M) == SparseMatrix:
+            m = M.matrix
+        else:
+            m = M
+
+        # ncol = M[-1][0] + 1  # number of columns is the column value of the last entry in the sparse matrix
+        nc = 0  # number of rows is the maximum row value across the array (+1 because of Python indexing)
+        for j in range(len(m)):
+            if m[j][0] > nc:
+                nc = m[j][0]
+        ncol = nc + 1
+
         nr = 0  # number of rows is the maximum row value across the array (+1 because of Python indexing)
-        for j in range(len(M)):
-            if M[j][1] > nr:
-                nr = M[j][1]
+        for j in range(len(m)):
+            if m[j][1] > nr:
+                nr = m[j][1]
         nrow = nr + 1
         return (ncol, nrow)
 
@@ -60,8 +71,9 @@ class SparseMatrix(MatrixFrame):
         m2_row = cls.size_matrix(m2)[1]
 
         tensorprod = []
+
         for j in range(len(m1)):
-            for i in range(len(m1)):
+            for i in range(len(m2)):
                 column = m2_col * m1[j][0] + m2[i][0]
                 row = m2_row * m1[j][1] + m2[i][1]
                 value = m1[j][2] * m2[i][2]
@@ -71,11 +83,11 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def matrix_multiply(cls, M1, M2):
-        if type(M1) == DenseMatrix:
+        if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
             m1 = M1
-        if type(M2) == DenseMatrix:
+        if type(M2) == SparseMatrix:
             m2 = M2.matrix
         else:
             m2 = M2
@@ -101,12 +113,18 @@ class SparseMatrix(MatrixFrame):
             mul[i][2] = num*mat[i][2]
         return mul
 
-    def transpose(self, M):
-        M_transpose = M.copy()
-        for i in range(len(M)):
-            row, column, entry = M[i]
-            M_transpose[i] = [column, row, entry]
-        return M_transpose
+    @classmethod
+    def transpose(cls, M):
+        if type(M) == SparseMatrix:
+            m = M.matrix
+        else:
+            m = M
+
+        m_transpose = m.copy()
+        for i in range(len(m)):
+            row, column, entry = m[i]
+            m_transpose[i] = [column, row, entry]
+        return m_transpose
 
     @classmethod
     def inner_prod(cls, M):
@@ -138,8 +156,8 @@ class SparseMatrix(MatrixFrame):
         basis = self.Basis(N)
 
         for i in range(0, 2 ** N):
-            new_row_ascolumn = basis[index[i]]
-            new_row = self.transpose(new_row_ascolumn)
+            new_row_ascolumn = [basis[index[i]]]
+            new_row = self.transpose(new_row_ascolumn)[0]
             cn.append(new_row)
 
         return cn
