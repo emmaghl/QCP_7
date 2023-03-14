@@ -147,18 +147,16 @@ class SparseMatrix(MatrixFrame):
                 Q.append([2**N - 1,0,0])
         return Q
 
-    def cnot(self, d:list, c:float, t:float):
+    def cnot(self, d: list, c: float, t: float):
         digits = copy.deepcopy(d)
         cn = []
 
         index = super().CNOT_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
-        basis = self.Basis(N)
 
         for i in range(0, 2 ** N):
-            new_row_ascolumn = [basis[index[i]]]
-            new_row = self.transpose(new_row_ascolumn)[0]
-            cn.append(new_row)
+            new_entry = [i, index[i], 1]
+            cn.append(new_entry)
 
         return cn
 
