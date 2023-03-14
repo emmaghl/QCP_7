@@ -201,7 +201,7 @@ if __name__=="__main__":
             '[3] A full row of 3x3 sudoko (Dense)',
         ]
         [print(f'{o}') for o in options]
-        user_input = user_validation('Enter the number beside the algorithm that you would like to run.', ['1', '2', '3'])
+        user_input = user_validation('Enter the number beside the algorithm that you would like to run.', ['1', '2', '3', 'exit'])
 
         if user_input == 'exit':
             exit()
