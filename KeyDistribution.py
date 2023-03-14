@@ -77,7 +77,7 @@ for i in range(n):
             circuit = circuit_2.dot(circuit_1)
             register = circuit.dot(register) 
 
-print('Step 3 complete')
+print('Step 3 complete: Qubits encoded')
 #print('Initialised qubits =', register)
 # Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -115,9 +115,9 @@ for i in range(n):
         result = measure_any(i, 0) 
         measurement.append(result)
         
-print('Step 4 complete')
-print('B Bases =', B_bases)
-print('Measured B bits =', measurement, 'This is not shared publicly')
+print('Step 4 complete:')
+print('B Bases =', B_bases, '!This is not shared publicly!')
+print('Measured B bits =', measurement, '!This is not shared publicly!')
 # Step 5 ---------------------------------------------------------------------------------------------------------------------------------------------------------------        
         
 B_Key = []
