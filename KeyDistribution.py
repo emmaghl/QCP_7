@@ -304,16 +304,31 @@ for i in range(n):
         measurement.append(result)
         measurement.append(result)
 
-register = []
+
+
+register = [[]]
+
+zero = np.array([(1, 0)])
+zero = zero.T
+
+one = np.array([(0, 1)])
+one = one.T
 
 for i in range(n):
     q = register_intercept[i]
     if i == 0:
         if q == 0:
-            register.append( [[1], [0]] )
+            register = np.append(register, zero)
         else:
-            register.append( [[0], [1]] )
-        register = register.matrix
+            register = np.append(register, one)
+        register = np.matrix(register)
         register = register.T
 
+    else:
+        if q == 0:
+            register = np.kron(register, zero)
+        else:
+            register = np.kron(register, one)
 
+print(register)
+print(len(register))
