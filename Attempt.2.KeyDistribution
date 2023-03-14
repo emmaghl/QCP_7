@@ -6,6 +6,8 @@ import numpy as np
 import time
 import random
 
+# Step 0 - Set up n qubit register
+
 # Step 1 - generate a random bit string n long, this is the message, A_bits
 
 # Step 2 - generate a random bit string n long, this is the corresponding, A_bases
@@ -22,8 +24,30 @@ import random
 
 # Step 8 - Disgard sample keys to get secret key for both A and B 
 
-n = 5 #ideally have this so the user can interface
+#n = 5 ideally have this so the user can interface
+
+n = input('Specify n: ')
+
 qc = QuantumComputer(n, 'Dense')
+
+
+# Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+register = np.array([[1, 0]]) 
+
+w = 2**(n) - 2
+
+print(w)
+
+for i in range(w): 
+    register = np.append(register, [0])
+
+
+register = np.array([register]).T  
+
+#print (register)
+
+
 
 # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
         
