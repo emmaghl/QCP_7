@@ -19,7 +19,8 @@ def user_validation(msg: str, options: list[str]) -> str:
     user_input = input('>')
     while not user_input.lower() in options:
         print(f'Please select from: {options}.')
-        user_input = input(msg)
+        print(msg)
+        user_input = input('>')
     return user_input
 
 def glue_lists(*lists) -> list:
