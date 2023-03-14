@@ -7,6 +7,11 @@ class MatrixFrame(ABC):
         pass
 
     def recog_digits(self, digits):
+        '''
+
+        :param digits:
+        :return:
+        '''
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
         for i in range(0, 2 ** N):
