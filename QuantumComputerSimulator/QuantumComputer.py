@@ -20,6 +20,9 @@ class QuantumComputer(Interface):
         check.check_type(matrix_type, str)
         check.check_in_list(matrix_type, ["Dense", "Sparse", "Lazy"])
 
+        '''
+        Take desired method: Dense, Sparse or Lazy; and set the quantum computer to use that method.
+        '''
         if matrix_type == "Dense":
             self.Matrix = DenseMatrix
         if matrix_type == "Sparse":
@@ -29,7 +32,9 @@ class QuantumComputer(Interface):
 
         # set up quantum register
         self.Q_Register()
-
+        '''
+        Build the different gates using the desired method. Gate building is handled within the matrix method.
+        '''
         # single input gates
         self.I = self.Matrix('I')
         self.H = self.Matrix('H')
@@ -52,11 +57,15 @@ class QuantumComputer(Interface):
 
         self.double_inputs = ["CV", "CNOT", "CZ"]
 
+        #Initalise empty list to store history of gates used.
         self.__gate_history = []
 
 
 
     def Q_Register(self):
+        '''
+        Q_Register() build's the quantum register for the quantum computer for a given number of qubits.
+        '''
         coeffs = []
 
         for i in range(0, self.N):
@@ -101,8 +110,10 @@ class QuantumComputer(Interface):
         digits = np.flip(digits, axis=1)
         return digits
 
-
     def single_gates(self, gate, qnum):
+        '''
+        Build the single input gates to a 2^N matrix where N is the number of Qubits.
+        '''
         M = [0] * self.N
 
         for i in range(0, len(self.single_inputs)):
@@ -124,8 +135,11 @@ class QuantumComputer(Interface):
 
         return m
 
-    def double_gates(self, gate, qnum):
 
+    def double_gates(self, gate, qnum):
+        '''
+        Use the Matrix method in the given desired method to build a multi-input gate.
+        '''
         if gate[0] == "CV":
             return self.Matrix("CV", self.binary, qnum[0][0], qnum[0][1])
         if gate[0] == "CNOT":
@@ -134,7 +148,13 @@ class QuantumComputer(Interface):
             return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
 
     def gate_logic(self, inputs, add_gate_name: str = "") -> np.array:
-        '''Add gates to the circuit in time step tuples.'''
+        '''
+        Builds the quantum circuit of gates in time step of type tuple.
+        :param inputs: Number of input gates?
+        :param add_gate_name: Name of gates to be added.
+        :return: Circuit?
+        '''
+
         check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
 
@@ -187,6 +207,12 @@ class QuantumComputer(Interface):
         return m
 
     def measure_any(self, qnum, state):
+        '''
+        Generate the measurment of the quantum circuit. Once measured the system's wavefunction is collapsed.
+        :param qnum: Number of qubits?
+        :param state: State of the qubit
+        :return:
+        '''
         inner_register = self.Matrix.inner_prod(self.psi)
 
         if state == 0:
@@ -207,6 +233,12 @@ class QuantumComputer(Interface):
         # plt.show()
 
     def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
+        '''
+        Generates the probability of a measured state?
+        :param glued_circuit:
+        :param input_vector:
+        :return: Funciton returns probability
+        '''
         num_qubits = 2**self.N
         check.check_type(glued_circuit, np.ndarray)
         check.check_array_shape(glued_circuit, (num_qubits, num_qubits))
@@ -227,6 +259,11 @@ class QuantumComputer(Interface):
         return props
 
     def __validate_gate_logic_inputs(self, inputs):
+        '''
+        Check function. Checking gates make sense and are of the correct type.
+        :param inputs:
+        :return: Through other methods, pass/fail.
+        '''
         check.check_type(inputs, list)
 
         for time_step in inputs:
