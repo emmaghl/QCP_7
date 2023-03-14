@@ -24,9 +24,6 @@ import random
 
 # Step 8 - Disgard sample keys to get secret key for both A and B 
 
-# Step 9 - Interception Test
-
-#n = 5 ideally have this so the user can interface
 
 n = int(input('How long would you like your bit message to be?: '))
 
@@ -283,16 +280,80 @@ print('Step 3 complete: Qubits encoded')
 
 # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-C_bases = np.random.randint(2, size=n)
+y = input('Should C listen to the message?: 1 = Yes, 0 = No')
+
+if y == 1:
+    C_bases = np.random.randint(2, size=n)
+    measurement_intercept = []
+    register_intercept = []
+    for i in range(n):
+        g = C_bases[i]
+        if g == 0:
+            result = measure_any(i, 0)
+            register_intercept.append(result)
+            measurement.append(result)
+
+        else:
+            circuit = qc.gate_logic([(["H"], [[i]])])
+            circuit = circuit.matrix
+            register = circuit.dot(register)
+            result = measure_any(i, 0)
+            register_intercept.append(result)
+            measurement.append(result)
+            measurement.append(result)
+    register = [[]]
+    zero = np.array([(1, 0)])
+    zero = zero.T
+    one = np.array([(0, 1)])
+    one = one.T
+    for i in range(n):
+        q = register_intercept[i]
+        if i == 0:
+            if q == 0:
+                register = np.append(register, zero)
+            else:
+                register = np.append(register, one)
+            register = np.matrix(register)
+            register = register.T
+        else:
+            if q == 0:
+                register = np.kron(register, zero)
+            else:
+                register = np.kron(register, one)
+else:
+    pass
+
+print ('Step 4 completed:', C_bases, '!This is not publicly shared!')
+
+# Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+B_bases = np.random.randint(2, size=n)
 
 
-measurement_intercept = []
-register_intercept = []
+def measure_any(qnum, state):
+    register_conjugate = np.conjugate(register)
+    register_ket = register_conjugate.T
+    inner_register = np.dot(register, register_ket)
+
+    if state == 0:
+        matrix = qc.gate_logic([(["M0"], [[qnum]])])
+        matrix = matrix.matrix
+    elif state == 1:
+        matrix = qc.gate_logic([(["M1"], [[qnum]])])
+        matrix = matrix.matrix
+    QProb = np.trace(matrix.dot(inner_register))
+    if (np.random.rand() < QProb):
+        result = 0
+    else:
+        result = 1
+    return result
+
+
+measurement = []
 for i in range(n):
-    g = C_bases[i]
+    g = B_bases[i]
     if g == 0:
         result = measure_any(i, 0)
-        register_intercept.append(result)
         measurement.append(result)
 
     else:
@@ -300,35 +361,107 @@ for i in range(n):
         circuit = circuit.matrix
         register = circuit.dot(register)
         result = measure_any(i, 0)
-        register_intercept.append(result)
-        measurement.append(result)
         measurement.append(result)
 
+print('Step 4 complete:')
+print('B Bases =', B_bases, '!This is not shared publicly!')
+print('Measured B bits =', measurement, '!This is not shared publicly!')
+# Step 5 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-
-register = [[]]
-
-zero = np.array([(1, 0)])
-zero = zero.T
-
-one = np.array([(0, 1)])
-one = one.T
+B_Key = []
 
 for i in range(n):
-    q = register_intercept[i]
-    if i == 0:
-        if q == 0:
-            register = np.append(register, zero)
-        else:
-            register = np.append(register, one)
-        register = np.matrix(register)
-        register = register.T
-
+    a = A_bases[i]
+    b = B_bases[i]
+    c = measurement[i]
+    if a == b:
+        B_Key.append(c)
     else:
-        if q == 0:
-            register = np.kron(register, zero)
-        else:
-            register = np.kron(register, one)
+        pass
 
-print(register)
-print(len(register))
+A_Key = []
+for i in range(n):
+    a = A_bases[i]
+    b = B_bases[i]
+    c = A_bits[i]
+    if a == b:
+        A_Key.append(c)
+    else:
+        pass
+
+print('Step 5 complete')
+print('A Key =', A_Key, 'This is not shared publicly')
+print('B Key =', B_Key, 'This is not shared publicly')
+
+# Step 6 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sample_A = []
+sample_B = []
+
+j = len(A_Key)
+l = len(B_Key)
+
+if j == l:
+    # print('Lengths match')
+    # print('Length of Key =', j)
+    pass
+else:
+    print('Error in Key length')
+
+number_of_samples = round(j * 0.5)
+
+s = random.sample(range(0, j), number_of_samples)
+
+print(s)
+
+for i in s:
+    f = A_Key[i]
+    h = B_Key[i]
+    sample_A.append(f)
+    sample_B.append(h)
+
+
+print('Step 6 complete:', 'Sample of qubits for A and B to share =', s)
+print('A random sample= ', sample_A, 'These are shared publicly')
+print('B random sample= ', sample_B, 'These are shared publicly')
+
+# Step 7 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+j = len(sample_A)
+l = len(sample_B)
+
+if j == l:
+    pass
+else:
+    print('Error in sample length')
+
+for i in range(j):
+    m = sample_A[i]
+    o = sample_B[i]
+    if m == o:
+        p = 'Secret Key is probably secure'
+    else:
+        p = 'Secret Key is probably not secure'
+
+print('Step 7 complete:', p)
+# Step 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+j = len(A_Key)
+t = range(0, j)
+t = list(t)
+
+for i in s:
+    t.remove(i)
+
+A_secret_key = []
+B_secret_key = []
+
+for i in t:
+    A_secret_key.append(A_Key[i])
+    B_secret_key.append(B_Key[i])
+
+print('Step 8 complete:')
+print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages')
+print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages')
+
+
