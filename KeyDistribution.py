@@ -240,16 +240,14 @@ def main():
 
 
     for i in range(j):
-        p = 0
+        p = 1
         if sample_A[i] == sample_B[i]:
             p = p + 1
+        else:
+            print('Secret Key is probably not secure')
+            exit()
+    print('Secret Key is probably secure')
 
-
-    if p > 0:
-        print('Secret Key is probably secure')
-    else:
-        print('Secret Key is probably not secure')
-        exit()
 
     print('Step 7 complete:', p)
     # Step 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
