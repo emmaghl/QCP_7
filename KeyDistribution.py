@@ -24,6 +24,8 @@ import random
 
 # Step 8 - Disgard sample keys to get secret key for both A and B 
 
+# Step 9 - Interception Test
+
 #n = 5 ideally have this so the user can interface
 
 n = int(input('How long would you like your bit message to be?: '))
@@ -223,6 +225,95 @@ print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are u
 print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages')
 
 
-# Step 9 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-#Interception test next!!!
-       
+#Interception test next!!! Make this an option liek andrews?
+
+n = int(input('How long would you like your bit message to be?: '))
+
+qc = QuantumComputer(n, 'Dense')
+
+# Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+register = np.array([[1, 0]])
+
+w = 2 ** (n) - 2
+
+for i in range(w):
+    register = np.append(register, [0])
+
+register = np.array([register]).T
+
+print('Step 0 complete: Qubit register setup')
+# Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A_bits = np.random.randint(2, size=n)
+
+print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
+# Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+A_bases = np.random.randint(2, size=n)
+
+print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
+# Step 3 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+for i in range(n):
+    j = A_bases[i]
+    k = A_bits[i]
+    if j == 0:
+        if k == 0:
+            pass
+        else:
+            circuit = qc.gate_logic([(["X"], [[i]])])
+            circuit = circuit.matrix
+            register = circuit.dot(register)
+    if j == 1:
+        if k == 0:
+            circuit = qc.gate_logic([(["H"], [[i]])])
+            circuit = circuit.matrix
+            register = circuit.dot(register)
+        else:
+            circuit_1 = qc.gate_logic([(["X"], [[i]])])
+            circuit_1 = circuit_1.matrix
+            circuit_2 = qc.gate_logic([(["H"], [[i]])])
+            circuit_2 = circuit_2.matrix
+            circuit = circuit_2.dot(circuit_1)
+            register = circuit.dot(register)
+
+print('Step 3 complete: Qubits encoded')
+# print('Initialised qubits =', register)
+
+# Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+C_bases = np.random.randint(2, size=n)
+
+
+measurement_intercept = []
+register_intercept = []
+for i in range(n):
+    g = C_bases[i]
+    if g == 0:
+        result = measure_any(i, 0)
+        register_intercept.append(result)
+        measurement.append(result)
+
+    else:
+        circuit = qc.gate_logic([(["H"], [[i]])])
+        circuit = circuit.matrix
+        register = circuit.dot(register)
+        result = measure_any(i, 0)
+        register_intercept.append(result)
+        measurement.append(result)
+        measurement.append(result)
+
+register = []
+
+for i in range(n):
+    q = register_intercept[i]
+    if i == 0:
+        if q == 0:
+            register.append( [[1], [0]] )
+        else:
+            register.append( [[0], [1]] )
+        register = register.matrix
+        register = register.T
+
+
