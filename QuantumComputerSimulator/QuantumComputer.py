@@ -13,7 +13,12 @@ class Interface(ABC):
 class QuantumComputer(Interface):
 
     def __init__(self, qubits: int, matrix_type:str = "Dense"):
-        '''Simulates quantum circuits via Dense, Sparse and Lazy methods.'''
+        '''
+        Simulates quantum circuits via Dense, Sparse and Lazy methods.
+        :param qubits: Number of Qubits
+        :param matrix_type: Desired type of matrix formulation to use. Default: Dense
+        '''
+
         check.check_type(qubits, int)
         self.N = qubits
 
@@ -65,6 +70,7 @@ class QuantumComputer(Interface):
     def Q_Register(self):
         '''
         Q_Register() build's the quantum register for the quantum computer for a given number of qubits.
+        :return:
         '''
         coeffs = []
 
@@ -91,6 +97,9 @@ class QuantumComputer(Interface):
         pc.print_circuit_ascii()
 
     def produce_digits(self):  # this is the flipped basis, working on
+        '''
+        :return:
+        '''
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
@@ -113,6 +122,9 @@ class QuantumComputer(Interface):
     def single_gates(self, gate, qnum):
         '''
         Build the single input gates to a 2^N matrix where N is the number of Qubits.
+        :param gate: Specified gate to build
+        :param qnum: Number of qubits
+        :return: Properly sized gate for number of qubits
         '''
         M = [0] * self.N
 
@@ -139,6 +151,9 @@ class QuantumComputer(Interface):
     def double_gates(self, gate, qnum):
         '''
         Use the Matrix method in the given desired method to build a multi-input gate.
+        :param gate: Take specified multi-input gate
+        :param qnum: number of qubits
+        :return: Returns correctly sized multi-input gate.
         '''
         if gate[0] == "CV":
             return self.Matrix("CV", self.binary, qnum[0][0], qnum[0][1])
