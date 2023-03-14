@@ -94,11 +94,13 @@ class LazyMatrix(MatrixFrame):
     def cz(self, d, c, t):
         pass
 
-    def output(self, inputs):
-        # add conversion for vector input
+    def output(self,inputs):
+        new_in = []
+        for i in range(0,len(inputs)):
+            new_in.append(inputs[i][0])
         out = []
-        for i in range(0, self.dim):
-            out.append(self.matrix[i](inputs))
+        for i in range(0,self.dim):
+            out.append(self.matrix[i](new_in))
 
         return out
 
