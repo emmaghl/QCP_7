@@ -53,6 +53,7 @@ class QuantumComputer(Interface):
         self.double_inputs = ["CV", "CNOT", "CZ"]
 
         self.__gate_history = []
+        self.circuit = np.nan
 
 
 
@@ -133,18 +134,22 @@ class QuantumComputer(Interface):
         if gate[0] == "CZ":
             return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
 
-    def gate_logic(self, inputs, add_gate_name: str = "") -> np.array:
-        '''Add gates to the circuit in time step tuples.'''
+    def add_gate_to_circuit(self, inputs, add_gate_name: str = ""):
+        '''Adds a gate to the circuit, that can be built using `build circuit`'''
         check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
 
-        step_n = len(inputs)
-
-        # Add the gates to the gate history for printing later.
+        # Add the gates to the gate history, for printing and building the circuit.
         if add_gate_name == "": # If not defining a custom name
-            [self.__gate_history.append(i) for i in inputs]
+            self.__gate_history = self.__gate_history + inputs
         else: # If defining a gate with a custom Name
             self.__gate_history.append(([add_gate_name], [[0, self.N-1]]))
+
+    def gate_logic(self, inputs, add_gate_name: str = "") -> object:
+        '''Converts gates to Dense, Sparse, Lazy object.'''
+        check.check_type(add_gate_name, str)
+        self.__validate_gate_logic_inputs(inputs)
+        step_n = len(inputs)
 
         M = []
 
@@ -185,6 +190,10 @@ class QuantumComputer(Interface):
             m = self.Matrix.matrix_multiply(m, M[i])
 
         return m
+
+    def build_circuit(self):
+        '''Builds the circuits from the gates given from self.logic '''
+        return self.gate_logic(self.__gate_history)
 
     def measure_any(self, qnum, state):
         inner_register = self.Matrix.inner_prod(self.psi)
@@ -231,7 +240,6 @@ class QuantumComputer(Interface):
 
         for time_step in inputs:
             check.check_type(time_step, tuple)
-            check.check_array_length(time_step, 2)
             check.check_type(time_step[0], list)
             check.check_type(time_step[1], list)
             for gate in time_step[0]: #Looping through gates, check to see they're recognisable.

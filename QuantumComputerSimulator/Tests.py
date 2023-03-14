@@ -34,8 +34,6 @@ class Test():
             m = np.matmul(m, matrix.matrix)
         return m
 
-
-
     def matrix_multiply_DENSE(self, type: str):
         '''Tests matrix multiplication in Dense class.'''
         dm = DenseMatrix
