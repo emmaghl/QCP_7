@@ -35,7 +35,7 @@ class SparseMatrix(MatrixFrame):
         self.dim = self.size_matrix(self.matrix)[0]
 
     @classmethod
-    def size_matrix(cls,M):
+    def size_matrix(cls, M):
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -200,3 +200,31 @@ class SparseMatrix(MatrixFrame):
 
     def output(self, inputs:np.array) -> np.array:
         return self.matrix_multiply(self.matrix, inputs)
+
+    def Sparse_to_Dense(self, SMatrix):
+        """! Takes in a sparse matrix and returns the corresponding dense matrix.
+            Note: suppose you're converting a dense matrix to sparse and back to dense,
+            if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
+            these will be lost in the sparse conversion.
+             @param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
+             @return  DMatrix: the converted dense matrix (in array form)
+         """
+        count = 0
+        for row in SMatrix:
+            if type(row[2]) == "complex":  # check correct synatx!!
+                count += 1
+        if count == 0:
+            typex = "int"
+        if count == 1:
+            typex = "complex"
+
+        DMatrix = np.zeros((self.Size_Sparse(SMatrix)[0]) * self.Size_Sparse(SMatrix)[1],
+                           dtype=typex)  # create an array of zeros of the right size
+        DMatrix.shape = self.Size_Sparse(SMatrix)
+        for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
+            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
+        return DMatrix
+
+    def apply_register(self):
+
+
