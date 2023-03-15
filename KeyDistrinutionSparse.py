@@ -26,22 +26,22 @@ def measure_any(qnum, state, register ):
         result = 1
     return result
 
-# def quantum_register(qnum):
-#     register = np.array([[1, 0]])
-#     w = 2**(qnum) - 2
-#     for i in range(w):
-#         register = np.append(register, [0])
-#     register = np.array([register]).T
-#     return register
-
-def quantum_register_sparse(qnum):
+ def quantum_register(qnum):
+     if qc.Matrix == 'Dense':
+         register = np.array([[1, 0]])
+         w = 2**(qnum) - 2
+         for i in range(w):
+             register = np.append(register, [0])
+         register = np.array([register]).T
+         return register
+    if qc.Matrix == 'Sparse:'
     register = np.array([[0, 0,1], [0,1,0]])
-    w = 2**(qnum) - 2
-    for i in range(w):
-        register = np.append(register, [0])5
+        w = 2**(qnum) - 2
+        for i in range(w):
+            register = np.append(register, [0])5
 
-    register = np.array([register]).T
-    return register
+        register = np.array([register]).T
+        return register
 
 def main():
     print("You are acting as a communication channel for person A to send secret messages to person B.")
