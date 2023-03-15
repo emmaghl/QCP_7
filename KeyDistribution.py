@@ -1,9 +1,5 @@
 from QuantumComputerSimulator import QuantumComputer, Test
-
-import matplotlib.pyplot as plt
-import sys
 import numpy as np
-import time
 import random
 
 # Step 0 - Set up n qubit register
@@ -34,12 +30,12 @@ def measure_any(qnum, state, register ):
 
     if state == 0:
         matrix = qc.gate_logic([(["M0"], [[qnum]])])
-        matrix = matrix.matrix
+        matrix_gate = matrix.matrix
     elif state == 1:
         matrix = qc.gate_logic([(["M1"], [[qnum]])])
-        matrix = matrix.matrix
+        matrix_gate = matrix.matrix
 
-    inner_register_M = qc.Matrix.matrix_multiply(matrix, inner_register)
+    inner_register_M = qc.Matrix.matrix_multiply(matrix_gate, inner_register)
     inner_register_M = inner_register_M.matrix
     QProb = np.trace(inner_register_M)
 
@@ -70,20 +66,19 @@ def main():
 
     register = np.array([register]).T
 
-    #print("You are acting as a communication channel for person A to send a secret message to person B")
-
     #print('Step 0 complete: Qubit register setup')
+
     # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     A_bits = np.random.randint(2, size=n)
 
+    #print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
 
-    print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
     #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     A_bases = np.random.randint(2, size=n)
 
-    print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
+    #print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
     #Step 3 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     for i in range(n):
@@ -112,8 +107,9 @@ def main():
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
 
-    #print('Step 3 complete: Qubits encoded')
     print('Person A has their secretly encoded message ready to send to person B.')
+
+    # print('Step 3 complete: Qubits encoded')
 
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -121,15 +117,13 @@ def main():
 
     if y == 1:
         C_bases = np.random.randint(2, size=n)
-        measurement_intercept = []
+        print('C_bases =', C_bases)
         register_intercept = []
         for i in range(n):
             g = C_bases[i]
             if g == 0:
                 result = measure_any(i, 0, register)
                 register_intercept.append(result)
-                measurement_intercept.append(result)
-
             else:
                 circuit = qc.gate_logic([(["H"], [[i]])])
                 circuit = circuit.matrix
@@ -137,8 +131,7 @@ def main():
                 register = register.matrix
                 result = measure_any(i, 0, register)
                 register_intercept.append(result)
-                measurement_intercept.append(result)
-                measurement_intercept.append(result)
+
         register = [[]]
         zero = np.array([(1, 0)])
         zero = zero.T
@@ -149,18 +142,17 @@ def main():
             if i == 0:
                 if q == 0:
                     register = np.append(register, zero)
+                    register = register.T
                 else:
                     register = np.append(register, one)
-                register = np.matrix(register)
-                register = register.T
+                    register = register.T
             else:
                 if q == 0:
-                    register = qc.Matrix.tensor_prod(register, zero)
+                    register = qc.Matrix.tensor_prod(zero, register)
                     register = register.matrix
                 else:
-                    register = qc.Matrix.tensor_prod(register, one)
+                    register = qc.Matrix.tensor_prod(one, register)
                     register = register.matrix
-        print('Interception completed, this is the message you read:', measurement_intercept)
     else:
         pass
 
@@ -172,6 +164,7 @@ def main():
     for i in range(n):
         g = B_bases[i]
         if g == 0:
+
             result = measure_any(i, 0, register)
             measurement.append(result)
 
@@ -185,6 +178,7 @@ def main():
 
     print('Person B has measured the message.')
     print('Person A shares the bases which they measured the message with, and vice versa so that they can both create a key.')
+
     #print('Step 4 complete:')
     #print('B Bases =', B_bases, '!This is not shared publicly!')
     #rint('Measured B bits =', measurement, '!This is not shared publicly!')
@@ -201,6 +195,8 @@ def main():
         else:
             pass
 
+    #print('sanity check:', len(B_Key))
+
     A_Key = []
     for i in range(n):
         a = A_bases[i]
@@ -210,6 +206,17 @@ def main():
             A_Key.append(c)
         else:
             pass
+
+    print('After garbage collection the length of both keys is:', len(A_Key))
+
+    if len(A_Key) == 0:
+        print('No Key was created because none of the bases matched, try again.')
+        exit()
+    if len(A_Key) == 1:
+        print('No useful sample can be created because the key length was less then 2, try again.')
+        exit()
+    else:
+        pass
 
     #print('Step 5 complete')
     #print('A Key =', A_Key , 'This is not shared publicly')
