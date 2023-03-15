@@ -1,5 +1,6 @@
 from QuantumComputerSimulator.QuantumComputer import QuantumComputer
 from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
+from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix
 
 import numpy as np
 
@@ -14,7 +15,7 @@ class Test():
         list_methods = [method for method in dir(Test) if method.startswith('_') is False]
 
         # Loops through printing all methods and checking running them
-        for quantum_computer_type in ["Dense"]:
+        for quantum_computer_type in ["Dense", "Sparse"]:
             print(f"Testing {quantum_computer_type}.")
             for method in list_methods:
                 print(f"\t-> Checking: {method}...")
@@ -26,6 +27,7 @@ class Test():
             return True
         return False
 
+
     def __glue_circuits(self, matricies: np.array) -> np.ndarray:
         ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
         m = np.identity(len(matricies[0].matrix[0]))
@@ -33,6 +35,7 @@ class Test():
         for matrix in np.flip(matricies, axis=0):
             m = np.matmul(m, matrix.matrix)
         return m
+
 
     def matrix_multiply_DENSE(self, type: str):
         '''Tests matrix multiplication in Dense class.'''

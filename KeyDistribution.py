@@ -36,6 +36,7 @@ def measure_any(qnum, state, register ):
         matrix_gate = matrix.matrix
 
     inner_register_M = qc.Matrix.matrix_multiply(matrix_gate, inner_register)
+
     inner_register_M = inner_register_M.matrix
     QProb = np.trace(inner_register_M)
 
@@ -153,6 +154,7 @@ def main():
                 else:
                     register = qc.Matrix.tensor_prod(one, register)
                     register = register.matrix
+
     else:
         pass
 
@@ -275,9 +277,8 @@ def main():
             exit()
     print('Secret Key is probably secure.')
 
-
-
     #print('Step 7 complete:', p)
+
     # Step 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     j = len(A_Key)
