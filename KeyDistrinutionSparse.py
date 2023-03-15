@@ -85,7 +85,7 @@ def main():
                 circuit_1 = circuit_1.matrix
                 circuit_2 = qc.gate_logic([(["H"], [[i]])])
                 circuit_2 = circuit_2.matrix
-                circuit = circuit_2.dot(circuit_1)
+                circuit = qc.Matrix.matrix_multiply(circuit_2, circuit_1)
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
 
