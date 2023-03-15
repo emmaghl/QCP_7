@@ -115,49 +115,53 @@ def main():
 
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    y = int(input('Do you want to intercept and try and read their message? Yes = 1, No = 0 :'))
-
-    if y == 1:
-        C_bases = np.random.randint(2, size=n)
-        print('The random bases you measure the message with are =', C_bases)
-        register_intercept = []
-        for i in range(n):
-            g = C_bases[i]
-            if g == 0:
-                result = measure_any(i, 0, register)
-                register_intercept.append(result)
-            else:
-                circuit = qc.gate_logic([(["H"], [[i]])])
-                circuit = circuit.matrix
-                register = qc.Matrix.matrix_multiply(circuit, register)
-                register = register.matrix
-                result = measure_any(i, 0, register)
-                register_intercept.append(result)
-        register = [[]]
-
-        zero = np.array([(1, 0)])
-        zero = zero.T
-        one = np.array([(0, 1)])
-        one = one.T
-        for i in range(n):
-            q = register_intercept[i]
-            if i == 0:
-                if q == 0:
-                    register = np.append(register, zero)
-                    register = register.T
+    while True:
+        print('Do you want to intercept and try and read their message?')
+        y = str(input('>'))
+        if y == 'yes' or y == 'Yes':
+            C_bases = np.random.randint(2, size=n)
+            print('The random bases you measure the message with are =', C_bases)
+            register_intercept = []
+            for i in range(n):
+                g = C_bases[i]
+                if g == 0:
+                    result = measure_any(i, 0, register)
+                    register_intercept.append(result)
                 else:
-                    register = np.append(register, one)
-                    register = register.T
-            else:
-                if q == 0:
-                    register = qc.Matrix.tensor_prod(zero, register)
+                    circuit = qc.gate_logic([(["H"], [[i]])])
+                    circuit = circuit.matrix
+                    register = qc.Matrix.matrix_multiply(circuit, register)
                     register = register.matrix
-                else:
-                    register = qc.Matrix.tensor_prod(one, register)
-                    register = register.matrix
+                    result = measure_any(i, 0, register)
+                    register_intercept.append(result)
+            register = [[]]
 
-    else:
-        pass
+            zero = np.array([(1, 0)])
+            zero = zero.T
+            one = np.array([(0, 1)])
+            one = one.T
+            for i in range(n):
+                q = register_intercept[i]
+                if i == 0:
+                    if q == 0:
+                        register = np.append(register, zero)
+                        register = register.T
+                    else:
+                        register = np.append(register, one)
+                        register = register.T
+                else:
+                    if q == 0:
+                        register = qc.Matrix.tensor_prod(zero, register)
+                        register = register.matrix
+                    else:
+                        register = qc.Matrix.tensor_prod(one, register)
+                        register = register.matrix
+            break
+        elif y == 'no' or y == 'No':
+            break
+        else:
+            print('Whoops that was an incorrect input (accepted inputs Yes or No), please try again')
+
 
     # Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
