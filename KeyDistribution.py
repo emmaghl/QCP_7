@@ -46,6 +46,14 @@ def measure_any(qnum, state, register ):
         result = 1
     return result
 
+def quantum_register(qnum):
+    register = np.array([[1, 0]])
+    w = 2**(qnum) - 2
+    for i in range(w):
+        register = np.append(register, [0])
+    register = np.array([register]).T
+    return register
+
 def main():
     print("You are acting as a communication channel for person A to send secret messages to person B.")
     n = int(input('How long would person A like their bit message to be?: '))
@@ -58,14 +66,7 @@ def main():
 
     # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    register = np.array([[1, 0]])
-
-    w = 2**(n) - 2
-
-    for i in range(w):
-        register = np.append(register, [0])
-
-    register = np.array([register]).T
+    register = quantum_register(n)
 
     #print('Step 0 complete: Qubit register setup')
 
@@ -118,7 +119,7 @@ def main():
 
     if y == 1:
         C_bases = np.random.randint(2, size=n)
-        print('C_bases =', C_bases)
+        print('The random bases you measure the message with are =', C_bases)
         register_intercept = []
         for i in range(n):
             g = C_bases[i]
@@ -132,8 +133,8 @@ def main():
                 register = register.matrix
                 result = measure_any(i, 0, register)
                 register_intercept.append(result)
-
         register = [[]]
+
         zero = np.array([(1, 0)])
         zero = zero.T
         one = np.array([(0, 1)])
@@ -179,7 +180,9 @@ def main():
             measurement.append(result)
 
     print('Person B has measured the message.')
-    print('Person A shares the bases which they measured the message with, and vice versa so that they can both create a key.')
+    print('Person B shares the bases which they measured the message with, and vice versa so that they can both create a key from the matching bases.')
+    print('A bases =', A_bases)
+    print('B bases =', B_bases)
 
     #print('Step 4 complete:')
     #print('B Bases =', B_bases, '!This is not shared publicly!')
@@ -196,8 +199,6 @@ def main():
             B_Key.append(c)
         else:
             pass
-
-    #print('sanity check:', len(B_Key))
 
     A_Key = []
     for i in range(n):

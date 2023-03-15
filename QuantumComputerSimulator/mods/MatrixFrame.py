@@ -60,3 +60,4 @@ class MatrixFrame(ABC):
 
     @abstractmethod
     def apply_register(self):
+        pass
