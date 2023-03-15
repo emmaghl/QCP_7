@@ -43,18 +43,18 @@ class SparseMatrix(MatrixFrame):
 
         self.size = self.size_matrix(self.matrix)
 
-    def size_matrix(cls, M):
-        if type(M) == SparseMatrix:
-            m = M.matrix
-        else:
-            m = M
-
-        # ncol = M[-1][0] + 1  # number of columns is the column value of the last entry in the sparse matrix
-        nc = 0  # number of rows is the maximum row value across the array (+1 because of Python indexing)
-        for j in range(len(m)):
-            if m[j][0] > nc:
-                nc = m[j][0]
-        ncol = nc + 1
+    # def size_matrix(self, M):
+    #     if type(M) == SparseMatrix:
+    #         m = M.matrix
+    #     else:
+    #         m = M
+    #
+    #     # ncol = M[-1][0] + 1  # number of columns is the column value of the last entry in the sparse matrix
+    #     nc = 0  # number of rows is the maximum row value across the array (+1 because of Python indexing)
+    #     for j in range(len(m)):
+    #         if m[j][0] > nc:
+    #             nc = m[j][0]
+    #     ncol = nc + 1
 
     def size_matrix(self, M):
         '''
@@ -95,11 +95,16 @@ class SparseMatrix(MatrixFrame):
             m1 = M1
         if type(M2) == SparseMatrix:
             m2 = M2.matrix
+            m2_col = M1.size[0]
+            m2_row = M1.size[1]
         else:
             m2 = M2
+            m2_col = SparseMatrix.size_matrix(m2)[0]  # STcol/SM1col = SM2col etc.
+            m2_row = SparseMatrix.size_matrix(m2)[1]  # STcol/SM1col = SM2col etc.
 
-        m2_col = m2.size[0]  # STcol/SM1col = SM2col etc.
-        m2_row = m2.size[1]
+        print(m1)
+        print(m2)
+
         
         tensorprod = []
 

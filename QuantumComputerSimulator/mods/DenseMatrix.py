@@ -2,6 +2,7 @@ from QuantumComputerSimulator.mods.MatrixFrame import MatrixFrame
 
 import numpy as np
 import copy
+import math
 
 class DenseMatrix(MatrixFrame):
 
@@ -208,6 +209,13 @@ class DenseMatrix(MatrixFrame):
         cz = np.asarray(np.asmatrix(np.asarray(cz)))
 
         return cz
+
+    def CROT_k(self, k):
+        UROT_k =  np.array([[1, 0], [0, math.exp(2*math.pi*1j/2**k)]])
+        CROT_k = cls.tensor_prod(self.M0, self.I) + cls.tensor_prod(self.M1, UROT_k)
+        return CROT_k
+
+
 
     def output(self, inputs):
         '''

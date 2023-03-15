@@ -143,6 +143,9 @@ class QuantumComputer(Interface):
 
         m = M[0]
         for i in range(1, len(M)):
+            print(M[i].matrix)
+            print("hello")
+            print(m.matrix)
             m = self.Matrix.tensor_prod(m, M[i])
 
         return m

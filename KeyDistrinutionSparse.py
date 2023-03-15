@@ -70,20 +70,20 @@ def main():
             if k == 0:
                 pass
             else:
-                circuit = qc.gate_logic( [(["X"], [[i]])] )
+                circuit = qc.gate_logic([(["X"], [[i]])])
                 circuit = circuit.matrix
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
         if j == 1:
             if k == 0:
-                circuit = qc.gate_logic( [(["H"], [[i]])] )
+                circuit = qc.gate_logic([(["H"], [[i]])])
                 circuit = circuit.matrix
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
             else:
-                circuit_1 = qc.gate_logic( [(["X"], [[i]])] )
+                circuit_1 = qc.gate_logic([(["X"], [[i]])])
                 circuit_1 = circuit_1.matrix
-                circuit_2 = qc.gate_logic( [(["H"], [[i]])] )
+                circuit_2 = qc.gate_logic([(["H"], [[i]])])
                 circuit_2 = circuit_2.matrix
                 circuit = circuit_2.dot(circuit_1)
                 register = qc.Matrix.matrix_multiply(circuit, register)
