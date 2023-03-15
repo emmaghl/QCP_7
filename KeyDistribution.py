@@ -50,8 +50,8 @@ def measure_any(qnum, state, register ):
     return result
 
 def main():
-    print("You are acting as a communication channel for person A to send a secret message to person B")
-    n = int(input('How long would you like person As  bit message to be?: '))
+    print("You are acting as a communication channel for person A to send secret messages to person B.")
+    n = int(input('How long would person A like their bit message to be?: '))
 
     global qc
 
@@ -78,12 +78,12 @@ def main():
     A_bits = np.random.randint(2, size=n)
 
 
-    #print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
+    print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
     #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     A_bases = np.random.randint(2, size=n)
 
-    #print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
+    print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
     #Step 3 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     for i in range(n):
@@ -113,7 +113,7 @@ def main():
                 register = register.matrix
 
     #print('Step 3 complete: Qubits encoded')
-    print('Person A has their secretly encoded message ready to send to person B')
+    print('Person A has their secretly encoded message ready to send to person B.')
 
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -183,8 +183,8 @@ def main():
             result = measure_any(i, 0, register)
             measurement.append(result)
 
-    print('Person B has measured the message')
-    print('Person A shares the bases which they measured the message with, and vice versa so that they can both create a key')
+    print('Person B has measured the message.')
+    print('Person A shares the bases which they measured the message with, and vice versa so that they can both create a key.')
     #print('Step 4 complete:')
     #print('B Bases =', B_bases, '!This is not shared publicly!')
     #rint('Measured B bits =', measurement, '!This is not shared publicly!')
@@ -216,7 +216,7 @@ def main():
     #print('B Key =', B_Key, 'This is not shared publicly')
 
     # Step 6 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-    print('Now a random sample is generated to test if the keys for person A and B are secure')
+    print('Now a random sample is generated to test if the keys for person A and B are secure.')
     sample_A = []
     sample_B = []
 
@@ -266,7 +266,7 @@ def main():
         else:
             print('You were caught listening!')
             exit()
-    print('Secret Key is probably secure')
+    print('Secret Key is probably secure.')
 
 
 
@@ -288,8 +288,8 @@ def main():
         B_secret_key.append(B_Key[i])
 
     print('Both person A and person B have their secret keys now:')
-    print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages')
-    print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages')
+    print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
+    print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
 
 
 if __name__=="__main__":
