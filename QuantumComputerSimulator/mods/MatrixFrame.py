@@ -4,9 +4,17 @@ from abc import ABC, abstractmethod
 class MatrixFrame(ABC):
 
     def __init__(self):
+        '''
+        Abstract class
+        '''
         pass
 
     def recog_digits(self, digits):
+        '''
+
+        :param digits:
+        :return:
+        '''
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
         for i in range(0, 2 ** N):
@@ -26,6 +34,13 @@ class MatrixFrame(ABC):
         return unpack
 
     def CNOT_logic(self, digits_in, c, t):
+        '''
+        Logic to build the Control Not gate, has children in dense and sparse
+        :param digits_in:
+        :param c:
+        :param t:
+        :return:
+        '''
         N = int(np.log(len(digits_in)) / np.log(2))
 
         digits_out = digits_in
@@ -38,6 +53,13 @@ class MatrixFrame(ABC):
         return index
 
     def CV_logic(self, digits, c, t):
+        '''
+        Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
+        :param digits:
+        :param c:
+        :param t:
+        :return:
+        '''
         N = int(np.log(len(digits)) / np.log(2))
         index = []
         for i in range(0, 2 ** N):
