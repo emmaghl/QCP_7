@@ -50,7 +50,8 @@ def measure_any(qnum, state, register ):
     return result
 
 def main():
-    n = int(input('How long would you like your bit message to be?: '))
+    print("You are acting as a communication channel for person A to send a secret message to person B")
+    n = int(input('How long would you like person As  bit message to be?: '))
 
     global qc
 
@@ -69,7 +70,7 @@ def main():
 
     register = np.array([register]).T
 
-    print("You are acting as a communication channel for person A to send a secret message to person B")
+    #print("You are acting as a communication channel for person A to send a secret message to person B")
 
     #print('Step 0 complete: Qubit register setup')
     # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
