@@ -136,15 +136,14 @@ class SparseMatrix(MatrixFrame):
             m2 = M2
             
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
-        dict1 = {(row, col): val for row, col, val in m1}
-        dict2 = {(row, c): v for row, c, v in m2}
+        dict1 = {(row, col): val for [row, col, val] in m1}
+        dict2 = {(row, col): val for [row, col, val] in m2}
 
         dictm = {}
         for (r1, c1), v1 in dict1.items():  # iterate over SM1
             for (r2, c2), v2 in dict2.items():  # and SM2
                 if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
-                    dictm[(r1, c2)] = dictm.get((r1, c2),
-                                              0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
+                    dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
 
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
         return SparseMatrix("MM", matmul)

@@ -26,8 +26,16 @@ def measure_any(qnum, state, register ):
         result = 1
     return result
 
-def quantum_register(qnum):
-    register = np.array([[1, 0]])
+# def quantum_register(qnum):
+#     register = np.array([[1, 0]])
+#     w = 2**(qnum) - 2
+#     for i in range(w):
+#         register = np.append(register, [0])
+#     register = np.array([register]).T
+#     return register
+
+def quantum_register_sparse(qnum):
+    register = np.array([[0, 0,1], [0,1,0]])
     w = 2**(qnum) - 2
     for i in range(w):
         register = np.append(register, [0])
