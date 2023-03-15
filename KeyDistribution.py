@@ -69,17 +69,20 @@ def main():
 
     register = np.array([register]).T
 
-    print('Step 0 complete: Qubit register setup')
+    print("You are acting as a communication channel for person A to send a secret message to person B")
+
+    #print('Step 0 complete: Qubit register setup')
     # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     A_bits = np.random.randint(2, size=n)
 
-    print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
+
+    #print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
     #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     A_bases = np.random.randint(2, size=n)
 
-    print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
+    #print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
     #Step 3 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     for i in range(n):
@@ -108,11 +111,12 @@ def main():
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
 
-    print('Step 3 complete: Qubits encoded')
+    #print('Step 3 complete: Qubits encoded')
+    print('Person A has their secretly encoded message ready to send to person B')
 
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    y = int(input('Should C listen to the message? Yes = 1, No = 0 :'))
+    y = int(input('Do you want to intercept and try and read their message? Yes = 1, No = 0 :'))
 
     if y == 1:
         C_bases = np.random.randint(2, size=n)
@@ -155,7 +159,7 @@ def main():
                 else:
                     register = qc.Matrix.tensor_prod(register, one)
                     register = register.matrix
-        print('Interception completed:', C_bases, '!This is not publicly shared!')
+        print('Interception completed, this is the message you read:', measurement_intercept)
     else:
         pass
 
@@ -178,9 +182,11 @@ def main():
             result = measure_any(i, 0, register)
             measurement.append(result)
 
-    print('Step 4 complete:')
-    print('B Bases =', B_bases, '!This is not shared publicly!')
-    print('Measured B bits =', measurement, '!This is not shared publicly!')
+    print('Person B has measured the message')
+    print('Person A shares the bases which they measured the message with, and vice versa so that they can both create a key')
+    #print('Step 4 complete:')
+    #print('B Bases =', B_bases, '!This is not shared publicly!')
+    #rint('Measured B bits =', measurement, '!This is not shared publicly!')
     # Step 5 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     B_Key = []
@@ -204,12 +210,12 @@ def main():
         else:
             pass
 
-    print('Step 5 complete')
-    print('A Key =', A_Key , 'This is not shared publicly')
-    print('B Key =', B_Key, 'This is not shared publicly')
+    #print('Step 5 complete')
+    #print('A Key =', A_Key , 'This is not shared publicly')
+    #print('B Key =', B_Key, 'This is not shared publicly')
 
     # Step 6 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+    print('Now a random sample is generated to test if the keys for person A and B are secure')
     sample_A = []
     sample_B = []
 
@@ -222,6 +228,7 @@ def main():
         pass
     else:
         print('Error in Key length')
+        exit()
 
 
     number_of_samples = round(j*0.5)
@@ -236,9 +243,9 @@ def main():
         sample_A.append(f)
         sample_B.append(h)
 
-    print('Step 6 complete:', 'Sample of qubits for A and B to share =', s)
-    print('A random sample = ', sample_A, 'These are shared publicly')
-    print('B random sample = ', sample_B, 'These are shared publicly')
+    print('Person A and person B share their random sample of the message they measured using the bases already shared:')
+    print('A random sample = ', sample_A)
+    print('B random sample = ', sample_B)
 
     # Step 7 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -256,13 +263,13 @@ def main():
         if sample_A[i] == sample_B[i]:
             p = p + 1
         else:
-            print('Secret Key is probably not secure')
+            print('You were caught listening!')
             exit()
     print('Secret Key is probably secure')
 
 
 
-    print('Step 7 complete:', p)
+    #print('Step 7 complete:', p)
     # Step 8 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     j = len(A_Key)
@@ -279,7 +286,7 @@ def main():
         A_secret_key.append(A_Key[i])
         B_secret_key.append(B_Key[i])
 
-    print('Step 8 complete:')
+    print('Both person A and person B have their secret keys now:')
     print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages')
     print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages')
 
