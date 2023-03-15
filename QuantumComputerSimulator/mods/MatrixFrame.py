@@ -80,6 +80,6 @@ class MatrixFrame(ABC):
     def matrix_multiply(self, M1, M2):
         pass
 
-    @abstractmethod
-    def apply_register(self):
-        pass
+    #@abstractmethod
+    #def apply_register(self):
+    #    pass
