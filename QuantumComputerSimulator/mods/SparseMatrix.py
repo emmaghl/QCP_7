@@ -13,28 +13,31 @@ class SparseMatrix(MatrixFrame):
             self.matrix = np.array([[0, 0, 1], [1, 1, 1]])
         if Type == 'P': # phase shift gatel, where args[0] is the angle
             self.matrix = np.array([[0, 0, 1], [1, 0, 1], [1,1,np.exp(1j * args[0])]])
+
         if Type == 'X': # X pauli gate
             self.matrix = np.array([[0, 1, 1], [1, 0, 1]])
         if Type == 'Y': # Y pauli gate
             self.matrix = np.array([[0,1, 0 - 1j], [1,0,0 + 1j]], dtype=complex)
         if Type == 'Z': # Z pauli gate
             self.matrix = np.array([[0,0,1], [1,1,-1]])
+
         if Type == 'TP' or Type == 'MM':
             self.matrix = args[0] #check that the matrix in args[0] is sparse
+
         if Type == 'CNOT':
             self.matrix = self.cnot(args[0], args[1], args[2]) #check that the matrix in args[0] is sparse
         if Type == 'CV':
             self.matrix = self.cv(args[0], args[1], args[2])
         if Type == 'CZ':
             self.matrix = self.cz(args[0], args[1], args[2])
+
         if Type == 'M0':
             self.matrix = np.array([[0,0,1], [1,1,0]])
         if Type == 'M1':
             self.matrix = np.array([[1,1,1]])
 
-        self.dim = self.size_matrix(self.matrix)[0]
+        self.size = self.size_matrix(self.matrix)
 
-    @classmethod
     def size_matrix(cls, M):
         if type(M) == SparseMatrix:
             m = M.matrix
@@ -67,8 +70,8 @@ class SparseMatrix(MatrixFrame):
         else:
             m2 = M2
 
-        m2_col = cls.size_matrix(m2)[0]  # STcol/SM1col = SM2col etc.
-        m2_row = cls.size_matrix(m2)[1]
+        m2_col = m2.size[0]  # STcol/SM1col = SM2col etc.
+        m2_row = m2.size[1]
 
         tensorprod = []
 
@@ -139,13 +142,13 @@ class SparseMatrix(MatrixFrame):
                     trace += M[i][2]
         return trace
 
-    def Basis(self, N:float): # need to check it's doing what i want it to
-        Q = []
-        for i in range(0, 2 ** N):
-            Q.append([i,0,1])
-            if i != 2**N - 1:
-                Q.append([2**N - 1,0,0])
-        return Q
+    # def Basis(self, N:float): # need to check it's doing what i want it to
+    #     Q = []
+    #     for i in range(0, 2 ** N):
+    #         Q.append([i,0,1])
+    #         if i != 2**N - 1:
+    #             Q.append([2**N - 1,0,0])
+    #     return Q
 
     def cnot(self, d: list, c: float, t: float):
         digits = copy.deepcopy(d)
@@ -166,15 +169,13 @@ class SparseMatrix(MatrixFrame):
 
         index = super().CV_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
-        basis = self.Basis(N)
 
         for i in range(0, 2 ** N):
             if index[i] == 1:
-                new_row_ascolumn = self.sparse_multiply(1j, basis[i])
+                new_entry = [i, index[i], 1j]
             else:
-                new_row_ascolumn = basis[i]
-            new_row = self.transpose(new_row_ascolumn)
-            cv.append(new_row)
+                new_entry = [i, index[i], 1]
+            cv.append(new_entry)
 
         return cv
 
@@ -184,19 +185,18 @@ class SparseMatrix(MatrixFrame):
 
         index = super().CZ_logic(digits, c, t)
         N = int(np.log(len(index)) / np.log(2))
-        basis = self.Basis(N)
 
         for i in range(0, 2 ** N):
             if index[i] == 1:
-                new_row_ascolumn = self.sparse_multiply(-1, basis[i])
+                new_entry = [i, index[i], -1]
             else:
-                new_row_ascolumn = basis[i]
-            new_row = self.transpose(new_row_ascolumn)
-            cz.append(new_row)
+                new_entry = [i, index[i], 1]
+            cz.append(new_entry)
 
         return cz
 
     def output(self, inputs:np.array) -> np.array:
+        pass
         return self.matrix_multiply(self.matrix, inputs)
 
     def Sparse_to_Dense(self, SMatrix):
@@ -223,6 +223,7 @@ class SparseMatrix(MatrixFrame):
             DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
         return DMatrix
 
-    def apply_register(self):
+
+
 
 
