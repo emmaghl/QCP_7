@@ -1,5 +1,5 @@
 # Quantum Computer Simulator
-This python library allows functionality to build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense and lazy methods.
+This python library allows functionality to build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense (lazy and sparse?) methods.
 
 ## Installation and Testing
 ###Using Git

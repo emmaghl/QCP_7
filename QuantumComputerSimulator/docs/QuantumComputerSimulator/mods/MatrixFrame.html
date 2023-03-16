@@ -32,9 +32,18 @@ from abc import ABC, abstractmethod
 class MatrixFrame(ABC):
 
     def __init__(self):
+        &#39;&#39;&#39;
+        Abstract class
+        &#39;&#39;&#39;
+        self.matrix = 0
         pass
 
     def recog_digits(self, digits):
+        &#39;&#39;&#39;
+
+        :param digits:
+        :return:
+        &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
         for i in range(0, 2 ** N):
@@ -54,6 +63,13 @@ class MatrixFrame(ABC):
         return unpack
 
     def CNOT_logic(self, digits_in, c, t):
+        &#39;&#39;&#39;
+        Logic to build the Control Not gate, has children in dense and sparse
+        :param digits_in:
+        :param c:
+        :param t:
+        :return:
+        &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
         digits_out = digits_in
@@ -66,6 +82,13 @@ class MatrixFrame(ABC):
         return index
 
     def CV_logic(self, digits, c, t):
+        &#39;&#39;&#39;
+        Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
+        :param digits:
+        :param c:
+        :param t:
+        :return:
+        &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
         for i in range(0, 2 ** N):
@@ -84,6 +107,10 @@ class MatrixFrame(ABC):
 
     @abstractmethod
     def matrix_multiply(self, M1, M2):
+        pass
+
+    # @abstractmethod
+    def apply_register(self):
         pass</code></pre>
 </details>
 </section>
@@ -101,7 +128,8 @@ class MatrixFrame(ABC):
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+inheritance.</p>
+<p>Abstract class</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -109,9 +137,18 @@ inheritance.</p></div>
 <pre><code class="python">class MatrixFrame(ABC):
 
     def __init__(self):
+        &#39;&#39;&#39;
+        Abstract class
+        &#39;&#39;&#39;
+        self.matrix = 0
         pass
 
     def recog_digits(self, digits):
+        &#39;&#39;&#39;
+
+        :param digits:
+        :return:
+        &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
         for i in range(0, 2 ** N):
@@ -131,6 +168,13 @@ inheritance.</p></div>
         return unpack
 
     def CNOT_logic(self, digits_in, c, t):
+        &#39;&#39;&#39;
+        Logic to build the Control Not gate, has children in dense and sparse
+        :param digits_in:
+        :param c:
+        :param t:
+        :return:
+        &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
         digits_out = digits_in
@@ -143,6 +187,13 @@ inheritance.</p></div>
         return index
 
     def CV_logic(self, digits, c, t):
+        &#39;&#39;&#39;
+        Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
+        :param digits:
+        :param c:
+        :param t:
+        :return:
+        &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
         for i in range(0, 2 ** N):
@@ -161,6 +212,10 @@ inheritance.</p></div>
 
     @abstractmethod
     def matrix_multiply(self, M1, M2):
+        pass
+
+    # @abstractmethod
+    def apply_register(self):
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -180,12 +235,23 @@ inheritance.</p></div>
 <span>def <span class="ident">CNOT_logic</span></span>(<span>self, digits_in, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Logic to build the Control Not gate, has children in dense and sparse
+:param digits_in:
+:param c:
+:param t:
+:return:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CNOT_logic(self, digits_in, c, t):
+    &#39;&#39;&#39;
+    Logic to build the Control Not gate, has children in dense and sparse
+    :param digits_in:
+    :param c:
+    :param t:
+    :return:
+    &#39;&#39;&#39;
     N = int(np.log(len(digits_in)) / np.log(2))
 
     digits_out = digits_in
@@ -202,12 +268,23 @@ inheritance.</p></div>
 <span>def <span class="ident">CV_logic</span></span>(<span>self, digits, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
+:param digits:
+:param c:
+:param t:
+:return:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CV_logic(self, digits, c, t):
+    &#39;&#39;&#39;
+    Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
+    :param digits:
+    :param c:
+    :param t:
+    :return:
+    &#39;&#39;&#39;
     N = int(np.log(len(digits)) / np.log(2))
     index = []
     for i in range(0, 2 ** N):
@@ -231,6 +308,19 @@ inheritance.</p></div>
     return self.CV_logic(digits, c, t)</code></pre>
 </details>
 </dd>
+<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register"><code class="name flex">
+<span>def <span class="ident">apply_register</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_register(self):
+    pass</code></pre>
+</details>
+</dd>
 <dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply"><code class="name flex">
 <span>def <span class="ident">matrix_multiply</span></span>(<span>self, M1, M2)</span>
 </code></dt>
@@ -249,12 +339,18 @@ def matrix_multiply(self, M1, M2):
 <span>def <span class="ident">recog_digits</span></span>(<span>self, digits)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>:param digits:
+:return:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recog_digits(self, digits):
+    &#39;&#39;&#39;
+
+    :param digits:
+    :return:
+    &#39;&#39;&#39;
     N = int(np.log(len(digits)) / np.log(2))
     numbers = []
     for i in range(0, 2 ** N):
@@ -322,6 +418,7 @@ def tensor_prod(self, M1, M2):
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic">CZ_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply">matrix_multiply</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.reverse_digits" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.reverse_digits">reverse_digits</a></code></li>

@@ -91,6 +91,8 @@ class QuantumComputer(Interface):
 
     def print_circuit(self):
         '''
+        Prints the circuit that is built from using `add_gate_to_circuit` function.
+
         WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
             Prints the quantum circuit in an ascii format on the terminal.
         '''
@@ -284,11 +286,9 @@ class QuantumComputer(Interface):
         self.circuit = self.gate_logic(self.__gate_history)
         return self.circuit
 
-    def __validate_gate_logic_inputs(self, inputs):
+    def __validate_gate_logic_inputs(self, inputs: list):
         '''
         Check function. Checking gates make sense and are of the correct type.
-        :param inputs:
-        :return: Through other methods, pass/fail.
         '''
         check.check_type(inputs, list)
 
@@ -297,6 +297,7 @@ class QuantumComputer(Interface):
             check.check_array_length(time_step, 2)
             check.check_type(time_step[0], list)
             check.check_type(time_step[1], list)
+            check.check_array_length(time_step[0], len(time_step[1]))
             for gate in time_step[0]: #Looping through gates, check to see they're recognisable.
                 check.check_type(gate, str)
                 check.check_in_list(gate, self.single_inputs + self.double_inputs)
