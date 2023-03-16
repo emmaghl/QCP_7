@@ -2,6 +2,8 @@ from QuantumComputerSimulator import QuantumComputer, Test
 import numpy as np
 import random
 
+
+
 # Step 0 - Set up n qubit register
 
 # Step 1 - Generate a random bit string n long, this is the message, A_bits
@@ -55,6 +57,10 @@ def quantum_register(qnum):
     return register
 
 def main():
+    zero = np.array([(1, 0)])
+    zero = zero.T
+    print(zero)
+
     print("You are acting as a communication channel for person A to send secret messages to person B.")
     n = int(input('How long would person A like their bit message to be?: '))
 
@@ -138,8 +144,10 @@ def main():
 
             zero = np.array([(1, 0)])
             zero = zero.T
+            print(zero)
             one = np.array([(0, 1)])
             one = one.T
+
             for i in range(n):
                 q = register_intercept[i]
                 if i == 0:
@@ -305,5 +313,8 @@ def main():
     print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
 
 
+
 if __name__=="__main__":
     main()
+
+

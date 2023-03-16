@@ -1,12 +1,12 @@
 from QuantumComputerSimulator import QuantumComputer, Test
+from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix
 import numpy as np
 import random
+import time
 
-def measure_any(qnum, state, register ):
-    register_conjugate = np.conjugate(register)
-    register_ket = register_conjugate.T
-    inner_register = qc.Matrix.matrix_multiply(register, register_ket)
-    inner_register = inner_register.matrix
+def measure_any(qnum, state, register):
+
+    inner_register = SparseMatrix.inner_prod(register)
 
     if state == 0:
         matrix = qc.gate_logic([(["M0"], [[qnum]])])
@@ -14,11 +14,9 @@ def measure_any(qnum, state, register ):
     elif state == 1:
         matrix = qc.gate_logic([(["M1"], [[qnum]])])
         matrix_gate = matrix.matrix
-
-    inner_register_M = qc.Matrix.matrix_multiply(matrix_gate, inner_register)
-
+    inner_register_M = SparseMatrix.matrix_multiply(matrix_gate, inner_register)
     inner_register_M = inner_register_M.matrix
-    QProb = np.trace(inner_register_M)
+    QProb = SparseMatrix.trace(inner_register_M)
 
     if (np.random.rand() < QProb):
         result = 0
@@ -35,12 +33,14 @@ def measure_any(qnum, state, register ):
 #     return register
 
 def quantum_register_sparse(qnum):
-    register = np.array([[0, 0,1], [0,1,0]])
+    register = np.array([[0, 0, 1], [0, 1, 0]])
+    register = SparseMatrix("spar", register)
+    register = register.matrix
     w = 2**(qnum) - 2
     for i in range(w):
-        register = np.append(register, [0])5
+        register[-1] = [0, i+2, 0]
 
-    register = np.array([register]).T
+    register = SparseMatrix.transpose(register)
     return register
 
 def main():
@@ -55,7 +55,7 @@ def main():
 
     # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    register = quantum_register(n)
+    register = quantum_register_sparse(n)
 
     #print('Step 0 complete: Qubit register setup')
 
@@ -108,41 +108,40 @@ def main():
 
     if y == 1:
         C_bases = np.random.randint(2, size=n)
+
         print('The random bases you measure the message with are =', C_bases)
         register_intercept = []
         for i in range(n):
             g = C_bases[i]
             if g == 0:
                 result = measure_any(i, 0, register)
-                register_intercept.append(result)
+                register_intercept.append([0,i,result])
             else:
                 circuit = qc.gate_logic([(["H"], [[i]])])
                 circuit = circuit.matrix
-                register = qc.Matrix.matrix_multiply(circuit, register)
+                register = SparseMatrix.matrix_multiply(circuit, register)
                 register = register.matrix
                 result = measure_any(i, 0, register)
-                register_intercept.append(result)
-        register = [[]]
+                register_intercept.append([0,i,result])
 
-        zero = np.array([(1, 0)])
-        zero = zero.T
-        one = np.array([(0, 1)])
-        one = one.T
+
+
+        zero = np.array([[0,0,1], [1,0,0]])
+        one = np.array([[1, 0, 1]])
+
         for i in range(n):
             q = register_intercept[i]
             if i == 0:
                 if q == 0:
-                    register = np.append(register, zero)
-                    register = register.T
+                    register = SparseMatrix.transpose(zero)
                 else:
-                    register = np.append(register, one)
-                    register = register.T
+                    register = SparseMatrix.transpose(one)
             else:
                 if q == 0:
-                    register = qc.Matrix.tensor_prod(zero, register)
+                    register = SparseMatrix.tensor_prod(zero, register)
                     register = register.matrix
                 else:
-                    register = qc.Matrix.tensor_prod(one, register)
+                    register = SparseMatrix.tensor_prod(one, register)
                     register = register.matrix
 
     else:
@@ -292,4 +291,6 @@ def main():
 
 if __name__=="__main__":
     main()
+
+
 
