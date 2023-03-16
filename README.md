@@ -1,6 +1,9 @@
 # Quantum Computer Simulator
 This python library can build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense (lazy and sparse?) methods.
 
+## Python Version and OS
+Been tested to work with Python 3.11.2 on MacOS. See `Requirements.txt` file to see the python libraries and versions needed to run this code. The library should also run for Linux and Windows operating systems; the only reason why it wouldn't is that `PrintCircuit.py` clears the screen when the circuit is printed using the terminal/cmd. This command varies across operating systems, however the library should account for this. 
+
 ## Installation and Testing
 ### Using Git
 Open terminal and change into a directory that you wish the library to be downloaded in. This can be accomplished with the command
@@ -123,7 +126,3 @@ Note, that the CCNot gate that was added with the label 'T' shows up in a hashed
 qc.build_circuit()
 ```
 Need to decide what happens with measuring...
-
-## Python Version and OS
-Been tested to work with Python 3.11.2 on MacOS. See `Requirements.txt` file to see the python libraries and versions needed to run this code. The library should also run for Linux and Windows operating systems; the only reason why it wouldn't is that `PrintCircuit.py` clears the screen when the circuit is printed using the terminal/cmd. This command varies across operating systems, however the library should account for this. 
-
