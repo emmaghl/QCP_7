@@ -108,10 +108,10 @@ def GroverAlgorithm_3Qubit(show_plots=False):
 def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
     '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
     # The roles of each qubit are:
-    #   - 1,2,3: the qubits that are amplified
-    #   - 4: this qubit handles the signal that 'turns on' the phase kickback (in a classical sense)'
-    #   - 5: In the |-> state, that implements the phase kickback.
-    #   - 6: Garbage qubit for the CCCnot gate to work.
+    #   - 0, 1, 2: the qubits that are amplified
+    #   - 3: this qubit handles the signal that 'turns on' the phase kickback (in a classical sense)'
+    #   - 4: In the |-> state, that implements the phase kickback.
+    #   - 5: Garbage qubit for the CCCnot gate to work.
     num_qubits = 6
     qc = QuantumComputer(num_qubits, "Dense")
 
@@ -175,52 +175,66 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
 def GroverAlgorithm_SingleRow_Suduko(show_plots = False):
     '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
     # The roles of each qubit are:
-    #   - 1 to 6: the qubits that are amplified
-    #   - 7, 8, 9: this qubit handles the signal that 'turns on' the phase kickback (in a classical sense)'
-    #   - 10: In the |-> state, that implements the phase kickback.
-    #   - 11: Garbage qubit for the CCCnot gate to work.
+    #   - 0 to 5: the qubits that are amplified
+    #   - 6, 7, 8: this qubit handles the signal that 'turns on' the phase kickback (in a classical sense)'
+    #   - 9: In the |-> state, that implements the phase kickback.
+    #   - 10: Garbage qubit for the CCCnot gate to work.
     num_qubits = 11
     qc = QuantumComputer(num_qubits, "Lazy")
 
     # Initialises by putting three qubits in a super position of equal weight, and the fourth qubit in the |-> state to implement phase kick-back.
     init_states = [
-        (["H", "H", "H"], [[0], [1], [2]]),
-        (["X"], [[4]]),
-        (["H"], [[4]])
+        (["H", "H", "H", "H", "H", "H"], [[0], [1], [2], [3], [4], [5]]),
+        (["X", "X"], [[9], [8]]),
+        (["H"], [[9]])
     ]
     qc.add_gate_to_circuit(init_states)
 
     # Builds the oracle
-    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 3, 5), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
-    oracle_continued = [
-        (["CNOT"], [[0, 3]]),
-        (["CNOT"], [[1, 3]]),
-        (["CNOT"], [[2, 3]])
-    ]
-    qc.add_gate_to_circuit(oracle_continued)
-
-    # This gate is the only one that links to the 5th qubit, implementing the phase kickback.
+    qc.add_gate_to_circuit(CCnot(0, 3, 8), add_gate_name="T")
+    qc.add_gate_to_circuit(CCnot(1, 4, 8), add_gate_name="T")
+    qc.add_gate_to_circuit(CCnot(2, 5, 8), add_gate_name="T")
+    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 6, 10), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
     qc.add_gate_to_circuit([
-        (["CNOT"], [[3, 4]]),
+        (["CNOT"], [[0, 6]]),
+        (["CNOT"], [[1, 6]]),
+        (["CNOT"], [[2, 6]])
+    ])
+    qc.add_gate_to_circuit(CCCnot(3, 4, 5, 7, 10), add_gate_name="T4")
+    qc.add_gate_to_circuit([
+        (["CNOT"], [[3, 7]]),
+        (["CNOT"], [[4, 7]]),
+        (["CNOT"], [[5, 7]])
     ])
 
-    # Reset the 4th qubit, by repeating the oracle. Funcrtions have to be called explicilty to aff the oravle
-    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 3, 5), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
-    reset_continued = [
-        (["CNOT"], [[0, 3]]),
-        (["CNOT"], [[1, 3]]),
-        (["CNOT"], [[2, 3]])
-    ]
-    qc.add_gate_to_circuit(reset_continued)
+    # The phase kickback
+    qc.add_gate_to_circuit(CCCnot(6, 7, 8, 9, 10), add_gate_name="T4")
+
+    # Reset, byusing the oracle again
+    qc.add_gate_to_circuit(CCnot(0, 3, 8), add_gate_name="T")
+    qc.add_gate_to_circuit(CCnot(1, 4, 8), add_gate_name="T")
+    qc.add_gate_to_circuit(CCnot(2, 5, 8), add_gate_name="T")
+    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 6, 10), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
+    qc.add_gate_to_circuit([
+        (["CNOT"], [[0, 6]]),
+        (["CNOT"], [[1, 6]]),
+        (["CNOT"], [[2, 6]])
+    ])
+    qc.add_gate_to_circuit(CCCnot(3, 4, 5, 7, 10), add_gate_name="T4")
+    qc.add_gate_to_circuit([
+        (["CNOT"], [[3, 7]]),
+        (["CNOT"], [[4, 7]]),
+        (["CNOT"], [[5, 7]])
+    ])
 
     # Amplify the amplitudes
     amplify_amplitude = [
-        (["H", "H", "H"], [[0], [1], [2]]),
-        (["X", "X", "X"], [[0], [1], [2]]),
-        (["H"], [[2]])
+        (["H", "H", "H", "H", "H", "H"], [[0], [1], [2], [3], [4], [5]]),
+        (["X", "X", "X", "X", "X", "X"], [[0], [1], [2], [3], [4], [5]]),
+        (["H"], [[3]])
     ]
     qc.add_gate_to_circuit(amplify_amplitude)
-    qc.add_gate_to_circuit(CCnot(0, 1, 2), "Z")
+    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 3, 10), "Z")
     qc.add_gate_to_circuit(amplify_amplitude[::-1])
 
     # Prints circuit and make's sure the user is happy with it before it's built. Especially useful here, as this will take a bit of time.
