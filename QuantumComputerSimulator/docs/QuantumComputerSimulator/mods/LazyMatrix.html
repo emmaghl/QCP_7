@@ -34,6 +34,11 @@ import numpy as np
 class LazyMatrix(MatrixFrame):
 
     def __init__(self, Type, *args):
+        &#39;&#39;&#39;
+        Set up the lazy gates using lambda functions.
+        :param Type: Gate to be initialised
+        :param args:
+        &#39;&#39;&#39;
         if Type == &#39;I&#39;:
             self.matrix = [lambda x: x[0], lambda x: x[1]]
         if Type == &#39;H&#39;:
@@ -67,6 +72,12 @@ class LazyMatrix(MatrixFrame):
 
     @classmethod
     def tensor_prod(cls, m1, m2):
+        &#39;&#39;&#39;
+        Lazy tensor product
+        :param m1: Gate 1
+        :param m2: Gate 2
+        :return: Tensor product of Gate 1 with Gate 2
+        &#39;&#39;&#39;
         tp = []
         for i in range(0, m1.dim):
             for j in range(0, m2.dim):
@@ -78,6 +89,12 @@ class LazyMatrix(MatrixFrame):
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
+        &#39;&#39;&#39;
+        Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
+        :param m1: Gate 1
+        :param m2: Gate 2
+        :return: Multiplication of gate 1 and gate 2
+        &#39;&#39;&#39;
         mm = []
         for i in range(0, m1.dim):
             mm.append(
@@ -122,11 +139,13 @@ class LazyMatrix(MatrixFrame):
     def cz(self, d, c, t):
         pass
 
-    def output(self, inputs):
-        # add conversion for vector input
+    def output(self,inputs):
+        new_in = []
+        for i in range(0,len(inputs)):
+            new_in.append(inputs[i][0])
         out = []
-        for i in range(0, self.dim):
-            out.append(self.matrix[i](inputs))
+        for i in range(0,self.dim):
+            out.append(self.matrix[i](new_in))
 
         return out
 
@@ -151,7 +170,10 @@ class LazyMatrixSingle(MatrixFrame):
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+inheritance.</p>
+<p>Set up the lazy gates using lambda functions.
+:param Type: Gate to be initialised
+:param args:</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -159,6 +181,11 @@ inheritance.</p></div>
 <pre><code class="python">class LazyMatrix(MatrixFrame):
 
     def __init__(self, Type, *args):
+        &#39;&#39;&#39;
+        Set up the lazy gates using lambda functions.
+        :param Type: Gate to be initialised
+        :param args:
+        &#39;&#39;&#39;
         if Type == &#39;I&#39;:
             self.matrix = [lambda x: x[0], lambda x: x[1]]
         if Type == &#39;H&#39;:
@@ -192,6 +219,12 @@ inheritance.</p></div>
 
     @classmethod
     def tensor_prod(cls, m1, m2):
+        &#39;&#39;&#39;
+        Lazy tensor product
+        :param m1: Gate 1
+        :param m2: Gate 2
+        :return: Tensor product of Gate 1 with Gate 2
+        &#39;&#39;&#39;
         tp = []
         for i in range(0, m1.dim):
             for j in range(0, m2.dim):
@@ -203,6 +236,12 @@ inheritance.</p></div>
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
+        &#39;&#39;&#39;
+        Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
+        :param m1: Gate 1
+        :param m2: Gate 2
+        :return: Multiplication of gate 1 and gate 2
+        &#39;&#39;&#39;
         mm = []
         for i in range(0, m1.dim):
             mm.append(
@@ -247,11 +286,13 @@ inheritance.</p></div>
     def cz(self, d, c, t):
         pass
 
-    def output(self, inputs):
-        # add conversion for vector input
+    def output(self,inputs):
+        new_in = []
+        for i in range(0,len(inputs)):
+            new_in.append(inputs[i][0])
         out = []
-        for i in range(0, self.dim):
-            out.append(self.matrix[i](inputs))
+        for i in range(0,self.dim):
+            out.append(self.matrix[i](new_in))
 
         return out</code></pre>
 </details>
@@ -280,13 +321,22 @@ def inner_prod(cls, M):
 <span>def <span class="ident">matrix_multiply</span></span>(<span>m1, m2)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Use list comprehension to preform a matrix multiplication between two 'matrices'
+:param m1: Gate 1
+:param m2: Gate 2
+:return: Multiplication of gate 1 and gate 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def matrix_multiply(cls, m1, m2):
+    &#39;&#39;&#39;
+    Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
+    :param m1: Gate 1
+    :param m2: Gate 2
+    :return: Multiplication of gate 1 and gate 2
+    &#39;&#39;&#39;
     mm = []
     for i in range(0, m1.dim):
         mm.append(
@@ -300,13 +350,22 @@ def matrix_multiply(cls, m1, m2):
 <span>def <span class="ident">tensor_prod</span></span>(<span>m1, m2)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Lazy tensor product
+:param m1: Gate 1
+:param m2: Gate 2
+:return: Tensor product of Gate 1 with Gate 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def tensor_prod(cls, m1, m2):
+    &#39;&#39;&#39;
+    Lazy tensor product
+    :param m1: Gate 1
+    :param m2: Gate 2
+    :return: Tensor product of Gate 1 with Gate 2
+    &#39;&#39;&#39;
     tp = []
     for i in range(0, m1.dim):
         for j in range(0, m2.dim):
@@ -401,16 +460,28 @@ def trace(cls, M):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def output(self, inputs):
-    # add conversion for vector input
+<pre><code class="python">def output(self,inputs):
+    new_in = []
+    for i in range(0,len(inputs)):
+        new_in.append(inputs[i][0])
     out = []
-    for i in range(0, self.dim):
-        out.append(self.matrix[i](inputs))
+    for i in range(0,self.dim):
+        out.append(self.matrix[i](new_in))
 
     return out</code></pre>
 </details>
 </dd>
 </dl>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame">MatrixFrame</a></b></code>:
+<ul class="hlist">
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
+</ul>
+</li>
+</ul>
 </dd>
 <dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrixSingle"><code class="flex name class">
 <span>class <span class="ident">LazyMatrixSingle</span></span>
@@ -418,7 +489,8 @@ def trace(cls, M):
 </code></dt>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
+inheritance.</p>
+<p>Abstract class</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -431,6 +503,16 @@ inheritance.</p></div>
 <ul class="hlist">
 <li><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame">MatrixFrame</a></li>
 <li>abc.ABC</li>
+</ul>
+<h3>Inherited members</h3>
+<ul class="hlist">
+<li><code><b><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame">MatrixFrame</a></b></code>:
+<ul class="hlist">
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
+</ul>
+</li>
 </ul>
 </dd>
 </dl>
