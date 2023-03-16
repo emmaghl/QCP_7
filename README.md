@@ -2,7 +2,7 @@
 This python library can build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense (lazy and sparse?) methods.
 
 ## Installation and Testing
-###Using Git
+### Using Git
 Open terminal and change into a directory that you wish the library to be downloaded in. This can be accomplished with the command
 ```angular2html
 cd directory_name
