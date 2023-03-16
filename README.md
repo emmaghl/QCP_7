@@ -1,13 +1,13 @@
 # Quantum Computer Simulator
-This python library allows functionality to build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense (lazy and sparse?) methods.
+This python library can build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense (lazy and sparse?) methods.
 
 ## Installation and Testing
 ###Using Git
-Open terminal and change into a directory that you wish the library to be downloaded in with the command
+Open terminal and change into a directory that you wish the library to be downloaded in. This can be accomplished with the command
 ```angular2html
 cd directory_name
 ```
-You can list the available directories (and files within the current directory you're in) by entering the command (for MacOs/Linux):
+To list the available directories (and files within the current directory you're in), use  the following command if you're using for MacOs/Linux:
 ```angular2html
 ls
 ```
@@ -15,7 +15,7 @@ or
 ```angular2html
 dir
 ```
-for windows. Then, create a new folder (such as called `QuantumComputer`) with:
+for Windows. This can help you navigate between directories using the terminal. Then, create a new folder (such as called `QuantumComputer`) with:
 ```angular2html
 mkdir QuantumComputer
 ```
@@ -23,7 +23,7 @@ Enter this folder with
 ```angular2html
 cd QuantumComputer
 ```
-This folder is where the git repository will be downloaded into. This can be done by installing git (https://github.com/git-guides/install-git) and entering the command:
+The git repository will be downloaded into this folder. To download the repository, first install git (https://github.com/git-guides/install-git), and then enter:
 ```angular2html
 git clone https://github.com/emmaghl/Project-Bambi
 ```
@@ -37,29 +37,29 @@ This assumes that you have `python3` added to your path (https://realpython.com/
 The documentation can be found in the [docs folder](QuantumComputerSimulator/docs/QuantumComputerSimulator). To view the documentation, open `index.html` with your favourite web browser. 
 
 ## Quick Start Guide
-The `sample.py` file contains three implementations of Grover's circuit, with increasing number of qubits. The three functions, in order of increasing qubits needed, are called: 
+The `sample.py` file contains three implementations of Grover's circuit. The three functions, in order of increasing qubits that are used, are called: 
 1. `GroverAlgorithm_3Qubit`
 2. `GroverAlgorithm_SingleRow_BinaryCol_Suduko`
 3. `GroverAlgorithm_SingleRow_Suduko`
  
-Let's walk through the first function, `GroverAlgorithm_3Qubit`, to gain appreciation in thinking and logic behind using this library to simulate a quantum computer.
+Let's implement the first function, `GroverAlgorithm_3Qubit`, to gain an appreciation in the thinking and logic behind using this library to simulate a quantum computer. 
 
-First, in a new python file, we want to import this library. If the new python file was created in the directory where `sample.py` is, then the import statement would be
+In a new python file, we first want to import this library. If the new python file was created in the directory where `sample.py` is, then the import statement would be
 ```python
 from QuantumComputerSimulator import QuantumComputer
 ```
-This can be changed depending where the python file was created relative to the `QuantumComputerSimulator' folder. Next, we want to instantiate our a new quantum computer using 3 qubits.
+This can be changed depending where the python file was created relative to the `QuantumComputerSimulator` folder. Next, a 3 qubit quantum computer is instantiated:
 ```python
 qc = QuantumComputer(3)
 ```
-By default, the quantum computer will use a dense methods which are slower than other techniques, however this is more intuitive from a quantum mechanics point of view as the gates are interpreted as matricies. Now we can start to build our circuit. For Grover's, we need to put the circuit into a superposition of equal weights. This can be achieved by acting three Hadamard gates to each qubit. This can with:
+By default, the quantum computer will use dense methods which are slower than other techniques, however this is more 'intuitive'. After instantiating the computer, the circuit can start to be built. For Grover's, the circuit needs to put the register into a superposition of equal weights. This can be achieved by acting three Hadamard gates to each qubit. The following code does this:
 ```python
 init_states = [
     (["H", "H", "H"], [[0], [1], [2]])
 ]
 qc.add_gate_to_circuit(init_states)
 ```
-Let's unpack this code. We first define a list, `init_states`, which holds a single *time step*. A time step is represented as a tuple. Within this time step, we define three hadamard gates in a list, as the first element of our time step. The second element of our time step are the positions of those gates. The postitions label each 'wire' from the top of the circuit to the bottom. Then, the list of time steps, `init_states`, is fed to `qc.add_gate_to_circuit(init_states)`. This function will add these gates onto a queue. This hasn't built anything yet; one can imagine that we're simply building a blue print for this quantum circuit, and the `qc.add_gate_to_circuit(init_states)` function adds gates to the blue print.
+Let's unpack this. A list, `init_states`, is defined first which holds a single *time step*. A time step is represented as a tuple, and can be thought of as a column on a quantum circuit. Within this time step, three hadamard gates are defined in a list as the first element of our time step. The second element of our time step are the positions of those gates. The positions label each 'wire' from the top of the circuit to the bottom. Then, the list of time steps, `init_states`, is fed to `qc.add_gate_to_circuit(init_states)`. This function will add a list of time steps onto a queue. This doesn't build anything; one can imagine that by calling this function a blue print is being constructed for this quantum circuit.
 
 Next we add an oracle:
 ```python
@@ -68,9 +68,7 @@ Next we add an oracle:
 ]
 qc.add_gate_to_circuit(oracle)
 ```
-This contains a time step that adds a double gate to the circuit. The control bit is `0`, and the target qubit is `1`. This is the same ordering of control and target qubits for every double gate.
-
-Following Grover's algorithm, we add the section where the amplitudes amplify,
+This contains a time step that adds a double gate to the circuit. The control bit is `0`, and the target qubit is `1`. This is the same order of control and target qubits for every double gate. Following Grover's algorithm, the amplitude amplification can start to be added,
 ```python
 half_of_amplification = [
     (["H", "H", "H"], [[0], [1], [2]]),
@@ -79,7 +77,7 @@ half_of_amplification = [
 ]
 qc.add_gate_to_circuit(half_of_amplification)
 ```
-As you can see, the `qc.add_gate_to_circuit` function can handle multiple time steps of varying number of gates. Adding to the amplitude amplification, we need to implement a CCz gate. This can be done with attatching a hadamard gate to each side of the target qubit of a toffoli gate. The toffoli gate (also known as CCnot) can be implemented using CV and Hadarmard gates. This is a long chain of commands, so we choose to put this in a function:
+As you can see, the `qc.add_gate_to_circuit` function can handle multiple time steps of varying number of gates. For the amplitude amplification, a CCz gate needs to added. This can be done by attatching a hadamard gate to each side of the target qubit of a toffoli gate. The toffoli gate (also known as CCnot) can be implemented using CV and Hadamard gates. This is a long chain of commands, so we choose to put this in a function:
 ```python
 def CCnot(control_1, control_2, target) -> list:
     gate_built = [
@@ -101,18 +99,18 @@ def CCnot(control_1, control_2, target) -> list:
     ]
     return gate_built
 ```
-This can also be used as a template for other gates that can be built from elementary ones. Now, we can finish building the blue prints for our circuit,
+This can also be used as a template for other gates that can be built from elementary ones. Now, the blue prints for our circuit can be finished by adding,
 ```python
 qc.add_gate_to_circuit(CCnot(0, 1, 2), add_gate_name="T"),
 qc.add_gate_to_circuit(half_of_amplification[::-1]) 
 ```
-The first line uses an additional parameter; this adds a gate name that will encapsulate all those gates. This can't be used for calling CCnot in the future, but it will condense the circuit when printed to the screen. The final line adds the mirror image of the previously defined list, as amplitude amplification is symmetric about the CCnot gate.
+The first line uses an additional parameter; this adds a gate name that will encapsulate all those gates defined in thre CCnot function. This can't be used for calling CCnot in the future, but it will condense the circuit when printed to the screen. The final line adds the mirror image of the previously defined list, as amplitude amplification is symmetric about the CCnot gate.
 
-Now, it's best to check if we've built the circuit as we've wanted. This is easily done by calling:
+To check that the circuit is what is expected, it's best to print the circuit to the terminal screen now; before commiting to running the simulation. This is easily done by calling:
 ```python
 qc.print_circuit()
 ```
-You should run the python file from the terminal, and make sure that we've ended up with the gate that we wanted! The printed circuit should look like this:
+The python file should be run from the terminal now, to make sure that the circuit has been implemented correctly! The printed circuit should look like this:
 ```angular2html
 |0> --H----•----H----X---------░---------X----H--
            |                   ░
@@ -120,7 +118,7 @@ You should run the python file from the terminal, and make sure that we've ended
            |                   ░
 |0> --H----Z----H----X----H----░----H----X----H--
 ```
-If we're happy, with this blue print, we can now buil the circuit by calling
+Note, that the CCNot gate that was added with the label 'T' shows up in a hashed format. This will always happen for custom gates, and will always span the length of the wires. If the output is correct, the circuit can be built using
 ```python
 qc.build_circuit()
 ```

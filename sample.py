@@ -3,7 +3,7 @@ from QuantumComputerSimulator import QuantumComputer, Test
 
 import matplotlib.pyplot as plt
 import sys
-import numpy as np
+import numpy as npgi
 
 def glue_circuits(matricies: object) -> np.ndarray:
     ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
