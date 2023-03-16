@@ -50,7 +50,7 @@ def CCnot(control_1, control_2, target) -> list:
     ]
     return gate_built
 
-def CCCnot(control_1, control_2, control_3, target, auxilary) -> np.array:
+def CCCnot(control_1, control_2, control_3, target, auxilary) -> list:
     return glue_lists(
         CCnot(control_1, control_3, auxilary),
         CCnot(control_2,auxilary, target),
@@ -76,27 +76,93 @@ def GroverAlgorithm_3Qubit(show_plots=False):
         (["H"], [[2]])
     ]
 
-    # Constructs circuit from pieces defined above (will be glued together later to give the complete matrix)
-    circuits = [
-        qc.add_gate_to_circuit(init_states),
-        qc.add_gate_to_circuit(oracle),
-        qc.add_gate_to_circuit(half_of_amplification),
-        qc.add_gate_to_circuit(CCnot(0, 1, 2)),
-        qc.add_gate_to_circuit(half_of_amplification[::-1]) # Reverses list
-    ]
+    # Feeds the gates that the circuit will be built out of. This is order dependent
+    qc.add_gate_to_circuit(init_states),
+    qc.add_gate_to_circuit(oracle),
+    qc.add_gate_to_circuit(half_of_amplification),
+    qc.add_gate_to_circuit(CCnot(0, 1, 2), add_gate_name="T"),
+    qc.add_gate_to_circuit(half_of_amplification[::-1]) # Reverses list
 
-    # Prints circuit and matrix, and then builds it. Can call print circuit earlier to check it is what is wanted to
+    # Prints circuit and make's sure the user is happy with it before it's built.
     qc.print_circuit()
     user = user_validation('Continue building with circuit? (y/n)', ['y', 'n'])
     if user == 'n':
         exit()
 
+    # Builds the circuit using 'Dense' methods
     circuit = qc.build_circuit()
 
-    # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
-    # to amplify the |11> states.
+    # Prints the matrix representation of the circuits, as it is using Dense techniques, the circuit will be represented as a matrix.
     print("With the matrix representation:")
     print(circuit.matrix)
+
+    # The regiseter is set to be |000>, and the states that amplified should be |101> and |111>
+    print("\nOutput probabilities:")
+    probs = qc.get_probabilities(circuit.matrix)
+    [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
+
+    if show_plots:
+        plt.bar(probs.keys(), probs.values(), 1)
+        plt.show()
+
+def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
+    '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
+    # The roles of each qubit are:
+    #   - 1,2,3: the qubits that are amplified
+    #   - 4: this qubit handles the signal that 'turns on' the phase kickback (in a classical sense)'
+    #   - 5: In the |-> state, that implements the phase kickback.
+    #   - 6: Garbage qubit for the CCCnot gate to work.
+    num_qubits = 6
+    qc = QuantumComputer(num_qubits, "Dense")
+
+    # Initialises by putting three qubits in a super position of equal weight, and the fourth qubit in the |-> state to implement phase kick-back.
+    init_states = [
+        (["H", "H", "H"], [[0], [1], [2]]),
+        (["X"], [[4]]),
+        (["H"], [[4]])
+    ]
+    qc.add_gate_to_circuit(init_states)
+
+    # Builds the oracle
+    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 3, 5), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
+    oracle_continued = [
+        (["CNOT"], [[0, 3]]),
+        (["CNOT"], [[1, 3]]),
+        (["CNOT"], [[2, 3]])
+    ]
+    qc.add_gate_to_circuit(oracle_continued)
+
+    # This gate is the only one that links to the 5th qubit, implementing the phase kickback.
+    qc.add_gate_to_circuit([
+        (["CNOT"], [[3, 4]]),
+    ])
+
+    # Reset the 4th qubit, by repeating the oracle. Funcrtions have to be called explicilty to aff the oravle
+    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 3, 5), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
+    reset_continued = [
+        (["CNOT"], [[0, 3]]),
+        (["CNOT"], [[1, 3]]),
+        (["CNOT"], [[2, 3]])
+    ]
+    qc.add_gate_to_circuit(reset_continued)
+
+    # Amplify the amplitudes
+    amplify_amplitude = [
+        (["H", "H", "H"], [[0], [1], [2]]),
+        (["X", "X", "X"], [[0], [1], [2]]),
+        (["H"], [[2]])
+    ]
+    qc.add_gate_to_circuit(amplify_amplitude)
+    qc.add_gate_to_circuit(CCnot(0, 1, 2), "Z")
+    qc.add_gate_to_circuit(amplify_amplitude[::-1])
+
+    # Prints circuit and make's sure the user is happy with it before it's built. Especially useful here, as this will take a bit of time.
+    qc.print_circuit()
+    user = user_validation('Continue building with circuit? (y/n)', ['y', 'n'])
+    if user == 'n':
+        exit()
+
+    circuit = qc.build_circuit() #gets matrix
 
     print("\nOutput probabilities:")
     probs = qc.get_probabilities(circuit.matrix)
@@ -106,90 +172,71 @@ def GroverAlgorithm_3Qubit(show_plots=False):
         plt.bar(probs.keys(), probs.values(), 1)
         plt.show()
 
-def GroverAlgorithm_Mini_Suduko(show_plots = False):
-    num_qubits = 6
-    qc = QuantumComputer(num_qubits)
+def GroverAlgorithm_SingleRow_Suduko(show_plots = False):
+    '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
+    # The roles of each qubit are:
+    #   - 1 to 6: the qubits that are amplified
+    #   - 7, 8, 9: this qubit handles the signal that 'turns on' the phase kickback (in a classical sense)'
+    #   - 10: In the |-> state, that implements the phase kickback.
+    #   - 11: Garbage qubit for the CCCnot gate to work.
+    num_qubits = 11
+    qc = QuantumComputer(num_qubits, "Lazy")
 
-    print("Initialised gates...")
-    # Defines the gates for grover's algorithmv
+    # Initialises by putting three qubits in a super position of equal weight, and the fourth qubit in the |-> state to implement phase kick-back.
     init_states = [
-        qc.gate_logic([
-            (["H"], [[0]]),
-            (["H"], [[1]]),
-            (["H"], [[2]])
-        ]),
-        qc.gate_logic([ (["X"], [[4]]) ]),
-        qc.gate_logic([ (["H"], [[4]]) ])
+        (["H", "H", "H"], [[0], [1], [2]]),
+        (["X"], [[4]]),
+        (["H"], [[4]])
     ]
+    qc.add_gate_to_circuit(init_states)
 
-    print("Adding oracle...")
-
-    classical_chossing = [
-        qc.gate_logic(CCCnot(0, 1, 2, 3, 5), "T4"),
-        qc.gate_logic([
-            (["CNOT"], [[0, 3]]),
-            (["CNOT"], [[1, 3]]),
-            (["CNOT"], [[2, 3]]),
-        ])
+    # Builds the oracle
+    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 3, 5), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
+    oracle_continued = [
+        (["CNOT"], [[0, 3]]),
+        (["CNOT"], [[1, 3]]),
+        (["CNOT"], [[2, 3]])
     ]
+    qc.add_gate_to_circuit(oracle_continued)
 
-    kick_back = [
-        qc.gate_logic([
-            (["CNOT"], [[3, 4]]),
-        ])
+    # This gate is the only one that links to the 5th qubit, implementing the phase kickback.
+    qc.add_gate_to_circuit([
+        (["CNOT"], [[3, 4]]),
+    ])
+
+    # Reset the 4th qubit, by repeating the oracle. Funcrtions have to be called explicilty to aff the oravle
+    qc.add_gate_to_circuit(CCCnot(0, 1, 2, 3, 5), add_gate_name="T4") # A 3 controlled NOT gate (an extended version of the Toffoli gate)
+    reset_continued = [
+        (["CNOT"], [[0, 3]]),
+        (["CNOT"], [[1, 3]]),
+        (["CNOT"], [[2, 3]])
     ]
+    qc.add_gate_to_circuit(reset_continued)
 
-    reset = [
-        qc.gate_logic(CCCnot(0, 1, 2, 3, 5), "T4"),
-        qc.gate_logic([
-            (["CNOT"], [[0, 3]]),
-            (["CNOT"], [[1, 3]]),
-            (["CNOT"], [[2, 3]]),
-        ])
-    ]
-
-    print("Adding amplitude amplification...")
-
+    # Amplify the amplitudes
     amplify_amplitude = [
-        qc.gate_logic([
-            (["H"], [[0]]),
-            (["H"], [[1]]),
-            (["H"], [[2]]),
-            (["X"], [[0]]),
-            (["X"], [[1]]),
-            (["X"], [[2]]),
-            (["H"], [[2]])
-        ]),
-        qc.gate_logic(CCnot(0, 1, 2), "Z"),
-        qc.gate_logic([
-            (["H"], [[2]]),
-            (["X"], [[0]]),
-            (["X"], [[1]]),
-            (["X"], [[2]]),
-            (["H"], [[0]]),
-            (["H"], [[1]]),
-            (["H"], [[2]])
-        ])
+        (["H", "H", "H"], [[0], [1], [2]]),
+        (["X", "X", "X"], [[0], [1], [2]]),
+        (["H"], [[2]])
     ]
+    qc.add_gate_to_circuit(amplify_amplitude)
+    qc.add_gate_to_circuit(CCnot(0, 1, 2), "Z")
+    qc.add_gate_to_circuit(amplify_amplitude[::-1])
 
-    print("Gluing circuit")
-    oracle = glue_lists(classical_chossing, kick_back, reset)
-    # Constructs circuit from pieces defined above (will be glued together later to give the complete matrix)
-    circuits = glue_lists(init_states, oracle, amplify_amplitude)
-    # Prints circuit and matrix.
+    # Prints circuit and make's sure the user is happy with it before it's built. Especially useful here, as this will take a bit of time.
     qc.print_circuit()
+    user = user_validation('Continue building with circuit? (y/n)', ['y', 'n'])
+    if user == 'n':
+        exit()
 
-    glued_circuits = glue_circuits(circuits)
-
+    circuit = qc.build_circuit() #gets matrix
     print("\nOutput probabilities:")
-    probs = qc.get_probabilities(glued_circuits)
+    probs = qc.get_probabilities(circuit.matrix)
     [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
 
     if show_plots:
         plt.bar(probs.keys(), probs.values(), 1)
         plt.show()
-
-
 
 if __name__=="__main__":
     # Runs example algorithms if not testing contents if not testing
@@ -212,7 +259,9 @@ if __name__=="__main__":
         if user_input == '1':
             GroverAlgorithm_3Qubit(show_plots=False)
         elif user_input == '2':
-            GroverAlgorithm_Mini_Suduko(show_plots=False)
+            GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots=False)
+        elif user_input == '3':
+            GroverAlgorithm_SingleRow_Suduko(show_plots=False)
 
     elif '--test' in sys.argv:
         print("Running tests...")

@@ -7,6 +7,7 @@ class MatrixFrame(ABC):
         '''
         Abstract class
         '''
+        self.matrix = 0
         pass
 
     def recog_digits(self, digits):
