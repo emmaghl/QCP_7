@@ -209,8 +209,8 @@ class SparseMatrix(MatrixFrame):
     def inner_product(cls, M):
         '''
         Inner product of matrix M
-        :param M: input matrix
-        :return: Transpose
+        <b>M<\b> input matrix
+        <b>return<\b> Transpose
         '''
         if type(M) == SparseMatrix:
             m = M.matrix
