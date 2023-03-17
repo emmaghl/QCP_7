@@ -1,78 +1,23 @@
 from QuantumComputerSimulator import QuantumComputer, Test
+from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix
+from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
+from QuantumComputerSimulator.mods.LazyMatrix import LazyMatrix
+
 import numpy as np
 import random
+import time
 
-
-
-# Step 0 - Set up n qubit register
-
-# Step 1 - Generate a random bit string n long, this is the message, A_bits
-
-# Step 2 - generate a random bit string n long, this is the corresponding, A_bases
-
-# Step 3 - Set up each qubit corresponding to the combination of A_bases and A_bits
-
-# Step ! - Interception
-
-# Step 4 - B_measure, set up B_bases to measure_measure each qubit against that bases
-
-# Step 5 - Compare the random choice of bases to achieve secret key of bits for both A and B! 
-
-# Step 6 - Create random sample of key to check.
-
-# Step 7 - Check sample keys for interception, 
-
-# Step 8 - Disgard sample keys to get secret key for both A and B
-
-def measure_any(qnum, state, register ):
-    register_conjugate = np.conjugate(register)
-    register_ket = register_conjugate.T
-    inner_register = qc.Matrix.matrix_multiply(register, register_ket)
-    inner_register = inner_register.matrix
-
-    if state == 0:
-        matrix = qc.gate_logic([(["M0"], [[qnum]])])
-        matrix_gate = matrix.matrix
-    elif state == 1:
-        matrix = qc.gate_logic([(["M1"], [[qnum]])])
-        matrix_gate = matrix.matrix
-
-    inner_register_M = qc.Matrix.matrix_multiply(matrix_gate, inner_register)
-
-    inner_register_M = inner_register_M.matrix
-    QProb = np.trace(inner_register_M)
-
-    if (np.random.rand() < QProb):
-        result = 0
-    else:
-        result = 1
-    return result
-
-def quantum_register(qnum):
-    register = np.array([[1, 0]])
-    w = 2**(qnum) - 2
-    for i in range(w):
-        register = np.append(register, [0])
-    register = np.array([register]).T
-    return register
 
 def main():
-    zero = np.array([(1, 0)])
-    zero = zero.T
-    print(zero)
-
     print("You are acting as a communication channel for person A to send secret messages to person B.")
     n = int(input('How long would person A like their bit message to be?: '))
 
     global qc
 
     qc = QuantumComputer(n, 'Dense')
-
-
-
     # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    register = quantum_register(n)
+    register = qc.Matrix.quantum_register(n)
 
     #print('Step 0 complete: Qubit register setup')
 
@@ -96,22 +41,22 @@ def main():
             if k == 0:
                 pass
             else:
-                circuit = qc.gate_logic( [(["X"], [[i]])] )
+                circuit = qc.gate_logic([(["X"], [[i]])])
                 circuit = circuit.matrix
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
         if j == 1:
             if k == 0:
-                circuit = qc.gate_logic( [(["H"], [[i]])] )
+                circuit = qc.gate_logic([(["H"], [[i]])])
                 circuit = circuit.matrix
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
             else:
-                circuit_1 = qc.gate_logic( [(["X"], [[i]])] )
+                circuit_1 = qc.gate_logic([(["X"], [[i]])])
                 circuit_1 = circuit_1.matrix
-                circuit_2 = qc.gate_logic( [(["H"], [[i]])] )
+                circuit_2 = qc.gate_logic([(["H"], [[i]])])
                 circuit_2 = circuit_2.matrix
-                circuit = circuit_2.dot(circuit_1)
+                circuit = qc.Matrix.matrix_multiply(circuit_2, circuit_1)
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
 
@@ -121,55 +66,56 @@ def main():
 
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    while True:
-        print('Do you want to intercept and try and read their message?')
-        y = str(input('>'))
-        if y == 'yes' or y == 'Yes':
-            C_bases = np.random.randint(2, size=n)
-            print('The random bases you measure the message with are =', C_bases)
-            register_intercept = []
-            for i in range(n):
-                g = C_bases[i]
-                if g == 0:
-                    result = measure_any(i, 0, register)
+    y = int(input('Do you want to intercept and try and read their message? Yes = 1, No = 0 :'))
+
+    if y == 1:
+        C_bases = np.random.randint(2, size=n)
+
+        print('The random bases you measure the message with are =', C_bases)
+        register_intercept = []
+        for i in range(n):
+            g = C_bases[i]
+            if g == 0:
+                result = qc.measure_any(i, 0, register)
+                if qc.Matrix == DenseMatrix:
                     register_intercept.append(result)
+                elif qc.Matrix == SparseMatrix:
+                    register_intercept.append([0,i,result])
+                elif qc.Matrix == LazyMatrix:
+                    print("oh no, not quite working for Lazy yet ... ")
+            else:
+                circuit = qc.gate_logic([(["H"], [[i]])])
+                circuit = circuit.matrix
+                register = qc.Matrix.matrix_multiply(circuit, register)
+                register = register.matrix
+                result = qc.measure_any(i, 0, register)
+                if qc.Matrix == DenseMatrix:
+                    register_intercept.append(result)
+                elif qc.Matrix == SparseMatrix:
+                    register_intercept.append([0,i,result])
+                elif qc.Matrix == LazyMatrix:
+                    print("oh no, not quite working for Lazy yet ... ")
+
+        zero_col = qc.Matrix("zerocol")
+        one_col = qc.Matrix("onecol")
+
+        for i in range(n):
+            q = register_intercept[i]
+            if i == 0:
+                if q == 0:
+                    register = qc.Matrix.transpose(zero_col)
                 else:
-                    circuit = qc.gate_logic([(["H"], [[i]])])
-                    circuit = circuit.matrix
-                    register = qc.Matrix.matrix_multiply(circuit, register)
+                    register = qc.Matrix.transpose(one_col)
+            else:
+                if q == 0:
+                    register = qc.Matrix.tensor_prod(zero_col, register)
                     register = register.matrix
-                    result = measure_any(i, 0, register)
-                    register_intercept.append(result)
-            register = [[]]
-
-            zero = np.array([(1, 0)])
-            zero = zero.T
-            print(zero)
-            one = np.array([(0, 1)])
-            one = one.T
-
-            for i in range(n):
-                q = register_intercept[i]
-                if i == 0:
-                    if q == 0:
-                        register = np.append(register, zero)
-                        register = register.T
-                    else:
-                        register = np.append(register, one)
-                        register = register.T
                 else:
-                    if q == 0:
-                        register = qc.Matrix.tensor_prod(zero, register)
-                        register = register.matrix
-                    else:
-                        register = qc.Matrix.tensor_prod(one, register)
-                        register = register.matrix
-            break
-        elif y == 'no' or y == 'No':
-            break
-        else:
-            print('Whoops that was an incorrect input (accepted inputs Yes or No), please try again')
+                    register = qc.Matrix.tensor_prod(one_col, register)
+                    register = register.matrix
 
+    else:
+        pass
 
     # Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -180,15 +126,15 @@ def main():
         g = B_bases[i]
         if g == 0:
 
-            result = measure_any(i, 0, register)
+            result = qc.measure_any(i, 0, register)
             measurement.append(result)
 
         else:
             circuit = qc.gate_logic( [(["H"], [[i]])] )
             circuit = circuit.matrix
-            register = qc.Matrix.matrix_multiply( circuit, register)
+            register = qc.Matrix.matrix_multiply(circuit, register)
             register = register.matrix
-            result = measure_any(i, 0, register)
+            result = qc.measure_any(i, 0, register)
             measurement.append(result)
 
     print('Person B has measured the message.')
@@ -313,8 +259,8 @@ def main():
     print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
 
 
-
 if __name__=="__main__":
     main()
+
 
 
