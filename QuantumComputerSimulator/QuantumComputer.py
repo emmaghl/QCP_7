@@ -66,23 +66,6 @@ class QuantumComputer(Interface):
         self.__custom_gate_names = []
         self.circuit = 0 # Will be a MatrixFrame object
 
-    '''
-    def Q_Register(self):
-        '''
-        Q_Register() build's the quantum register for the quantum computer for a given number of qubits.
-        '''
-        coeffs = []
-
-        for i in range(0, self.N):
-            alpha = np.random.random() + np.random.random() * 1j
-            beta = np.random.random() + np.random.random() * 1j
-            normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
-
-            alpha /= normF
-            beta /= normF
-    '''
-
-
     def print_circuit(self):
         '''
         Prints the circuit that is built from using `add_gate_to_circuit` function.
