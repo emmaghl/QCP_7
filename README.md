@@ -130,3 +130,26 @@ Note that the CCNot gate that was added with the label 'T' shows up in a hashed 
 qc.build_circuit()
 ```
 Need to decide what happens with measuring...
+
+## Key distribution
+The file `KeyDistributionGeneral.py` contains the quantum key distrbution programme based on the BB84 protocol. This can be run in either your ide or command line as desceribed before.
+
+Once initiated the programme will start by asking which matrix type you would like to use.
+```python
+t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
+```
+Next the programme needs to know how many qubits will be used in the encryption:
+```
+n = int(input('How long would person A like their bit message to be?: '))
+```
+Now the programme will call the QuantumComputer class and pass the matrix type as well as the number of qubits to be used initalising this and storing it in the variable qc:
+```python
+    global qc
+    if t == "D" or t == "d":
+        qc = QuantumComputer(n, 'Dense')
+    if t == "S" or t == "s":
+        qc = QuantumComputer(n, 'Sparse')
+    if t == "L" or t == "l":
+        qc = QuantumComputer(n, 'Lazy')
+```
+The register is then called and both the bits and the basis are setup to be vectors filled with n random numbers.
