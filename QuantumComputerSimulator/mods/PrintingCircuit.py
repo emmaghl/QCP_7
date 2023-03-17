@@ -1,5 +1,6 @@
 import os
 import sys
+import platform
 
 class PrintingCircuit():
 
@@ -24,7 +25,7 @@ class PrintingCircuit():
         self.__SPACE_HOZ_MIDDLE = SPACE_HOZ_MIDDLE
 
     def print_circuit_ascii(self):
-        '''WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation.'''
+        '''WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation in an ASCII format.'''
         self.__clear_screen()
         if not self.__custom_gate_names == []: #non-empty list
             self.__replace_with_custom_names()
@@ -72,7 +73,7 @@ class PrintingCircuit():
 
     def __clear_screen(self):
         '''Clears the screen depending on the operating system (checked for windows and MacOs).'''
-        os.system("cls") if os.name == "nt" else os.system("clear")
+        os.system("cls") if platform.system() == "Windows" else os.system("clear")
 
     def __print_singleGate(self, time_step: list[vars], x: int):
         '''Handles the printing of a single gate at the time step position of `x`.'''
