@@ -134,6 +134,12 @@ class LazyMatrix(MatrixFrame):
 
         return out
 
+    def apply_register(self, input_vector: list) -> list:
+        '''Returns the output state vector.'''
+        #amplitudes = np.dot(self.matrix, input_vector)
+        amplitudes = self.output([[v] for v in input_vector])
+        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes.matrix]
+
 
 class LazyMatrixSingle(MatrixFrame):
     def __init__(self, Type, *args):

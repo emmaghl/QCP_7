@@ -209,8 +209,8 @@ class SparseMatrix(MatrixFrame):
     def inner_product(cls, M):
         '''
         Inner product of matrix M
-        <b>param M<\b> input matrix
-        <b>return<\b> Transpose
+        :param M: input matrix
+        :return: Transpose
         '''
         if type(M) == SparseMatrix:
             m = M.matrix
@@ -318,6 +318,32 @@ class SparseMatrix(MatrixFrame):
 
         return cz
 
+
+    def Sparse_to_Dense(self, SMatrix):
+        '''
+        ! Takes in a sparse matrix and returns the corresponding dense matrix.
+            Note: suppose you're converting a dense matrix to sparse and back to dense,
+            if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
+            these will be lost in the sparse conversion.
+             @param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
+             @return  DMatrix: the converted dense matrix (in array form)
+         '''
+        count = 0
+        for row in SMatrix:
+            if type(row[2]) == "complex":  # check correct synatx!!
+                count += 1
+        if count == 0:
+            typex = "int"
+        if count == 1:
+            typex = "complex"
+
+        DMatrix = np.zeros((self.size_matrix(SMatrix)[0]) * self.size_matrix(SMatrix)[1],
+                           dtype=typex)  # create an array of zeros of the right size
+        DMatrix.shape = self.size_matrix(SMatrix)
+        for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
+            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
+        return DMatrix
+
     def output(self, inputs:np.array) -> np.array:
         '''
         Output of sparse matrix class.
@@ -347,27 +373,8 @@ class SparseMatrix(MatrixFrame):
 
         return SMatrix  # return output
 
-    def Sparse_to_Dense(self, SMatrix):
-        '''
-        ! Takes in a sparse matrix and returns the corresponding dense matrix.
-            Note: suppose you're converting a dense matrix to sparse and back to dense,
-            if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
-            these will be lost in the sparse conversion.
-             @param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
-             @return  DMatrix: the converted dense matrix (in array form)
-         '''
-        count = 0
-        for row in SMatrix:
-            if type(row[2]) == "complex":  # check correct synatx!!
-                count += 1
-        if count == 0:
-            typex = "int"
-        if count == 1:
-            typex = "complex"
-
-        DMatrix = np.zeros((self.size_matrix(SMatrix)[0]) * self.size_matrix(SMatrix)[1],
-                           dtype=typex)  # create an array of zeros of the right size
-        DMatrix.shape = self.size_matrix(SMatrix)
-        for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
-            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
-        return DMatrix
+    def apply_register(self, input_vector: list) -> list:
+        '''Returns the output state vector.'''
+        #amplitudes = np.dot(self.matrix, input_vector)
+        amplitudes = self.output([[v] for v in input_vector])
+        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes.matrix]
