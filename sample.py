@@ -96,7 +96,7 @@ def GroverAlgorithm_3Qubit(show_plots=False):
     print(circuit.matrix)
 
     # The regiseter is set to be |000>, and the states that amplified should be |101> and |111>
-    print("\nOutput probabilities:")
+    print("\nBin count of binary states after 1000 runs:")
     probs = qc.apply_register_and_measure(repeats=1000)
     [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
 
@@ -163,11 +163,11 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
 
     circuit = qc.build_circuit() #gets matrix
 
-    print("\nOutput probabilities (of non-zero states):")
-    probs = qc.get_probabilities(circuit.matrix)
+    print("\nBin count of binary states after 1000 runs:")
+    probs = qc.apply_register_and_measure(repeats=1000)
     for i in probs.keys():
         state_probs = probs[i]
-        if not np.around(state_probs, 4) == 0.0000:
+        if not state_probs == 0:
             print(f"|{i}> : {probs[i]}")
 
     if show_plots:
