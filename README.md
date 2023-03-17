@@ -139,7 +139,7 @@ Once initiated the programme will start by asking which matrix type you would li
 t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
 ```
 Next the programme needs to know how many qubits will be used in the encryption:
-```
+```python
 n = int(input('How long would person A like their bit message to be?: '))
 ```
 Now the programme will call the QuantumComputer class and pass the matrix type as well as the number of qubits to be used initalising this and storing it in the variable qc:
