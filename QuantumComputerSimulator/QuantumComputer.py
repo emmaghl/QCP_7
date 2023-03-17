@@ -15,8 +15,8 @@ class QuantumComputer(Interface):
     def __init__(self, qubits: int, matrix_type:str = "Dense"):
         '''
         Simulates quantum circuits via Dense, Sparse and Lazy methods.
-        :param qubits: Number of Qubits
-        :param matrix_type: Desired type of matrix formulation to use. Default: Dense
+        <b>param: qubits<\b> Number of Qubits
+        <b>param: matrix_type<\b> Desired type of matrix formulation to use. Default: Dense
         '''
 
         check.check_type(qubits, int)
@@ -70,7 +70,6 @@ class QuantumComputer(Interface):
     def Q_Register(self):
         '''
         Q_Register() build's the quantum register for the quantum computer for a given number of qubits.
-        :return:
         '''
         coeffs = []
 
@@ -97,9 +96,6 @@ class QuantumComputer(Interface):
         pc.print_circuit_ascii()
 
     def produce_digits(self):  # this is the flipped basis, working on
-        '''
-        :return:
-        '''
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
@@ -122,9 +118,9 @@ class QuantumComputer(Interface):
     def single_gates(self, gate, qnum):
         '''
         Build the single input gates to a 2^N matrix where N is the number of Qubits.
-        :param gate: Specified gate to build
-        :param qnum: Number of qubits
-        :return: Properly sized gate for number of qubits
+        <b>param: gate<\b> Specified gate to build
+        <b>param: qnum<\b> Number of qubits
+        <b>return<\b> Properly sized gate for number of qubits
         '''
         M = [0] * self.N
 
@@ -151,9 +147,9 @@ class QuantumComputer(Interface):
     def double_gates(self, gate, qnum):
         '''
         Use the Matrix method in the given desired method to build a multi-input gate.
-        :param gate: Take specified multi-input gate
-        :param qnum: number of qubits
-        :return: Returns correctly sized multi-input gate.
+        <b>param: gate<\b> Take specified multi-input gate
+        <b>param: qnu<\b> number of qubits
+        <b>return<\b> Returns correctly sized multi-input gate.
         '''
         if gate[0] == "CV":
             return self.Matrix("CV", self.binary, qnum[0][0], qnum[0][1])
@@ -165,9 +161,9 @@ class QuantumComputer(Interface):
     def gate_logic(self, inputs, add_gate_name: str = "") -> np.array:
         '''
         Builds the quantum circuit of gates in time step of type tuple.
-        :param inputs: Number of input gates?
-        :param add_gate_name: Name of gates to be added.
-        :return: Circuit?
+        <b>param: inputs<\b> Number of input gates?
+        <b>param: add_gate_name<\b> Name of gates to be added.
+        <b>return<\b> Circuit?
         '''
 
         check.check_type(add_gate_name, str)
@@ -224,9 +220,8 @@ class QuantumComputer(Interface):
     def measure_any(self, qnum, state):
         '''
         Generate the measurment of the quantum circuit. Once measured the system's wavefunction is collapsed.
-        :param qnum: Number of qubits?
-        :param state: State of the qubit
-        :return:
+        <b>param: qnum<\b> Number of qubits?
+        <b>param: state<\b> State of the qubit
         '''
         inner_register = self.Matrix.inner_prod(self.psi)
 
@@ -250,9 +245,9 @@ class QuantumComputer(Interface):
     def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
         '''
         Generates the probability of a measured state?
-        :param glued_circuit:
-        :param input_vector:
-        :return: Funciton returns probability
+        <b>param: glued_circuit<\b>
+        <b>param: input_vector <\b>
+        <b>return:<\b> Funciton returns probability
         '''
         num_qubits = 2**self.N
         check.check_type(glued_circuit, np.ndarray)
@@ -276,8 +271,8 @@ class QuantumComputer(Interface):
     def __validate_gate_logic_inputs(self, inputs):
         '''
         Check function. Checking gates make sense and are of the correct type.
-        :param inputs:
-        :return: Through other methods, pass/fail.
+        <b>param:<\b> inputs
+        <b>return:<\b> Through other methods, pass/fail.
         '''
         check.check_type(inputs, list)
 
