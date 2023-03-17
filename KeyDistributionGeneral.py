@@ -72,9 +72,8 @@ def main():
 
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    y = str(input('Do you want to intercept and try and read their message?\n >'))
-
     while True:
+        y = str(input('Do you want to intercept and try and read their message?\n >'))
         if y == "Yes" or y == "yes" or y == "YES":
             C_bases = np.random.randint(2, size=n)
 
