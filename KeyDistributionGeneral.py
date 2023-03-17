@@ -72,57 +72,60 @@ def main():
 
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    y = int(input('Do you want to intercept and try and read their message? Yes = 1, No = 0 :'))
+    while True:
+        y = str(input('Do you want to intercept and try and read their message?\n >'))
+        if y == "Yes" or y == "yes" or y == "YES":
+            C_bases = np.random.randint(2, size=n)
 
-    if y == 1:
-        C_bases = np.random.randint(2, size=n)
-
-        print('The random bases you measure the message with are =', C_bases)
-        register_intercept = []
-        for i in range(n):
-            g = C_bases[i]
-            if g == 0:
-                result = qc.measure_any(i, 0, register)
-                if qc.Matrix == DenseMatrix:
-                    register_intercept.append(result)
-                elif qc.Matrix == SparseMatrix:
-                    register_intercept.append([0,i,result])
-                elif qc.Matrix == LazyMatrix:
-                    print("oh no, not quite working for Lazy yet ... ")
-            else:
-                circuit = qc.gate_logic([(["H"], [[i]])])
-                circuit = circuit.matrix
-                register = qc.Matrix.matrix_multiply(circuit, register)
-                register = register.matrix
-                result = qc.measure_any(i, 0, register)
-                if qc.Matrix == DenseMatrix:
-                    register_intercept.append(result)
-                elif qc.Matrix == SparseMatrix:
-                    register_intercept.append([0,i,result])
-                elif qc.Matrix == LazyMatrix:
-                    print("oh no, not quite working for Lazy yet ... ")
-
-        zero_col = qc.Matrix("zerocol")
-        one_col = qc.Matrix("onecol")
-
-        for i in range(n):
-            q = register_intercept[i]
-            if i == 0:
-                if q == 0:
-                    register = qc.Matrix.transpose(zero_col)
+            print('The random bases you measure the message with are =', C_bases)
+            register_intercept = []
+            for i in range(n):
+                g = C_bases[i]
+                if g == 0:
+                    result = qc.measure_any(i, 0, register)
+                    if qc.Matrix == DenseMatrix:
+                        register_intercept.append(result)
+                    elif qc.Matrix == SparseMatrix:
+                        register_intercept.append([0,i,result])
+                    elif qc.Matrix == LazyMatrix:
+                        print("oh no, not quite working for Lazy yet ... ")
                 else:
-                    register = qc.Matrix.transpose(one_col)
-            else:
-                if q == 0:
-                    register = qc.Matrix.tensor_prod(zero_col, register)
+                    circuit = qc.gate_logic([(["H"], [[i]])])
+                    circuit = circuit.matrix
+             
+                    register = qc.Matrix.matrix_multiply(circuit, register)
                     register = register.matrix
+                    result = qc.measure_any(i, 0, register)
+                    if qc.Matrix == DenseMatrix:
+                        register_intercept.append(result)
+                    elif qc.Matrix == SparseMatrix:
+                        register_intercept.append([0,i,result])
+                    elif qc.Matrix == LazyMatrix:
+                        print("oh no, not quite working for Lazy yet ... ")
+
+            zero_col = qc.Matrix("zerocol")
+            one_col = qc.Matrix("onecol")
+
+            for i in range(n):
+                q = register_intercept[i]
+                if i == 0:
+                    if q == 0:
+                        register = qc.Matrix.transpose(zero_col)
+                    else:
+                        register = qc.Matrix.transpose(one_col)
                 else:
-                    register = qc.Matrix.tensor_prod(one_col, register)
-                    register = register.matrix
+                    if q == 0:
+                        register = qc.Matrix.tensor_prod(zero_col, register)
+                        register = register.matrix
+                    else:
+                        register = qc.Matrix.tensor_prod(one_col, register)
+                        register = register.matrix
 
-    else:
-        pass
-
+            break
+        elif y == "No" or y == "no" or y == "NO":
+            break
+        else:
+            print("Whoops, that was an incorrect input! Accepted inputs: Yes, No")
     # Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     B_bases =  np.random.randint(2, size=n)
