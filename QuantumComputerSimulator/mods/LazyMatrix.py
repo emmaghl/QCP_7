@@ -25,7 +25,7 @@ class LazyMatrix(MatrixFrame):
         if Type == 'Z':
             self.matrix = [lambda x: x[0], lambda x: -1 * x[1]]
 
-        if Type == 'TP' or Type == 'MM':
+        if Type == 'TP' or Type == 'MM' or Type == "General":
             self.matrix = args[0]
 
         if Type == 'CNOT':
@@ -40,7 +40,16 @@ class LazyMatrix(MatrixFrame):
         if Type == 'M1':
             self.matrix = [lambda x: 0, lambda x: x[1]]
 
+        if Type == 'zerocol':
+            pass
+        if Type == 'onecol':
+            pass
+
         self.dim = len(self.matrix)
+
+    @classmethod
+    def quantum_register(cls, qnum):
+        pass
 
     @classmethod
     def tensor_prod(cls, m1, m2):
@@ -76,11 +85,15 @@ class LazyMatrix(MatrixFrame):
         return new_matrix
 
     @classmethod
-    def inner_prod(cls, M):
+    def inner_product(cls, M):
         pass
 
     @classmethod
     def trace(cls, M):
+        pass
+
+    @classmethod
+    def conjugate(cls, M):
         pass
 
     def cnot(self, d, c, t):
