@@ -119,11 +119,11 @@ qc.print_circuit()
 ```
 The python file should be run from the terminal, as running from an IDE may cause issues with printing the circuit. The printed circuit should look like this:
 ```angular2html
-|0> --H----•----H----X---------░---------X----H--
+    --H----•----H----X---------░---------X----H--
            |                   ░
-|0> --H---------H----X---------T---------X----H--
+    --H---------H----X---------T---------X----H--
            |                   ░
-|0> --H----Z----H----X----H----░----H----X----H--
+    --H----Z----H----X----H----░----H----X----H--
 ```
 Note that the CCNot gate that was added with the label 'T' shows up in a hashed format. This will always happen for custom gates, and will always span the length of the wires. Now having consolidated that the blue prints are correct, the circuit can be built using
 ```python
