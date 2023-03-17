@@ -326,8 +326,29 @@ class SparseMatrix(MatrixFrame):
         :param inputs:
         :return:
         '''
-        pass
+        inputs = self.Dense_to_Sparse(inputs)
         return self.matrix_multiply(self.matrix, inputs)
+
+    def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
+        """! What the class/method does
+            @param list the parameters and what they do
+            @return  what the function returns
+        """
+        rows = np.shape(Matrix)[0]
+        cols = np.shape(Matrix)[1]
+        SMatrix = []  # output matrix
+        for i in range(rows):
+            for j in range(cols):
+                if np.abs(Matrix[i][
+                              j]) > 0.01:  # if the value of the matrix element i,j is not 0 then store the value and the location
+                    SMatrix.append([i, j, Matrix[i][j]])  # Output array: (row, column, value)
+        if self.size_matrix(SMatrix)[0] < cols:
+            SMatrix.append([0, cols, 0])
+
+        if self.size_matrix(SMatrix)[1] < rows:
+            SMatrix.append([rows, 0, 0])
+
+        return SMatrix  # return output
 
     def Sparse_to_Dense(self, SMatrix):
         """! Takes in a sparse matrix and returns the corresponding dense matrix.
