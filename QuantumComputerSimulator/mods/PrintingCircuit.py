@@ -35,7 +35,7 @@ class PrintingCircuit():
 
         # Creates the horizontal wires (not most efficient way to concatenate strings)
         for i in range(self.num_qubits):
-            circuit_string += f"|0> " + "-"*(circuit_length*self.__SPACE_HOZ) + "\n\n"
+            circuit_string += "    "+"-"*(circuit_length*self.__SPACE_HOZ) + "\n\n"
         print(circuit_string)
 
         # Go through each time step, and print characters
