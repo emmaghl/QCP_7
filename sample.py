@@ -3,7 +3,7 @@ from QuantumComputerSimulator import QuantumComputer, Test
 
 import matplotlib.pyplot as plt
 import sys
-import numpy as npgi
+import numpy as np
 
 def glue_circuits(matricies: object) -> np.ndarray:
     ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
@@ -163,9 +163,12 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
 
     circuit = qc.build_circuit() #gets matrix
 
-    print("\nOutput probabilities:")
+    print("\nOutput probabilities (of non-zero states):")
     probs = qc.get_probabilities(circuit.matrix)
-    [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
+    for i in probs.keys():
+        state_probs = probs[i]
+        if not np.around(state_probs, 4) == 0.0000:
+            print(f"|{i}> : {probs[i]}")
 
     if show_plots:
         plt.bar(probs.keys(), probs.values(), 1)
