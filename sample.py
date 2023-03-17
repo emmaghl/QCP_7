@@ -97,7 +97,7 @@ def GroverAlgorithm_3Qubit(show_plots=False):
 
     # The regiseter is set to be |000>, and the states that amplified should be |101> and |111>
     print("\nOutput probabilities:")
-    probs = qc.get_probabilities(circuit.matrix)
+    probs = qc.apply_register_and_measure(repeats=1000)
     [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
 
     if show_plots:

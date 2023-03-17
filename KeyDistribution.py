@@ -24,7 +24,7 @@ import random
 
 # Step 8 - Disgard sample keys to get secret key for both A and B
 
-def measure_any(qnum, state, register ):
+def measure_any(qnum, state, register):
     register_conjugate = np.conjugate(register)
     register_ket = register_conjugate.T
     inner_register = qc.Matrix.matrix_multiply(register, register_ket)

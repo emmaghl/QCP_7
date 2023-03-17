@@ -7,6 +7,7 @@ from QuantumComputerSimulator.mods.check import check
 
 import numpy as np
 from abc import ABC
+import random
 
 class Interface(ABC):
     pass
@@ -66,7 +67,7 @@ class QuantumComputer(Interface):
         #Initalise empty list to store history of gates used.
         self.__gate_history = []
         self.__custom_gate_names = []
-        self.circuit = 0 # Will be a MatrixFrame object
+        self.circuit = MatrixFrame # Just instantiate empty object
 
     def Q_Register(self):
         '''
@@ -243,13 +244,13 @@ class QuantumComputer(Interface):
         # plt.hist(x)
         # plt.show()
 
-    def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
+    def apply_register_and_measure(self, repeats: int = 1000, input_vector: np.ndarray = np.nan):
         '''
         Generates the probability of a measured state?
         :param glued_circuit:
         :param input_vector:
-        :return: Funciton returns probability
-        '''
+        :return: Function returns probability
+
         num_qubits = 2**self.N
         check.check_type(glued_circuit, np.ndarray)
         check.check_array_shape(glued_circuit, (num_qubits, num_qubits))
@@ -267,7 +268,30 @@ class QuantumComputer(Interface):
             string_basis = ''.join([str(j) for j in basis[::-1]])
             props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
 
-        return props
+        return props'''
+        input_vector = np.zeros(2**self.N)
+        input_vector[0] = 1
+        probabilities = self.circuit.apply_register(input_vector)
+
+        binary_states = {}
+        for i, basis in enumerate(self.binary):
+            binary_states[''.join([str(j) for j in basis[::-1]])] = 0 # Creates the binary label, such as 001 for |001>.
+
+        for _ in range(repeats): # Repeats the measurments a specififed time
+            cumulative = 0
+            skip = False
+            j = 0
+            random_var = random.random()
+            while (not skip) and j < len(probabilities):
+                cumulative += probabilities[j]
+                if cumulative > random_var:
+                    binary_states[list(binary_states.keys())[j]] += 1
+                    skip = True
+                j += 1
+
+        return binary_states
+
+
 
     def add_gate_to_circuit(self, inputs: list, add_gate_name:str = ""):
         '''Adds the gates to the class ready to for building the circuit later.'''
@@ -305,8 +329,6 @@ class QuantumComputer(Interface):
                 check.check_type(gate_positions, list)
                 for numbers in gate_positions:
                     check.check_type(numbers, int)
-
-
 
 
 # computer
