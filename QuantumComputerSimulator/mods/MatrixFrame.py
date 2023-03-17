@@ -7,6 +7,7 @@ class MatrixFrame(ABC):
         '''
         Abstract class
         '''
+        self.matrix = 0
         pass
 
     def recog_digits(self, digits):
@@ -78,4 +79,8 @@ class MatrixFrame(ABC):
 
     @abstractmethod
     def matrix_multiply(self, M1, M2):
+        pass
+
+    # @abstractmethod
+    def apply_register(self):
         pass
