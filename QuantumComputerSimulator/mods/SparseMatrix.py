@@ -25,8 +25,10 @@ class SparseMatrix(MatrixFrame):
             self.matrix = np.array([[0,1, 0 - 1j], [1,0,0 + 1j]], dtype=complex)
         if Type == 'Z': # Z pauli gate
             self.matrix = np.array([[0,0,1], [1,1,-1]])
-
-        if Type == 'TP' or Type == 'MM':
+        #
+        # if Type == 'TP' or Type == 'MM':
+        #     self.matrix = args[0] #check that the matrix in args[0] is sparse
+        if Type == 'spar':
             self.matrix = args[0] #check that the matrix in args[0] is sparse
 
         if Type == 'CNOT':
@@ -56,7 +58,8 @@ class SparseMatrix(MatrixFrame):
     #             nc = m[j][0]
     #     ncol = nc + 1
 
-    def size_matrix(self, M):
+    @classmethod
+    def size_matrix(cls, M):
         '''
         Gives the dimensions of the matrix. Used to preserve matrix structure information.
         :return:
@@ -93,17 +96,17 @@ class SparseMatrix(MatrixFrame):
             m1 = M1.matrix
         else:
             m1 = M1
+
         if type(M2) == SparseMatrix:
             m2 = M2.matrix
-            m2_col = M1.size[0]
-            m2_row = M1.size[1]
+            m2_col = M2.size[0]
+            m2_row = M2.size[1]
         else:
             m2 = M2
             m2_col = SparseMatrix.size_matrix(m2)[0]  # STcol/SM1col = SM2col etc.
             m2_row = SparseMatrix.size_matrix(m2)[1]  # STcol/SM1col = SM2col etc.
 
-        print(m1)
-        print(m2)
+
 
         
         tensorprod = []
@@ -115,7 +118,7 @@ class SparseMatrix(MatrixFrame):
                 value = m1[j][2] * m2[i][2]
                 tensorprod.append([column, row, value])
 
-        return SparseMatrix("TP", tensorprod)
+        return SparseMatrix("spar", tensorprod)
 
     @classmethod
 
@@ -146,7 +149,7 @@ class SparseMatrix(MatrixFrame):
                     dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
 
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
-        return SparseMatrix("MM", matmul)
+        return SparseMatrix("spar", matmul)
 
 
     def sparse_multiply(self, num: float, mat):
@@ -189,7 +192,7 @@ class SparseMatrix(MatrixFrame):
         for i in range(len(m)):
             row, column, entry = m[i]
             m_transpose[i] = [column, row, entry]
-        return m_transpose.matrix
+        return m_transpose
 
     @classmethod
     def inner_prod(cls, M):
@@ -198,7 +201,12 @@ class SparseMatrix(MatrixFrame):
         :param M: input matrix
         :return: Transpose
         '''
-        return SparseMatrix.matrix_multiply(M.matrix, cls.transpose(np.conj(M.matrix)))
+        if type(M) == SparseMatrix:
+            m = M.matrix
+        else:
+            m = M
+
+        return SparseMatrix.matrix_multiply(m, cls.transpose(np.conj(m)))
 
     @classmethod
     def trace(cls, M):
@@ -207,12 +215,33 @@ class SparseMatrix(MatrixFrame):
         :param M: Input Matrix
         :return: Transpose of matrix
         '''
+
         trace = 0
+
+        if type(M) == SparseMatrix:
+            m = M.matrix
+            m_col = M.size[0]
+        else:
+            m = M
+            m_col = SparseMatrix.size_matrix(m)[0]  # STcol/SM1col = SM2col etc.
+
         for i in range(len(M)):
-            for j in range(cls.size_matrix()[1]): #number of columns
+            # for j in range(SparseMatrix.size_matrix(M)[1]): #number of columns
+            for j in range(m_col):  # number of columns
                 if M[i][0] == j and M[i][1] == j:
                     trace += M[i][2]
         return trace
+
+
+
+    @classmethod
+    def conjugate(cls, M):
+        M_conj = M.copy()
+        for i in range(len(M)):
+            if type(M[i][2]) == "complex":
+                M_conj[i][2] = - M[i][2]
+        return M_conj
+
 
     # def Basis(self, N:float): # need to check it's doing what i want it to
     #   '''

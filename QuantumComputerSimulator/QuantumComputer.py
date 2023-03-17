@@ -1,8 +1,9 @@
-#from QuantumComputerSimulator.mods.PrintingCircuit import PrintingCircuit
+from QuantumComputerSimulator.mods.PrintingCircuit import PrintingCircuit
 from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
 from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix
 from QuantumComputerSimulator.mods.LazyMatrix import LazyMatrix
-from QuantumComputerSimulator.check import check
+from QuantumComputerSimulator.mods.MatrixFrame import MatrixFrame
+from QuantumComputerSimulator.mods.check import check
 
 import numpy as np
 from abc import ABC
@@ -64,8 +65,8 @@ class QuantumComputer(Interface):
 
         #Initalise empty list to store history of gates used.
         self.__gate_history = []
-
-
+        self.__custom_gate_names = []
+        self.circuit = 0 # Will be a MatrixFrame object
 
     def Q_Register(self):
         '''
@@ -90,10 +91,12 @@ class QuantumComputer(Interface):
 
     def print_circuit(self):
         '''
+        Prints the circuit that is built from using `add_gate_to_circuit` function.
+
         WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
             Prints the quantum circuit in an ascii format on the terminal.
         '''
-        pc = PrintingCircuit(self.__gate_history, self.N)
+        pc = PrintingCircuit(self.__gate_history, self.N, custom_gate_names=self.__custom_gate_names)
         pc.print_circuit_ascii()
 
     def produce_digits(self):  # this is the flipped basis, working on
@@ -147,7 +150,6 @@ class QuantumComputer(Interface):
 
         return m
 
-
     def double_gates(self, gate, qnum):
         '''
         Use the Matrix method in the given desired method to build a multi-input gate.
@@ -174,12 +176,6 @@ class QuantumComputer(Interface):
         self.__validate_gate_logic_inputs(inputs)
 
         step_n = len(inputs)
-
-        # Add the gates to the gate history for printing later.
-        if add_gate_name == "": # If not defining a custom name
-            [self.__gate_history.append(i) for i in inputs]
-        else: # If defining a gate with a custom Name
-            self.__gate_history.append(([add_gate_name], [[0, self.N-1]]))
 
         M = []
 
@@ -273,11 +269,26 @@ class QuantumComputer(Interface):
 
         return props
 
-    def __validate_gate_logic_inputs(self, inputs):
+    def add_gate_to_circuit(self, inputs: list, add_gate_name:str = ""):
+        '''Adds the gates to the class ready to for building the circuit later.'''
+        check.check_type(add_gate_name, str)
+        self.__validate_gate_logic_inputs(inputs)
+
+        if not add_gate_name == "": # If defining a gate with a custom Name
+            length_of_gate_history = len(self.__gate_history)
+            self.__custom_gate_names.append(
+                [length_of_gate_history-1, length_of_gate_history + len(inputs), add_gate_name]
+            )
+        self.__gate_history = self.__gate_history + inputs
+
+    def build_circuit(self) -> MatrixFrame:
+        '''Builds the circuit from the gates added via `add_gate_to_circuit` function.'''
+        self.circuit = self.gate_logic(self.__gate_history)
+        return self.circuit
+
+    def __validate_gate_logic_inputs(self, inputs: list):
         '''
         Check function. Checking gates make sense and are of the correct type.
-        :param inputs:
-        :return: Through other methods, pass/fail.
         '''
         check.check_type(inputs, list)
 
@@ -286,6 +297,7 @@ class QuantumComputer(Interface):
             check.check_array_length(time_step, 2)
             check.check_type(time_step[0], list)
             check.check_type(time_step[1], list)
+            check.check_array_length(time_step[0], len(time_step[1]))
             for gate in time_step[0]: #Looping through gates, check to see they're recognisable.
                 check.check_type(gate, str)
                 check.check_in_list(gate, self.single_inputs + self.double_inputs)
