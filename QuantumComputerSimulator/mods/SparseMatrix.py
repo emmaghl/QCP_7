@@ -91,7 +91,7 @@ class SparseMatrix(MatrixFrame):
     @classmethod
     def quantum_register(cls, qnum):
         register = np.array([[0, 0, 1], [0, 1, 0]])
-        register = SparseMatrix("spar", register)
+        register = SparseMatrix("general", register)
         register = register.matrix
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -134,7 +134,7 @@ class SparseMatrix(MatrixFrame):
                 value = m1[j][2] * m2[i][2]
                 tensorprod.append([column, row, value])
 
-        return SparseMatrix("spar", tensorprod)
+        return SparseMatrix("general", tensorprod)
 
     @classmethod
 
@@ -165,7 +165,7 @@ class SparseMatrix(MatrixFrame):
                     dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
 
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
-        return SparseMatrix("spar", matmul)
+        return SparseMatrix("general", matmul)
 
 
     def sparse_multiply(self, num: float, mat):

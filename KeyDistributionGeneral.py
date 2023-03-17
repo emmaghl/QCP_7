@@ -10,11 +10,17 @@ import time
 
 def main():
     print("You are acting as a communication channel for person A to send secret messages to person B.")
+    t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
     n = int(input('How long would person A like their bit message to be?: '))
 
     global qc
+    if t == "D" or t == "d":
+        qc = QuantumComputer(n, 'Dense')
+    if t == "S" or t == "s":
+        qc = QuantumComputer(n, 'Sparse')
+    if t == "L" or t == "l":
+        qc = QuantumComputer(n, 'Lazy')
 
-    qc = QuantumComputer(n, 'Dense')
     # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     register = qc.Matrix.quantum_register(n)
