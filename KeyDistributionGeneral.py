@@ -93,7 +93,7 @@ def main():
                     circuit = qc.gate_logic([(["H"], [[i]])])
                     circuit = circuit.matrix
              
-            register = qc.Matrix.matrix_multiply(circuit, register)
+                    register = qc.Matrix.matrix_multiply(circuit, register)
                     register = register.matrix
                     result = qc.measure_any(i, 0, register)
                     if qc.Matrix == DenseMatrix:
