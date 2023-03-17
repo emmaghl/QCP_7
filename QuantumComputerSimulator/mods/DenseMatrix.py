@@ -103,7 +103,7 @@ class DenseMatrix(MatrixFrame):
         return DenseMatrix('MM', M)
 
     @classmethod
-    def inner_prod(cls, M):
+    def inner_product(cls, M):
         '''
         Find the inner product
         :param M: input matrix

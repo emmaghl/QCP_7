@@ -13,8 +13,7 @@ class MatrixFrame(ABC):
     def recog_digits(self, digits):
         '''
 
-        :param digits:
-        :return:
+        <b>param digits<\b>
         '''
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -37,10 +36,9 @@ class MatrixFrame(ABC):
     def CNOT_logic(self, digits_in, c, t):
         '''
         Logic to build the Control Not gate, has children in dense and sparse
-        :param digits_in:
-        :param c:
-        :param t:
-        :return:
+        <b>param digits_in<\b>
+        <b>param c<\b>
+        <b>param t<\b>
         '''
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -56,10 +54,9 @@ class MatrixFrame(ABC):
     def CV_logic(self, digits, c, t):
         '''
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-        :param digits:
-        :param c:
-        :param t:
-        :return:
+        <b>param digits<\b>
+        <b>param c<\b>
+        <b>param t<\b>
         '''
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -73,6 +70,7 @@ class MatrixFrame(ABC):
     def CZ_logic(self, digits, c, t):
         return self.CV_logic(digits, c, t)
 
+
     @abstractmethod
     def tensor_prod(self, M1, M2):
         pass
@@ -82,5 +80,13 @@ class MatrixFrame(ABC):
         pass
 
     @abstractmethod
-    def apply_register(self, input_vector: list):
+    def inner_product(self, M):
+        pass
+
+    @abstractmethod
+    def trace(self, M):
+        pass
+
+    @abstractmethod
+    def output(self, input):
         pass
