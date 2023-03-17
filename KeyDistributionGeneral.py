@@ -139,7 +139,7 @@ def main():
             measurement.append(result)
 
         else:
-            circuit = qc.gate_logic( [(["H"], [[i]])] )
+            circuit = qc.gate_logic([(["H"], [[i]])])
             circuit = circuit.matrix
             register = qc.Matrix.matrix_multiply(circuit, register)
             register = register.matrix
