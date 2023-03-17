@@ -314,7 +314,6 @@ class SparseMatrix(MatrixFrame):
         :param inputs:
         :return:
         '''
-        pass
         return self.matrix_multiply(self.matrix, inputs)
 
     def Sparse_to_Dense(self, SMatrix):
@@ -340,3 +339,9 @@ class SparseMatrix(MatrixFrame):
         for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
             DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
         return DMatrix
+
+    def apply_register(self, input_vector: list) -> list:
+        '''Returns the output state vector.'''
+        #amplitudes = np.dot(self.matrix, input_vector)
+        amplitudes = self.output([[v] for v in input_vector])
+        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes.matrix]
