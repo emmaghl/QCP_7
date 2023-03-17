@@ -8,8 +8,8 @@ class LazyMatrix(MatrixFrame):
     def __init__(self, Type, *args):
         '''
         Set up the lazy gates using lambda functions.
-        :param Type: Gate to be initialised
-        :param args:
+        <b>param Type<\b> Gate to be initialised
+        <b>param args<\b>
         '''
         if Type == 'I':
             self.matrix = [lambda x: x[0], lambda x: x[1]]
@@ -25,7 +25,7 @@ class LazyMatrix(MatrixFrame):
         if Type == 'Z':
             self.matrix = [lambda x: x[0], lambda x: -1 * x[1]]
 
-        if Type == 'TP' or Type == 'MM':
+        if Type == 'TP' or Type == 'MM' or Type == "General":
             self.matrix = args[0]
 
         if Type == 'CNOT':
@@ -40,15 +40,24 @@ class LazyMatrix(MatrixFrame):
         if Type == 'M1':
             self.matrix = [lambda x: 0, lambda x: x[1]]
 
+        if Type == 'zerocol':
+            pass
+        if Type == 'onecol':
+            pass
+
         self.dim = len(self.matrix)
+
+    @classmethod
+    def quantum_register(cls, qnum):
+        pass
 
     @classmethod
     def tensor_prod(cls, m1, m2):
         '''
         Lazy tensor product
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Tensor product of Gate 1 with Gate 2
+        <b>param m1<\b> Gate 1
+        <b>param m2<\b> Gate 2
+        <b>return<\b> Tensor product of Gate 1 with Gate 2
         '''
         tp = []
         for i in range(0, m1.dim):
@@ -63,9 +72,9 @@ class LazyMatrix(MatrixFrame):
     def matrix_multiply(cls, m1, m2):
         '''
         Use list comprehension to preform a matrix multiplication between two 'matrices'
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Multiplication of gate 1 and gate 2
+        <b>param m1<\b> Gate 1
+        <b>param m2<\b> Gate 2
+        <b>return<\b> Multiplication of gate 1 and gate 2
         '''
         mm = []
         for i in range(0, m1.dim):
@@ -76,11 +85,15 @@ class LazyMatrix(MatrixFrame):
         return new_matrix
 
     @classmethod
-    def inner_prod(cls, M):
+    def inner_product(cls, M):
         pass
 
     @classmethod
     def trace(cls, M):
+        pass
+
+    @classmethod
+    def conjugate(cls, M):
         pass
 
     def cnot(self, d, c, t):
