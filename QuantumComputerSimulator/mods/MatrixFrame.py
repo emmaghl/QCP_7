@@ -73,6 +73,7 @@ class MatrixFrame(ABC):
     def CZ_logic(self, digits, c, t):
         return self.CV_logic(digits, c, t)
 
+
     @abstractmethod
     def tensor_prod(self, M1, M2):
         pass
@@ -81,6 +82,15 @@ class MatrixFrame(ABC):
     def matrix_multiply(self, M1, M2):
         pass
 
-    # @abstractmethod
-    def apply_register(self):
+    @abstractmethod
+    def inner_product(self, M):
         pass
+
+    @abstractmethod
+    def trace(self, M):
+        pass
+
+    @abstractmethod
+    def output(self, input):
+
+    def conjucate

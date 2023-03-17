@@ -28,7 +28,7 @@ class SparseMatrix(MatrixFrame):
         #
         # if Type == 'TP' or Type == 'MM':
         #     self.matrix = args[0] #check that the matrix in args[0] is sparse
-        if Type == 'spar':
+        if Type == "general":
             self.matrix = args[0] #check that the matrix in args[0] is sparse
 
         if Type == 'CNOT':
@@ -42,6 +42,11 @@ class SparseMatrix(MatrixFrame):
             self.matrix = np.array([[0,0,1], [1,1,0]])
         if Type == 'M1':
             self.matrix = np.array([[1,1,1]])
+
+        if Type == 'zerocol':
+            self.matrix = np.array([[0,0,1], [1,0,0]])
+        if Type == 'onecol':
+            self.matrix = np.array([[1, 0, 1]])
 
         self.size = self.size_matrix(self.matrix)
 
@@ -83,6 +88,17 @@ class SparseMatrix(MatrixFrame):
         nrow = nr + 1
         return (ncol, nrow)
 
+    @classmethod
+    def quantum_register(cls, qnum):
+        register = np.array([[0, 0, 1], [0, 1, 0]])
+        register = SparseMatrix("spar", register)
+        register = register.matrix
+        w = 2 ** (qnum) - 2
+        for i in range(w):
+            register[-1] = [0, i + 2, 0]
+
+        register = SparseMatrix.transpose(register)
+        return register
 
     @classmethod
     def tensor_prod(cls, M1, M2):    
@@ -174,10 +190,6 @@ class SparseMatrix(MatrixFrame):
         return m_transpose.matrix
 
     @classmethod
-    def inner_prod(cls, M):
-        return SparseMatrix.matrix_multiply(M.matrix, cls.transpose(np.conj(M.matrix)))
-
-    @classmethod
     def transpose(cls, M):
         '''
         Method to transpose a sparse matrix
@@ -195,7 +207,7 @@ class SparseMatrix(MatrixFrame):
         return m_transpose
 
     @classmethod
-    def inner_prod(cls, M):
+    def inner_product(cls, M):
         '''
         Inner product of matrix M
         :param M: input matrix
@@ -225,11 +237,11 @@ class SparseMatrix(MatrixFrame):
             m = M
             m_col = SparseMatrix.size_matrix(m)[0]  # STcol/SM1col = SM2col etc.
 
-        for i in range(len(M)):
+        for i in range(len(m)):
             # for j in range(SparseMatrix.size_matrix(M)[1]): #number of columns
             for j in range(m_col):  # number of columns
-                if M[i][0] == j and M[i][1] == j:
-                    trace += M[i][2]
+                if m[i][0] == j and m[i][1] == j:
+                    trace += m[i][2]
         return trace
 
 

@@ -24,8 +24,10 @@ class DenseMatrix(MatrixFrame):
             self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == 'Z':
             self.matrix = np.array([[1, 0], [0, -1]])
-        if Type == 'TP' or Type == 'MM':
+        if Type == 'TP' or Type == 'MM' or Type == "general":
             self.matrix = args[0]
+
+
         if Type == 'CNOT':
             self.matrix = self.cnot(args[0], args[1], args[2])
         if Type == 'CV':
@@ -37,6 +39,19 @@ class DenseMatrix(MatrixFrame):
         if Type == 'M1':
             self.matrix = np.array([[0, 0], [0, 1]])
 
+        if Type == 'zerocol':
+            self.matrix = np.array([[1], [0]])
+        if Type == 'onecol':
+            self.matrix = np.array([[0], [1]])
+
+    @classmethod
+    def quantum_register(cls, qnum):
+        register = np.array([[1, 0]])
+        w = 2 ** (qnum) - 2
+        for i in range(w):
+            register = np.append(register, [0])
+        register = np.array([register]).T
+        return register
 
     @classmethod
     def tensor_prod(cls, M2, M1):
@@ -103,14 +118,22 @@ class DenseMatrix(MatrixFrame):
         return DenseMatrix('MM', M)
 
     @classmethod
-    def inner_prod(cls, M):
+    def inner_product(cls, M):
         '''
         Find the inner product
         :param M: input matrix
         :return: inner product of state
         '''
-        return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))
+        if type(M) == DenseMatrix:
+            m = M.matrix
+        else:
+            m = M
 
+        return DenseMatrix.matrix_multiply(m, np.transpose(np.conj(m)))
+
+    @classmethod
+    def conjugate(cls, M):
+        return np.conj(M)
     @classmethod
     def trace(cls, M):
         '''
@@ -119,6 +142,14 @@ class DenseMatrix(MatrixFrame):
         :return: matrix trace
         '''
         return np.trace(M.matrix)
+
+    @classmethod
+    def transpose(cls, M):
+        if type(M) == DenseMatrix:
+            m = M.matrix
+        else:
+            m = M
+        return m.T
 
     def Basis(self, N):
         '''

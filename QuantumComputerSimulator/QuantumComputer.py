@@ -36,8 +36,6 @@ class QuantumComputer(Interface):
         if matrix_type == "Lazy":
             self.Matrix = LazyMatrix
 
-        # set up quantum register
-        self.Q_Register()
         '''
         Build the different gates using the desired method. Gate building is handled within the matrix method.
         '''
@@ -68,26 +66,7 @@ class QuantumComputer(Interface):
         self.__custom_gate_names = []
         self.circuit = 0 # Will be a MatrixFrame object
 
-    def Q_Register(self):
-        '''
-        Q_Register() build's the quantum register for the quantum computer for a given number of qubits.
-        :return:
-        '''
-        coeffs = []
 
-        for i in range(0, self.N):
-            alpha = np.random.random() + np.random.random() * 1j
-            beta = np.random.random() + np.random.random() * 1j
-            normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
-
-            alpha /= normF
-            beta /= normF
-
-            coeffs.append(np.array([[alpha], [beta]]))
-
-        self.psi = coeffs[0]
-        for i in range(1, self.N):
-            self.psi = DenseMatrix.tensor_prod(self.psi, coeffs[i])
 
     def print_circuit(self):
         '''
@@ -217,14 +196,14 @@ class QuantumComputer(Interface):
 
         return m
 
-    def measure_any(self, qnum, state):
+    def measure_any(self, qnum, state, register):
         '''
         Generate the measurment of the quantum circuit. Once measured the system's wavefunction is collapsed.
         :param qnum: Number of qubits?
         :param state: State of the qubit
         :return:
         '''
-        inner_register = self.Matrix.inner_prod(self.psi)
+        inner_register = self.Matrix.inner_product(register)
 
         if state == 0:
             matrix = self.single_gates(["M0"], [[qnum]])
@@ -233,6 +212,14 @@ class QuantumComputer(Interface):
 
         QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
 
+        if (np.random.rand() < QP):
+            result = 0
+        else:
+            result = 1
+        return result
+
+    def histogram(self):
+        pass
         x = []
         for i in range(0, 1000):
             if np.random.random() < QP:
@@ -242,6 +229,16 @@ class QuantumComputer(Interface):
 
         # plt.hist(x)
         # plt.show()
+
+    def apply_register(self, inputs):
+        outputs = self.circuit.output(inputs)
+        probs = np.zeros(len(outputs))
+        for i in range(len(outputs)):
+            probs[i] = (self.Matrix.conjugate(outputs[i]))**2
+
+        counts = 1000
+        apply_dict = {inputs[i]: counts*probs[i] for i in inputs}
+        return apply_dict
 
     def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
         '''
