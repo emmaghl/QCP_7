@@ -117,7 +117,7 @@ To check that blue print of the circuit was constructed correctly, it's best to 
 ```python
 qc.print_circuit()
 ```
-The python file should be run from the terminal, as running from an IDE may cause issues with printing the circuit. The printed circuit should look like this:
+The python file should be run from the terminal, as running from an IDE may cause issues with printing the circuit. Also make sure that the terminal/IDE is wide enough to fit the circuit, or else the printed circuit will be will print a mess. The printed circuit should look like this:
 ```angular2html
     --H----•----H----X---------░---------X----H--
            |                   ░
