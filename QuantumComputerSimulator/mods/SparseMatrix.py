@@ -13,7 +13,7 @@ class SparseMatrix(MatrixFrame):
         <b>param args<\b>
         '''
         if Type == 'H':  # hadamard gate
-            self.matrix = 1 / math.sqrt(2) * np.array([[0, 0, 1], [0, 1, 1], [1, 0, 1], [1, 1, -1]])
+            self.matrix = np.array([[0, 0, 1 / math.sqrt(2)], [0, 1, 1 / math.sqrt(2)], [1, 0, 1 / math.sqrt(2)], [1, 1, -1 / math.sqrt(2)]])
         if Type == 'I':  # identity gate
             self.matrix = np.array([[0, 0, 1], [1, 1, 1]])
         if Type == 'P': # phase shift gatel, where args[0] is the angle
@@ -152,6 +152,8 @@ class SparseMatrix(MatrixFrame):
             m2 = M2.matrix
         else:
             m2 = M2
+        # print(f"m1{m1}")
+        # print(f"m2{m2}")
             
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
         dict1 = {(row, col): val for [row, col, val] in m1}
@@ -170,10 +172,10 @@ class SparseMatrix(MatrixFrame):
     def sparse_multiply(self, num: float, mat):
         '''multiplies a scalar by a sparse matrix'''
         # multiply matrix entry by a scalar and keep row and column information unchanged
-        mul = mat
+        mul = []
         for i in range(len(mat)):
-            mul[i][2] = num*mat[i][2]
-        return mul.matrix
+            mul.append([mat[i][0], mat[i][1], num * mat[i][2]])
+        return mul
 
     @classmethod
     def transpose(cls, M):

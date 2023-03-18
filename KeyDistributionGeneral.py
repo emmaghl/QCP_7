@@ -141,6 +141,7 @@ def main():
         else:
             circuit = qc.gate_logic([(["H"], [[i]])])
             circuit = circuit.matrix
+            # print(circuit)
             register = qc.Matrix.matrix_multiply(circuit, register)
             register = register.matrix
             result = qc.measure_any(i, 0, register)
