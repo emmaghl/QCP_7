@@ -337,8 +337,6 @@ class QuantumComputer(Interface):
                     check.check_type(numbers, int)
 
 
-
-
 # computer
 '''comp2 = QuantumComputer(4, 'Dense')
 

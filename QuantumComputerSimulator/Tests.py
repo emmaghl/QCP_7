@@ -15,7 +15,7 @@ class Test():
         list_methods = [method for method in dir(Test) if method.startswith('_') is False]
 
         # Loops through printing all methods and checking running them
-        for quantum_computer_type in ["Dense", "Lazy"]:
+        for quantum_computer_type in ["Dense", "Lazy", "Sparse"]:
             print(f"Testing {quantum_computer_type}.")
             for method in list_methods:
                 print(f"\t-> Checking: {method}...")
