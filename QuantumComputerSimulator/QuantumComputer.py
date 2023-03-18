@@ -65,7 +65,7 @@ class QuantumComputer(Interface):
         #Initalise empty list to store history of gates used.
         self.__gate_history = []
         self.__custom_gate_names = []
-        self.circuit = 0 # Will be a MatrixFrame object
+        self.circuit = MatrixFrame
 
     def print_circuit(self):
         '''
@@ -261,24 +261,37 @@ class QuantumComputer(Interface):
 
         return props
 
-    def apply_register_and_measure(self, repeats: int = 1000, input_vector: np.ndarray = np.nan):
+    def apply_register_and_measure(self, repeats: int = 1000, user_input_vector: list = []):
+        '''
+        Apply's a register to the circuit built with `add_gate_to_circuit`, with default being the |0> state in the computatinal basis.
+        '''
+        check.check_type(repeats, int)
+
+        # Switches to user inputed register if needed, and checks it
         input_vector = np.zeros(2**self.N)
         input_vector[0] = 1
-        probabilities = self.circuit.apply_register(input_vector)
+        if not user_input_vector == []:
+            check.check_type(user_input_vector, list)
+            check.check_array_shape(user_input_vector, (2**self.N))
+            input_vector = user_input_vector
+
+        probabilities = self.circuit.apply_register(input_vector) #Get probabilities from applying input vector
 
         binary_states = {}
         for i, basis in enumerate(self.binary):
             binary_states[''.join([str(j) for j in basis[::-1]])] = 0 # Creates the binary label, such as 001 for |001>.
 
-        for _ in range(repeats): # Repeats the measurments a specififed time
+
+        keys_list = list(binary_states.keys())
+        for _ in range(repeats): # Repeats the measurements a number of times
             cumulative = 0
             skip = False
             j = 0
             random_var = random.random()
-            while (not skip) and j < len(probabilities):
+            while (not skip) and j < len(probabilities): # From random number between 0 and 1, finds the component of the vector by cummulative probability.
                 cumulative += probabilities[j]
                 if cumulative > random_var:
-                    binary_states[list(binary_states.keys())[j]] += 1
+                    binary_states[keys_list[j]] += 1
                     skip = True
                 j += 1
 

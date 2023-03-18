@@ -182,7 +182,7 @@ def GroverAlgorithm_SingleRow_Suduko(show_plots = False):
     #   - 9: In the |-> state, that implements the phase kickback.
     #   - 10: Garbage qubit for the CCCnot gate to work.
     num_qubits = 11
-    qc = QuantumComputer(num_qubits, "Sparse")
+    qc = QuantumComputer(num_qubits, "Dense")
 
     # Initialises by putting three qubits in a super position of equal weight, and the fourth qubit in the |-> state to implement phase kick-back.
     init_states = [

@@ -22,21 +22,6 @@ class Test():
                 func = getattr(Test, method) #gets function ready to call
                 func(self, quantum_computer_type)
 
-    def __compare_vecs(self, vec1: np.array, vec2: np.array, precision: int = 2):
-        if np.all(np.around(vec1, decimals=precision) == np.around(vec2, decimals=precision)):
-            return True
-        return False
-
-
-    def __glue_circuits(self, matricies: np.array) -> np.ndarray:
-        ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
-        m = np.identity(len(matricies[0].matrix[0]))
-
-        for matrix in np.flip(matricies, axis=0):
-            m = np.matmul(m, matrix.matrix)
-        return m
-
-
     def matrix_multiply_DENSE(self, type: str):
         '''Tests matrix multiplication in Dense class.'''
         dm = DenseMatrix
@@ -67,14 +52,12 @@ class Test():
             (["X"], [[2]])
         ]
 
-        circuits = [
-            qc.gate_logic(init_states)
-        ]
+        qc.add_gate_to_circuit(init_states)
 
         # We should expect only the states |110> to be 100%
-        glued_circuits = self.__glue_circuits(circuits)
-        probs = qc.get_probabilities(glued_circuits)
-        assert (probs['110'] == 1), f"Incorrect basis orientation of basis! It should be that |110> = 1, instead it's {probs['110']}. Most likely that |011> is measured instead: |001> = {probs['011']}"
+        qc.build_circuit()
+        probs = qc.apply_register_and_measure(10)
+        assert (probs['110'] == 10), f"Incorrect basis orientation of basis! It should be that |110> : 10, instead it's {probs['110']}. Most likely that |011> is measured instead: |011> : {probs['011']}"
 
     def catch_incorrect_user_input(self, type: str):
         '''Tests if the gate logic functions catches incorrect inputs from the user.'''
@@ -123,16 +106,14 @@ class Test():
             (["CNOT"], [[0, 1]])
         ]
 
-        circuits = [
-            qc.gate_logic(init_states),
-        ]
+        qc.add_gate_to_circuit(init_states),
 
         # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
         # to amplify the |11> states.
-        glued_circuits = self.__glue_circuits(circuits)
-        probs = qc.get_probabilities(glued_circuits)
+        qc.build_circuit()
+        probs = qc.apply_register_and_measure(10)
 
-        assert (probs['011'] == 1), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, |011> = {probs['011']}"
+        assert (probs['011'] == 10), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, the bin count for |011> : {probs['011']}"
 
     def order_of_tensor_product(self, type: str):
         '''Checks the ordering of tensor product with two different and single gates.'''
@@ -143,11 +124,15 @@ class Test():
             (["Y"], [[0]])
         ]
 
-        circuits = [
-            qc.gate_logic(init_states),
-        ]
+        qc.add_gate_to_circuit(init_states),
 
-        glued_circuits = self.__glue_circuits(circuits)
+        circuit = qc.build_circuit()
+        matrix = []
+
+        if type == 'Sparse':
+            matrix = circuit.Sparse_to_Dense(circuit.matrix)
+        else:
+            matrix = circuit.matrix
 
         matrix_to_compare = np.array([
             [0, 0, 0, 0-1j],
@@ -156,7 +141,7 @@ class Test():
             [0+1j, 0, 0, 0]
         ])
 
-        assert (np.all(glued_circuits == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{glued_circuits}"
+        assert (np.all(np.array(matrix) == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{np.array(matrix)}"
 
     def single_gate(self, type: str):
         '''Checks the ordering of tensor product with two different and single gates.'''
@@ -166,11 +151,15 @@ class Test():
             (["X", "Y"], [[1], [0]])
         ]
 
-        circuits = [
-            qc.gate_logic(init_states),
-        ]
+        qc.add_gate_to_circuit(init_states),
 
-        glued_circuits = self.__glue_circuits(circuits)
+        circuit = qc.build_circuit()
+        matrix = []
+
+        if type == 'Sparse':
+            matrix = circuit.Sparse_to_Dense(circuit.matrix)
+        else:
+            matrix = circuit.matrix
 
         matrix_to_compare = np.array([
             [0, 0, 0, 0-1j],
@@ -179,4 +168,4 @@ class Test():
             [0+1j, 0, 0, 0]
         ])
 
-        assert (np.all(glued_circuits == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{glued_circuits}"
+        assert (np.all(np.array(matrix) == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{np.array(matrix)}"

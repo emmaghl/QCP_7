@@ -94,3 +94,7 @@ class MatrixFrame(ABC):
     @abstractmethod
     def conjugate(self, M):
         pass
+
+    @abstractmethod
+    def apply_register(self, input_vector: list) -> list:
+        pass
