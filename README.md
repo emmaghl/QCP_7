@@ -129,7 +129,14 @@ Note that the CCNot gate that was added with the label 'T' shows up in a hashed 
 ```python
 qc.build_circuit()
 ```
-Need to decide what happens with measuring...
+After the circuit has been built, a register can be applied and the output super position measured. A custom register can be added, but the default is the |0> state in the computational basis. In this example, a 1000 measurements of the quantum computer will be taken, this is peformed by calling 
+```python
+bin_count = qc.apply_register_and_measure(repeats=1000)
+```
+This returns a dictionary where the keys are in the binary basis. The values are the number of times that the state was measured in the 1000 iterations of the register being applied to the quantum circuit. An elegant way of printing the dictionary to see the measurements is to call
+```python
+[print(f"|{i}> : {bin_count[i]}") for i in bin_count.keys()]
+```
 
 ## Key distribution
 The file `KeyDistributionGeneral.py` contains the quantum key distrbution programme based on the BB84 protocol. This can be run in either your ide or command line as desceribed before.
