@@ -1,6 +1,5 @@
 from QuantumComputerSimulator.QuantumComputer import QuantumComputer
 from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
-from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix
 
 import numpy as np
 
@@ -113,7 +112,7 @@ class Test():
         qc.build_circuit()
         probs = qc.apply_register_and_measure(10)
 
-        assert (probs['011'] == 10), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, the bin count for |011> : {probs['011']}"
+        assert (probs['011'] == 10), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, the bin count is \n {probs}"
 
     def order_of_tensor_product(self, type: str):
         '''Checks the ordering of tensor product with two different and single gates.'''
