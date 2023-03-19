@@ -96,8 +96,8 @@ def GroverAlgorithm_3Qubit(show_plots=False):
     print(circuit.matrix)
 
     # The regiseter is set to be |000>, and the states that amplified should be |101> and |111>
-    print("\nOutput probabilities:")
-    probs = qc.get_probabilities(circuit.matrix)
+    print("\nBin count of binary states after 1000 runs:")
+    probs = qc.apply_register_and_measure(repeats=1000)
     [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
 
     if show_plots:
@@ -161,13 +161,13 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
     if user == 'n':
         exit()
 
-    circuit = qc.build_circuit() #gets matrix
+    qc.build_circuit() # Builds matrix
 
-    print("\nOutput probabilities (of non-zero states):")
-    probs = qc.get_probabilities(circuit.matrix)
+    print("\nBin count of binary states after 1000 runs:")
+    probs = qc.apply_register_and_measure(repeats=1000)
     for i in probs.keys():
         state_probs = probs[i]
-        if not np.around(state_probs, 4) == 0.0000:
+        if not state_probs == 0:
             print(f"|{i}> : {probs[i]}")
 
     if show_plots:
@@ -182,7 +182,7 @@ def GroverAlgorithm_SingleRow_Suduko(show_plots = False):
     #   - 9: In the |-> state, that implements the phase kickback.
     #   - 10: Garbage qubit for the CCCnot gate to work.
     num_qubits = 11
-    qc = QuantumComputer(num_qubits, "Lazy")
+    qc = QuantumComputer(num_qubits, "Dense")
 
     # Initialises by putting three qubits in a super position of equal weight, and the fourth qubit in the |-> state to implement phase kick-back.
     init_states = [
@@ -245,10 +245,14 @@ def GroverAlgorithm_SingleRow_Suduko(show_plots = False):
     if user == 'n':
         exit()
 
-    circuit = qc.build_circuit() #gets matrix
-    print("\nOutput probabilities:")
-    probs = qc.get_probabilities(circuit.matrix)
-    [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
+    qc.build_circuit() # Builds circuit
+
+    print("\nBin count of binary states after 1000 runs:")
+    probs = qc.apply_register_and_measure(repeats=1000)
+    for i in probs.keys():
+        state_probs = probs[i]
+        if not state_probs == 0:
+            print(f"|{i}> : {probs[i]}")
 
     if show_plots:
         plt.bar(probs.keys(), probs.values(), 1)

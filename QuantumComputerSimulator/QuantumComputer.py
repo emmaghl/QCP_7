@@ -7,6 +7,7 @@ from QuantumComputerSimulator.mods.check import check
 
 import numpy as np
 from abc import ABC
+import random
 
 class Interface(ABC):
     pass
@@ -64,24 +65,7 @@ class QuantumComputer(Interface):
         #Initalise empty list to store history of gates used.
         self.__gate_history = []
         self.__custom_gate_names = []
-        self.circuit = 0 # Will be a MatrixFrame object
-
-    '''
-    def Q_Register(self):
-        '''
-        Q_Register() build's the quantum register for the quantum computer for a given number of qubits.
-        '''
-        coeffs = []
-
-        for i in range(0, self.N):
-            alpha = np.random.random() + np.random.random() * 1j
-            beta = np.random.random() + np.random.random() * 1j
-            normF = np.sqrt(alpha * np.conj(alpha) + beta * np.conj(beta))
-
-            alpha /= normF
-            beta /= normF
-    '''
-
+        self.circuit = MatrixFrame
 
     def print_circuit(self):
         '''
@@ -204,6 +188,8 @@ class QuantumComputer(Interface):
         M = np.flip(M, axis=0)
         m = M[0]
         for i in range(1, len(M)):
+            # print(f"m{m}")
+            # print(f"M[i]{M[i]}")
             m = self.Matrix.matrix_multiply(m, M[i])
 
         return m
@@ -214,20 +200,25 @@ class QuantumComputer(Interface):
         <b>param: qnum<\b> Number of qubits?
         <b>param: state<\b> State of the qubit
         '''
+        #print('Qnum =', qnum)
+        #print('state', state)
+        #print('reg', register)
         inner_register = self.Matrix.inner_product(register)
-
+        #print('IR', inner_register.matrix)
         if state == 0:
             matrix = self.single_gates(["M0"], [[qnum]])
         elif state == 1:
             matrix = self.single_gates(["M1"], [[qnum]])
 
         QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
-
+        #print('QP= ', QP)
         if (np.random.rand() < QP):
             result = 0
         else:
             result = 1
+        #print('result', result)
         return result
+
 
     def histogram(self):
         pass
@@ -277,6 +268,42 @@ class QuantumComputer(Interface):
 
         return props
 
+    def apply_register_and_measure(self, repeats: int = 1000, user_input_vector: list = []):
+        '''
+        Apply's a register to the circuit built with `add_gate_to_circuit`, with default being the |0> state in the computatinal basis.
+        '''
+        check.check_type(repeats, int)
+
+        # Switches to user inputed register if needed, and checks it
+        input_vector = np.zeros(2**self.N)
+        input_vector[0] = 1
+        if not user_input_vector == []:
+            check.check_type(user_input_vector, list)
+            check.check_array_shape(user_input_vector, (2**self.N))
+            input_vector = user_input_vector
+
+        probabilities = self.circuit.apply_register(input_vector) #Get probabilities from applying input vector
+
+        binary_states = {}
+        for i, basis in enumerate(self.binary):
+            binary_states[''.join([str(j) for j in basis[::-1]])] = 0 # Creates the binary label, such as 001 for |001>.
+
+
+        keys_list = list(binary_states.keys())
+        for _ in range(repeats): # Repeats the measurements a number of times
+            cumulative = 0
+            skip = False
+            j = 0
+            random_var = random.random()
+            while (not skip) and j < len(probabilities): # From random number between 0 and 1, finds the component of the vector by cummulative probability.
+                cumulative += probabilities[j]
+                if cumulative > random_var:
+                    binary_states[keys_list[j]] += 1
+                    skip = True
+                j += 1
+
+        return binary_states
+
     def add_gate_to_circuit(self, inputs: list, add_gate_name:str = ""):
         '''Adds the gates to the class ready to for building the circuit later.'''
         check.check_type(add_gate_name, str)
@@ -315,8 +342,6 @@ class QuantumComputer(Interface):
                 check.check_type(gate_positions, list)
                 for numbers in gate_positions:
                     check.check_type(numbers, int)
-
-
 
 
 # computer

@@ -117,16 +117,46 @@ To check that blue print of the circuit was constructed correctly, it's best to 
 ```python
 qc.print_circuit()
 ```
-The python file should be run from the terminal, as running from an IDE may cause issues with printing the circuit. The printed circuit should look like this:
+The python file should be run from the terminal, as running from an IDE may cause issues with printing the circuit. Also make sure that the terminal/IDE is wide enough to fit the circuit, or else the printed circuit will be will print a mess. The printed circuit should look like this:
 ```angular2html
-|0> --H----•----H----X---------░---------X----H--
+    --H----•----H----X---------░---------X----H--
            |                   ░
-|0> --H---------H----X---------T---------X----H--
+    --H---------H----X---------T---------X----H--
            |                   ░
-|0> --H----Z----H----X----H----░----H----X----H--
+    --H----Z----H----X----H----░----H----X----H--
 ```
 Note that the CCNot gate that was added with the label 'T' shows up in a hashed format. This will always happen for custom gates, and will always span the length of the wires. Now having consolidated that the blue prints are correct, the circuit can be built using
 ```python
 qc.build_circuit()
 ```
-Need to decide what happens with measuring...
+After the circuit has been built, a register can be applied and the output super position measured. A custom register can be added, but the default is the |0> state in the computational basis. In this example, a 1000 measurements of the quantum computer will be taken, this is peformed by calling 
+```python
+bin_count = qc.apply_register_and_measure(repeats=1000)
+```
+This returns a dictionary where the keys are in the binary basis. The values are the number of times that the state was measured in the 1000 iterations of the register being applied to the quantum circuit. An elegant way of printing the dictionary to see the measurements is to call
+```python
+[print(f"|{i}> : {bin_count[i]}") for i in bin_count.keys()]
+```
+
+## Key distribution
+The file `KeyDistributionGeneral.py` contains the quantum key distrbution programme based on the BB84 protocol. This can be run in either your ide or command line as desceribed before.
+
+Once initiated the programme will start by asking which matrix type you would like to use.
+```python
+t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
+```
+Next the programme needs to know how many qubits will be used in the encryption:
+```python
+n = int(input('How long would person A like their bit message to be?: '))
+```
+Now the programme will call the QuantumComputer class and pass the matrix type as well as the number of qubits to be used initalising this and storing it in the variable qc:
+```python
+    global qc
+    if t == "D" or t == "d":
+        qc = QuantumComputer(n, 'Dense')
+    if t == "S" or t == "s":
+        qc = QuantumComputer(n, 'Sparse')
+    if t == "L" or t == "l":
+        qc = QuantumComputer(n, 'Lazy')
+```
+The register is then called and both the bits and the basis are setup to be vectors filled with n random numbers.
