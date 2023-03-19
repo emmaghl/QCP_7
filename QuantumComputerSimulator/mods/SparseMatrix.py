@@ -160,7 +160,7 @@ class SparseMatrix(MatrixFrame):
             m2 = M2
         # print(f"m1{m1}")
         # print(f"m2{m2}")
-            
+
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
         dict1 = {(row, col): val for [row, col, val] in m1}
         dict2 = {(row, col): val for [row, col, val] in m2}
@@ -168,7 +168,6 @@ class SparseMatrix(MatrixFrame):
         dictm = {}
         loop = 0
         for (r1, c1), v1 in dict1.items():  # iterate over SM1
-            loop += 1
             for (r2, c2), v2 in dict2.items():  # and SM2
                 if v1 != 0 and v2 != 0:
                     if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
@@ -176,10 +175,9 @@ class SparseMatrix(MatrixFrame):
                 elif loop == len(list(dict1.items())):
                     if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
                         dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
-
+            loop += 1
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
         return SparseMatrix("general", matmul)
-
 
     def sparse_multiply(self, num: float, mat):
         '''multiplies a scalar by a sparse matrix'''
