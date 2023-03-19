@@ -200,20 +200,25 @@ class QuantumComputer(Interface):
         <b>param: qnum<\b> Number of qubits?
         <b>param: state<\b> State of the qubit
         '''
+        #print('Qnum =', qnum)
+        #print('state', state)
+        #print('reg', register)
         inner_register = self.Matrix.inner_product(register)
-
+        #print('IR', inner_register.matrix)
         if state == 0:
             matrix = self.single_gates(["M0"], [[qnum]])
         elif state == 1:
             matrix = self.single_gates(["M1"], [[qnum]])
 
         QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
-
+        #print('QP= ', QP)
         if (np.random.rand() < QP):
             result = 0
         else:
             result = 1
+        #print('result', result)
         return result
+
 
     def histogram(self):
         pass

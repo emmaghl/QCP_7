@@ -21,20 +21,24 @@ def main():
     if t == "L" or t == "l":
         qc = QuantumComputer(n, 'Lazy')
 
-    # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+    np.random.seed(0)
 
+    # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+    start_1 = time.time()
     register = qc.Matrix.quantum_register(n)
 
     #print('Step 0 complete: Qubit register setup')
 
     # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    np.random.seed(0)
     A_bits = np.random.randint(2, size=n)
 
     #print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
 
     #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    np.random.seed(0)
     A_bases = np.random.randint(2, size=n)
 
     #print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
@@ -70,11 +74,17 @@ def main():
 
     # print('Step 3 complete: Qubits encoded')
 
+    end_1 = time.time()
+    time_1 = end_1 - start_1
+    #print('Time_1 =', time_1)
+
     # Step Interception ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
     while True:
         y = str(input('Do you want to intercept and try and read their message?\n >'))
         if y == "Yes" or y == "yes" or y == "YES":
+            start_2 = time.time()
+            np.random.seed(0)
             C_bases = np.random.randint(2, size=n)
 
             print('The random bases you measure the message with are =', C_bases)
@@ -92,7 +102,7 @@ def main():
                 else:
                     circuit = qc.gate_logic([(["H"], [[i]])])
                     circuit = circuit.matrix
-             
+
                     register = qc.Matrix.matrix_multiply(circuit, register)
                     register = register.matrix
                     result = qc.measure_any(i, 0, register)
@@ -120,14 +130,15 @@ def main():
                     else:
                         register = qc.Matrix.tensor_prod(one_col, register)
                         register = register.matrix
-
             break
         elif y == "No" or y == "no" or y == "NO":
+            start_2 = time.time()
             break
         else:
             print("Whoops, that was an incorrect input! Accepted inputs: Yes, No")
     # Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
+    np.random.seed(0)
     B_bases =  np.random.randint(2, size=n)
 
     measurement = []
@@ -213,7 +224,7 @@ def main():
 
     s = random.sample(range(0, j), number_of_samples)
 
-    #print (s)
+    print (s)
 
     for i in s:
         f = A_Key[i]
@@ -241,6 +252,11 @@ def main():
         if sample_A[i] == sample_B[i]:
             p = p + 1
         else:
+            end_2 = time.time()
+            time_2 = end_2 - start_2
+            #print('time_2 =', time_2)
+            total_time = time_1 + time_2
+            print('total time taken =', total_time)
             print('You were caught listening!')
             exit()
     print('Secret Key is probably secure.')
@@ -263,6 +279,11 @@ def main():
         A_secret_key.append(A_Key[i])
         B_secret_key.append(B_Key[i])
 
+    end_2 = time.time()
+    time_2 = end_2 - start_2
+    #print('time_2 =', time_2)
+    total_time = time_1 + time_2
+    print('total time taken =', total_time)
     print('Both person A and person B have their secret keys now:')
     print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
     print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
@@ -270,6 +291,3 @@ def main():
 
 if __name__=="__main__":
     main()
-
-
-

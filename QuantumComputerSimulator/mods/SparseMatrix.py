@@ -156,8 +156,9 @@ class SparseMatrix(MatrixFrame):
         # print(f"m2{m2}")
             
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
-        dict1 = {(row, col): val for [row, col, val] in m1}
-        dict2 = {(row, col): val for [row, col, val] in m2}
+        dict1 = {(row, col): val for [(row), col, val] in m1}
+
+        dict2 = {(row, col): val for [(row), (col), val] in m2}
 
         dictm = {}
         for (r1, c1), v1 in dict1.items():  # iterate over SM1
@@ -166,6 +167,7 @@ class SparseMatrix(MatrixFrame):
                     dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
 
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
+        #print (SparseMatrix("general", matmul).matrix)
         return SparseMatrix("general", matmul)
 
 
@@ -219,7 +221,11 @@ class SparseMatrix(MatrixFrame):
         else:
             m = M
 
-        return SparseMatrix.matrix_multiply(m, cls.transpose(np.conj(m)))
+        #print('1', M)
+        #print('2', np.conj(m))
+        #print('3', SparseMatrix.transpose(np.conj(m)))
+        return SparseMatrix.matrix_multiply(m, SparseMatrix.transpose(np.conj(m)))
+
 
     @classmethod
     def trace(cls, M):
