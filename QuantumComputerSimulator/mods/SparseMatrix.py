@@ -57,11 +57,11 @@ class SparseMatrix(MatrixFrame):
     def strip_matrix(self, mat): #future take care of real and imag separately to only strip half
         del_entries = []
         for i in range(len(mat)):
-            print('real',np.real(mat[i][2]))
-            print("imag", np.imag(mat[i][2]) )
+            # print('real',np.real(mat[i][2]))
+            # print("imag", np.imag(mat[i][2]) )
             if np.abs(np.real(mat[i][2])) >= 10 ** (-10) or np.abs(np.imag(mat[i][2])) >= 10 ** (-10):
                 del_entries.append(i)
-        print(del_entries)
+        # print(del_entries)
 
         mat_strip = []
         for i in range(len(mat)):
@@ -77,7 +77,7 @@ class SparseMatrix(MatrixFrame):
         '''
         Gives the dimensions of the matrix. Used to preserve matrix structure information.
         '''
-        print(M)
+        # print(M)
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -95,7 +95,7 @@ class SparseMatrix(MatrixFrame):
             if m[j][1] > nr:
                 nr = m[j][1]
         nrow = nr + 1
-        print(int(ncol), int(nrow))
+        # print(int(ncol), int(nrow))
         return (int(ncol), int(nrow))
 
     @classmethod
