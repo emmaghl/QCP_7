@@ -58,11 +58,11 @@ def CCCnot(control_1, control_2, control_3, target, auxilary) -> list:
 
 def GroverAlgorithm_3Qubit(show_plots=False):
     '''A function implementing a two qubit version of Grover's algorithm.'''
-    qc = QuantumComputer(2, 'Dense')
+    qc = QuantumComputer(3, 'Dense')
 
     # Defines the gates for grover's algorithm
     init_states = [
-        (["H", "H", "H"], [[0], [1], [2]])
+        (["H"], [[0,1,2]])
     ]
 
     oracle = [
@@ -70,24 +70,17 @@ def GroverAlgorithm_3Qubit(show_plots=False):
     ]
 
     half_of_amplification = [
-        (["H", "H", "H"], [[0], [1], [2]]),
-        (["X", "X", "X"], [[0], [1], [2]]),
+        (["H"], [[0,1]),
+        (["X"], [[0,1,2]]),
         (["H"], [[2]])
     ]
 
-    test_gate = [
-        (["H"], [[0]]),
-        (["X"], [[0]]),
-        (["H"], [[1]])
-    ]
-
     # Feeds the gates that the circuit will be built out of. This is order dependent
-    # qc.add_gate_to_circuit(init_states),
-    # qc.add_gate_to_circuit(oracle),
-    # qc.add_gate_to_circuit(half_of_amplification),
-    qc.add_gate_to_circuit(test_gate),
-    # qc.add_gate_to_circuit(CCnot(0, 1, 2), add_gate_name="T"),
-    # qc.add_gate_to_circuit(half_of_amplification[::-1]) # Reverses list
+    qc.add_gate_to_circuit(init_states),
+    qc.add_gate_to_circuit(oracle),
+    qc.add_gate_to_circuit(half_of_amplification),
+    qc.add_gate_to_circuit(CCnot(0, 1, 2), add_gate_name="T"),
+    qc.add_gate_to_circuit(half_of_amplification[::-1]) # Reverses list
 
     # Prints circuit and make's sure the user is happy with it before it's built.
     qc.print_circuit()
@@ -95,7 +88,7 @@ def GroverAlgorithm_3Qubit(show_plots=False):
     if user == 'n':
         exit()
 
-    # Builds the circuit using 'Dense' methods
+    # Builds the circuit using matrix methods
     circuit = qc.build_circuit()
 
     # Prints the matrix representation of the circuits, as it is using Dense techniques, the circuit will be represented as a matrix.

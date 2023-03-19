@@ -134,6 +134,7 @@ class DenseMatrix(MatrixFrame):
     @classmethod
     def conjugate(cls, M):
         return np.conj(M)
+
     @classmethod
     def trace(cls, M):
         '''
