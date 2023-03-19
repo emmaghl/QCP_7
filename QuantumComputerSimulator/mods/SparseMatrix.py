@@ -352,14 +352,6 @@ class SparseMatrix(MatrixFrame):
             DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
         return DMatrix
 
-    def output(self, inputs:np.array) -> np.array:
-        '''
-        Output of sparse matrix class.
-        <b>param inputs<\b>
-        '''
-        inputs = self.Dense_to_Sparse(inputs)
-        return self.matrix_multiply(self.matrix, inputs)
-
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
         """! What the class/method does
             @param list the parameters and what they do
@@ -380,6 +372,16 @@ class SparseMatrix(MatrixFrame):
             SMatrix.append([rows, 0, 0])
 
         return SMatrix  # return output
+
+    def output(self, inputs:np.array) -> np.array:
+        '''
+        Output of sparse matrix class.
+        <b>param inputs<\b>
+        '''
+        inputs = self.Dense_to_Sparse(inputs)
+        sparse_outputs = SparseMatrix.matrix_multiply(self.matrix, inputs)
+        return self.Sparse_to_Dense(sparse_outputs)
+
 
     def apply_register(self, input_vector: list) -> list:
         '''Returns the output state vector.'''
