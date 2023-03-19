@@ -56,9 +56,9 @@ def CCCnot(control_1, control_2, control_3, target, auxilary) -> list:
         CCnot(control_1, control_3, auxilary)
     )
 
-def GroverAlgorithm_3Qubit(show_plots=False):
+def GroverAlgorithm_3Qubit(matrixtype, show_plots=False):
     '''A function implementing a two qubit version of Grover's algorithm.'''
-    qc = QuantumComputer(3, 'Sparse')
+    qc = QuantumComputer(3, matrixtype)
 
     # Defines the gates for grover's algorithm
     init_states = [
@@ -104,7 +104,7 @@ def GroverAlgorithm_3Qubit(show_plots=False):
         plt.bar(probs.keys(), probs.values(), 1)
         plt.show()
 
-def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
+def GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrixtype, show_plots = False):
     '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
     # The roles of each qubit are:
     #   - 0, 1, 2: the qubits that are amplified
@@ -112,7 +112,7 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
     #   - 4: In the |-> state, that implements the phase kickback.
     #   - 5: Garbage qubit for the CCCnot gate to work.
     num_qubits = 6
-    qc = QuantumComputer(num_qubits, "Dense")
+    qc = QuantumComputer(num_qubits, matrixtype)
 
     # Initialises by putting three qubits in a super position of equal weight, and the fourth qubit in the |-> state to implement phase kick-back.
     init_states = [
@@ -174,7 +174,7 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots = False):
         plt.bar(probs.keys(), probs.values(), 1)
         plt.show()
 
-def GroverAlgorithm_SingleRow_Suduko(show_plots = False):
+def GroverAlgorithm_SingleRow_Suduko(matrixtype, show_plots = False):
     '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
     # The roles of each qubit are:
     #   - 0 to 5: the qubits that are amplified
@@ -182,7 +182,7 @@ def GroverAlgorithm_SingleRow_Suduko(show_plots = False):
     #   - 9: In the |-> state, that implements the phase kickback.
     #   - 10: Garbage qubit for the CCCnot gate to work.
     num_qubits = 11
-    qc = QuantumComputer(num_qubits, "Dense")
+    qc = QuantumComputer(num_qubits, matrixtype)
 
     # Initialises by putting three qubits in a super position of equal weight, and the fourth qubit in the |-> state to implement phase kick-back.
     init_states = [
@@ -262,12 +262,23 @@ if __name__=="__main__":
     # Runs example algorithms if not testing contents if not testing
     if len(sys.argv) == 1:
         # Prints the options to the user
+        t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
+        if t == "D" or t == "d":
+            matrixtype = 'Dense'
+        if t == "S" or t == "s":
+            matrixtype = 'Sparse'
+        if t == "L" or t == "l":
+            matrixtype = 'Sparse'
+
         options = [
             '[1] 3 qubit Grovers (Dense)',
             '[2] Single binary row of 3x3 sudoko (Dense)',
             '[3] A full row of 3x3 sudoko (Dense)',
         ]
         [print(f'{o}') for o in options]
+
+
+
         user_input = user_validation('Enter the number beside the algorithm that you would like to run.', ['1', '2', '3', 'exit'])
 
         if user_input == 'exit':
@@ -277,11 +288,11 @@ if __name__=="__main__":
         print('Running, this may take a bit...')
 
         if user_input == '1':
-            GroverAlgorithm_3Qubit(show_plots=False)
+            GroverAlgorithm_3Qubit(matrixtype, show_plots=False)
         elif user_input == '2':
-            GroverAlgorithm_SingleRow_BinaryCol_Suduko(show_plots=False)
+            GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrixtype, show_plots=False)
         elif user_input == '3':
-            GroverAlgorithm_SingleRow_Suduko(show_plots=False)
+            GroverAlgorithm_SingleRow_Suduko(matrixtype, show_plots=False)
 
     elif '--test' in sys.argv:
         print("Running tests...")

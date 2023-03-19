@@ -73,7 +73,6 @@ class MatrixFrame(ABC):
     def apply_register(self, input_vector: list) -> list:
         '''Returns the output state vector.'''
         amplitudes = self.output(input_vector)
-        print(amplitudes)
         return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes]
 
     @abstractmethod
