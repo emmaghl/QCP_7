@@ -85,7 +85,7 @@ class SparseMatrix(MatrixFrame):
             if m[j][1] > nr:
                 nr = m[j][1]
         nrow = nr + 1
-        return (ncol, nrow)
+        return (int(ncol), int(nrow))
 
     @classmethod
     def quantum_register(cls, qnum):
@@ -297,9 +297,9 @@ class SparseMatrix(MatrixFrame):
 
         for i in range(0, 2 ** N):
             if index[i] == 1:
-                new_entry = [i, index[i], 1j]
+                new_entry = [i, i, 1j]
             else:
-                new_entry = [i, index[i], 1]
+                new_entry = [i, i, 1]
             cv.append(new_entry)
 
         return cv
@@ -313,13 +313,12 @@ class SparseMatrix(MatrixFrame):
 
         for i in range(0, 2 ** N):
             if index[i] == 1:
-                new_entry = [i, index[i], -1]
+                new_entry = [i, i, -1]
             else:
-                new_entry = [i, index[i], 1]
+                new_entry = [i, i, 1]
             cz.append(new_entry)
 
         return cz
-
 
     def Sparse_to_Dense(self, SMatrix):
         '''

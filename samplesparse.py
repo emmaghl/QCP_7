@@ -1,9 +1,40 @@
 '''Sample file for testing the QuantumComputerSimulator module, and showcasing the features. To run tests, add `--test` argument when running from the terminal.'''
 from QuantumComputerSimulator import QuantumComputer, Test
+from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix #del
 
 import matplotlib.pyplot as plt
 import sys
 import numpy as np
+import copy
+
+def Sparse_to_Dense(SMatrix): #seems to want to round down entries to no decimal places
+    '''
+    ! Takes in a sparse matrix and returns the corresponding dense matrix.
+        Note: suppose you're converting a dense matrix to sparse and back to dense,
+        if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
+        these will be lost in the sparse conversion.
+         @param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
+         @return  DMatrix: the converted dense matrix (in array form)
+     '''
+    count = 0
+    for row in SMatrix:
+        if type(row[2]) == "complex":  # check correct synatx!!
+            count += 1
+    if count == 0:
+        typex = "int"
+    if count == 1:
+        typex = "complex"
+
+    SparseM = SparseMatrix("general", SMatrix)
+    DMatrix = np.zeros((SparseM.size[0]) * SparseM.size[1],
+                       dtype=typex)  # create an array of zeros of the right size
+    DMatrix.shape = SparseM.size
+    for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
+        # print(SMatrix[j][2])
+        DMatrix[int(SMatrix[j][0])][int(SMatrix[j][1])] = float(np.round((copy.deepcopy(SMatrix[j][2])), 3))# change the non zero entries of the dense matrixi
+        # np.put(DMatrix, [[int(SMatrix[j][0])],[int(SMatrix[j][1])]], SMatrix[j][2]+3)
+    return DMatrix
+
 
 def glue_circuits(matricies: object) -> np.ndarray:
     ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
@@ -58,7 +89,8 @@ def CCCnot(control_1, control_2, control_3, target, auxilary) -> list:
 
 def GroverAlgorithm_3Qubit(show_plots=False):
     '''A function implementing a two qubit version of Grover's algorithm.'''
-    qc = QuantumComputer(2, 'Dense')
+    matrixtype = 'Sparse'
+    qc = QuantumComputer(2, matrixtype)
 
     # Defines the gates for grover's algorithm
     init_states = [
@@ -68,6 +100,7 @@ def GroverAlgorithm_3Qubit(show_plots=False):
     oracle = [
         (["CZ"], [[0, 2]])
     ]
+
 
     half_of_amplification = [
         (["H", "H", "H"], [[0], [1], [2]]),
@@ -84,6 +117,7 @@ def GroverAlgorithm_3Qubit(show_plots=False):
     # Feeds the gates that the circuit will be built out of. This is order dependent
     # qc.add_gate_to_circuit(init_states),
     # qc.add_gate_to_circuit(oracle),
+
     # qc.add_gate_to_circuit(half_of_amplification),
     qc.add_gate_to_circuit(test_gate),
     # qc.add_gate_to_circuit(CCnot(0, 1, 2), add_gate_name="T"),
@@ -100,6 +134,8 @@ def GroverAlgorithm_3Qubit(show_plots=False):
 
     # Prints the matrix representation of the circuits, as it is using Dense techniques, the circuit will be represented as a matrix.
     print("With the matrix representation:")
+    if matrixtype == 'Sparse':
+        print(Sparse_to_Dense(circuit.matrix))
     print(circuit.matrix)
 
     # The regiseter is set to be |000>, and the states that amplified should be |101> and |111>
