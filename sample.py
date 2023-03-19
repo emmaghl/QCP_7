@@ -58,7 +58,7 @@ def CCCnot(control_1, control_2, control_3, target, auxilary) -> list:
 
 def GroverAlgorithm_3Qubit(show_plots=False):
     '''A function implementing a two qubit version of Grover's algorithm.'''
-    qc = QuantumComputer(3, 'Dense')
+    qc = QuantumComputer(3, 'Sparse')
 
     # Defines the gates for grover's algorithm
     init_states = [
@@ -70,7 +70,7 @@ def GroverAlgorithm_3Qubit(show_plots=False):
     ]
 
     half_of_amplification = [
-        (["H"], [[0,1]),
+        (["H"], [[0,1,2]]),
         (["X"], [[0,1,2]]),
         (["H"], [[2]])
     ]

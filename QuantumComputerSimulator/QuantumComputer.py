@@ -225,15 +225,15 @@ class QuantumComputer(Interface):
         # plt.hist(x)
         # plt.show()
 
-    def apply_register(self, inputs):
-        outputs = self.circuit.output(inputs)
-        probs = np.zeros(len(outputs))
-        for i in range(len(outputs)):
-            probs[i] = (self.Matrix.conjugate(outputs[i]))**2
-
-        counts = 1000
-        apply_dict = {inputs[i]: counts*probs[i] for i in inputs}
-        return apply_dict
+    # def apply_register(self, inputs):
+    #     outputs = self.circuit.output(inputs)
+    #     probs = np.zeros(len(outputs))
+    #     for i in range(len(outputs)):
+    #         probs[i] = (self.Matrix.conjugate(outputs[i]))**2
+    #
+    #     counts = 1000
+    #     apply_dict = {inputs[i]: counts*probs[i] for i in inputs}
+    #     return apply_dict
 
     def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
         '''

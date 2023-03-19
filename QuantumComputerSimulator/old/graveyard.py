@@ -143,3 +143,17 @@ for i in range(0, step_n):
     for j in range(0, len(self.double_inputs)):
         if self.double_inputs[j] in inputs[i][0]:
             M.append(self.double_gates(inputs[i][0], inputs[i][1]))'''
+
+
+# def size_matrix(self, M):
+    #     if type(M) == SparseMatrix:
+    #         m = M.matrix
+    #     else:
+    #         m = M
+    #
+    #     # ncol = M[-1][0] + 1  # number of columns is the column value of the last entry in the sparse matrix
+    #     nc = 0  # number of rows is the maximum row value across the array (+1 because of Python indexing)
+    #     for j in range(len(m)):
+    #         if m[j][0] > nc:
+    #             nc = m[j][0]
+    #     ncol = nc + 1

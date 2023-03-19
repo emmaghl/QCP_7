@@ -48,10 +48,6 @@ class LazyMatrix(MatrixFrame):
         self.dim = len(self.matrix)
 
     @classmethod
-    def quantum_register(cls, qnum):
-        pass
-
-    @classmethod
     def tensor_prod(cls, m1, m2):
         '''
         Lazy tensor product
@@ -132,15 +128,9 @@ class LazyMatrix(MatrixFrame):
         for i in range(0,self.dim):
             out.append(self.matrix[i](new_in))
 
+        #to vector form
+        out = np.array(out)
+        out.shape = (len(out), 1)
+
         return out
 
-    def apply_register(self, input_vector: list) -> list:
-        '''Returns the output state vector.'''
-        #amplitudes = np.dot(self.matrix, input_vector)
-        amplitudes = self.output([[v] for v in input_vector])
-        return [amp*np.conjugate(amp) for amp in amplitudes]
-
-
-class LazyMatrixSingle(MatrixFrame):
-    def __init__(self, Type, *args):
-        pass

@@ -70,6 +70,11 @@ class MatrixFrame(ABC):
     def CZ_logic(self, digits, c, t):
         return self.CV_logic(digits, c, t)
 
+    def apply_register(self, input_vector: list) -> list:
+        '''Returns the output state vector.'''
+        amplitudes = self.output(input_vector)
+        print(amplitudes)
+        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes]
 
     @abstractmethod
     def tensor_prod(self, M1, M2):
@@ -95,6 +100,3 @@ class MatrixFrame(ABC):
     def conjugate(self, M):
         pass
 
-    @abstractmethod
-    def apply_register(self, input_vector: list) -> list:
-        pass

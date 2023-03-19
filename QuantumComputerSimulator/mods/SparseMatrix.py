@@ -48,26 +48,36 @@ class SparseMatrix(MatrixFrame):
         if Type == 'onecol':
             self.matrix = np.array([[1, 0, 1]])
 
-        self.size = self.size_matrix(self.matrix)
+        # print(f"before strip{self.matrix}")
+        self.matrix = self.strip_matrix(self.matrix)
+        # print(f"after strip{self.matrix}")
 
-    # def size_matrix(self, M):
-    #     if type(M) == SparseMatrix:
-    #         m = M.matrix
-    #     else:
-    #         m = M
-    #
-    #     # ncol = M[-1][0] + 1  # number of columns is the column value of the last entry in the sparse matrix
-    #     nc = 0  # number of rows is the maximum row value across the array (+1 because of Python indexing)
-    #     for j in range(len(m)):
-    #         if m[j][0] > nc:
-    #             nc = m[j][0]
-    #     ncol = nc + 1
+        self.size = SparseMatrix.size_matrix(self.matrix)
+
+    def strip_matrix(self, mat): #future take care of real and imag separately to only strip half
+        del_entries = []
+        for i in range(len(mat)):
+            print('real',np.real(mat[i][2]))
+            print("imag", np.imag(mat[i][2]) )
+            if np.abs(np.real(mat[i][2])) >= 10 ** (-10) or np.abs(np.imag(mat[i][2])) >= 10 ** (-10):
+                del_entries.append(i)
+        print(del_entries)
+
+        mat_strip = []
+        for i in range(len(mat)):
+            for j in del_entries:
+                if i == j:
+                    mat_strip.append(mat[i])
+
+        return mat_strip
+
 
     @classmethod
     def size_matrix(cls, M):
         '''
         Gives the dimensions of the matrix. Used to preserve matrix structure information.
         '''
+        print(M)
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -85,6 +95,7 @@ class SparseMatrix(MatrixFrame):
             if m[j][1] > nr:
                 nr = m[j][1]
         nrow = nr + 1
+        print(int(ncol), int(nrow))
         return (int(ncol), int(nrow))
 
     @classmethod
@@ -121,14 +132,14 @@ class SparseMatrix(MatrixFrame):
             m2_col = SparseMatrix.size_matrix(m2)[0]  # STcol/SM1col = SM2col etc.
             m2_row = SparseMatrix.size_matrix(m2)[1]  # STcol/SM1col = SM2col etc.
 
-
-
         
         tensorprod = []
 
         for j in range(len(m1)):
             for i in range(len(m2)):
-                if m1[j][2] != 0 and m2[i][2] != 0:
+                # if ((type(m1[j][2]) == "float" and m1[j][2] >= 10**(-10)) or (type(m1[j][2]) == "complex" and abs(m1[j][2]) >= 10**(-10))) and ((type(m2[j][2]) == "float" and m2[j][2] >= 10**(-10)) or (type(m2[j][2]) == "complex" and abs(m2[j][2]) >= 10**(-10))):
+                # if abs(m1[j][2]) >= 10**(-10) and abs(m2[i][2]) >= 10**(-10):
+                if 1>0:
                     column = m2_col * m1[j][0] + m2[i][0]
                     row = m2_row * m1[j][1] + m2[i][1]
                     value = m1[j][2] * m2[i][2]
@@ -137,7 +148,6 @@ class SparseMatrix(MatrixFrame):
         column = m2_col * m1[-1][0] + m2[-1][0] #or use size etc..
         row = m2_row * m1[-1][1] + m2[-1][1]
         value = round(m1[-1][2] * m2[-1][2], 10)
-
         tensorprod.append([column, row, value])
         return SparseMatrix("general", tensorprod)
 
@@ -169,7 +179,9 @@ class SparseMatrix(MatrixFrame):
         loop = 0
         for (r1, c1), v1 in dict1.items():  # iterate over SM1
             for (r2, c2), v2 in dict2.items():  # and SM2
-                if v1 != 0 and v2 != 0:
+                # if ((type(v1) == "float" and v1 >= 10**(-10)) or (type(v1) == "complex" and abs(v1) >= 10**(-10))) and ((type(v2) == "float" and v2 >= 10**(-10)) or (type(v2) == "complex" and abs(v2) >= 10**(-10))):
+                # if abs(v1) >= 10**(-10) and abs(v2) >= 10**(-10):
+                if 1>0:
                     if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
                         dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
                 elif loop == len(list(dict1.items())):
@@ -381,13 +393,22 @@ class SparseMatrix(MatrixFrame):
         Output of sparse matrix class.
         <b>param inputs<\b>
         '''
-        inputs = self.Dense_to_Sparse(inputs)
-        sparse_outputs = SparseMatrix.matrix_multiply(self.matrix, inputs)
-        return self.Sparse_to_Dense(sparse_outputs)
+        # inputs = self.Dense_to_Sparse(inputs)
+        inputs_sparse = []
+        for i in range(len(inputs)):
+            if inputs[i] != 0:
+                inputs_sparse.append([i, 0, inputs[i]])
+        sparse_outputs = SparseMatrix.matrix_multiply(self.matrix, inputs_sparse).matrix
+
+        outputs_dense = np.zeros(len(inputs))
+        for j in range(len(inputs)):
+            for i in range(len(sparse_outputs)):
+                if sparse_outputs[i][0] == j:
+                    outputs_dense[j] = sparse_outputs[i][2]
+
+        #to vector form
+        outputs_dense = np.array(outputs_dense)
+        outputs_dense.shape = (len(outputs_dense), 1)
 
 
-    def apply_register(self, input_vector: list) -> list:
-        '''Returns the output state vector.'''
-        #amplitudes = np.dot(self.matrix, input_vector)
-        amplitudes = self.output([[v] for v in input_vector])
-        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes.matrix]
+        return outputs_dense
