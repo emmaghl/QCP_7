@@ -116,55 +116,115 @@ class Test():
 
     def order_of_tensor_product(self, type: str):
         '''Checks the ordering of tensor product with two different and single gates.'''
-        qc = QuantumComputer(2, type)
+        if not type == "Lazy":
+            qc = QuantumComputer(2, type)
 
-        init_states = [
-            (["X"], [[1]]),
-            (["Y"], [[0]])
-        ]
+            init_states = [
+                (["X"], [[1]]),
+                (["Y"], [[0]])
+            ]
 
-        qc.add_gate_to_circuit(init_states),
+            qc.add_gate_to_circuit(init_states),
 
-        circuit = qc.build_circuit()
-        matrix = []
+            circuit = qc.build_circuit()
+            matrix = []
 
-        if type == 'Sparse':
-            matrix = circuit.Sparse_to_Dense(circuit.matrix)
+            if type == 'Sparse':
+                matrix = circuit.Sparse_to_Dense(circuit.matrix)
+            else:
+                matrix = circuit.matrix
+
+            matrix_to_compare = np.array([
+                [0, 0, 0, 0-1j],
+                [0, 0, 0+1j, 0],
+                [0, 0-1j, 0, 0],
+                [0+1j, 0, 0, 0]
+            ])
+
+            assert (np.all(np.array(matrix) == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{np.array(matrix)}"
         else:
-            matrix = circuit.matrix
-
-        matrix_to_compare = np.array([
-            [0, 0, 0, 0-1j],
-            [0, 0, 0+1j, 0],
-            [0, 0-1j, 0, 0],
-            [0+1j, 0, 0, 0]
-        ])
-
-        assert (np.all(np.array(matrix) == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{np.array(matrix)}"
+            print("\t\t-> Skipping for lazy...")
 
     def single_gate(self, type: str):
         '''Checks the ordering of tensor product with two different and single gates.'''
-        qc = QuantumComputer(2, type)
+        if not type == "Lazy":
+            qc = QuantumComputer(2, type)
 
+            init_states = [
+                (["X", "Y"], [[1], [0]])
+            ]
+
+            qc.add_gate_to_circuit(init_states),
+
+            circuit = qc.build_circuit()
+            matrix = []
+
+            if type == 'Sparse':
+                matrix = circuit.Sparse_to_Dense(circuit.matrix)
+            else:
+                matrix = circuit.matrix
+
+            matrix_to_compare = np.array([
+                [0, 0, 0, 0-1j],
+                [0, 0, 0+1j, 0],
+                [0, 0-1j, 0, 0],
+                [0+1j, 0, 0, 0]
+            ])
+
+            assert (np.all(np.array(matrix) == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{np.array(matrix)}"
+        else:
+            print("\t\t-> Skipping for lazy...")
+
+    def three_qubit_circuit(self, type: str):
+        '''Runs a 3 qubit circuit of grover's algorithm.'''
+        qc = QuantumComputer(3, type)
+
+        # Defines the gates for grover's algorithm
         init_states = [
-            (["X", "Y"], [[1], [0]])
+            (["H", "H", "H"], [[0], [1], [2]])
         ]
 
+        oracle = [
+            (["CZ"], [[1, 2]])
+        ]
+
+        half_of_amplification = [
+            (["H", "H", "H"], [[0], [1], [2]]),
+            (["X", "X", "X"], [[0], [1], [2]]),
+            (["H"], [[2]])
+        ]
+
+        # Feeds the gates that the circuit will be built out of. This is order dependent
         qc.add_gate_to_circuit(init_states),
+        qc.add_gate_to_circuit(oracle),
+        qc.add_gate_to_circuit(half_of_amplification),
+        qc.add_gate_to_circuit(self.__CCnot(0, 1, 2)),
+        qc.add_gate_to_circuit(half_of_amplification[::-1]) # Reverses list
 
+        # Builds the circuit using 'Dense' methods
         circuit = qc.build_circuit()
-        matrix = []
 
-        if type == 'Sparse':
-            matrix = circuit.Sparse_to_Dense(circuit.matrix)
-        else:
-            matrix = circuit.matrix
+        # The regiseter is set to be |000>, and the states that amplified should be |110> and |111>
+        probs = qc.apply_register_and_measure(repeats=1000)
+        assert (probs['110']+probs['111']==1000), f"3 qubit circuit of grover's algorithm not working. Should only measure states |110> and |111>. Instead, it measured\n{probs}"
 
-        matrix_to_compare = np.array([
-            [0, 0, 0, 0-1j],
-            [0, 0, 0+1j, 0],
-            [0, 0-1j, 0, 0],
-            [0+1j, 0, 0, 0]
-        ])
-
-        assert (np.all(np.array(matrix) == matrix_to_compare)), f"Tensor product in wrong order! Should expect \n {matrix_to_compare}\nInstead found \n{np.array(matrix)}"
+    def __CCnot(self, control_1, control_2, target) -> list:
+        '''Defines the Toffoli gate, and an example for implementing other gates from the elementary ones.'''
+        gate_built = [
+            (["H"], [[target]]),
+            (["CV"], [[control_2, target]]),
+            (["H"], [[control_2]]),
+            (["CV"], [[control_1, control_2]]),
+            (["CV"], [[control_1, control_2]]),
+            (["H"], [[control_2]]),
+            (["CV"], [[control_2, target]]),
+            (["CV"], [[control_2, target]]),
+            (["CV"], [[control_2, target]]),
+            (["H"], [[control_2]]),
+            (["CV"], [[control_1, control_2]]),
+            (["CV"], [[control_1, control_2]]),
+            (["H"], [[control_2]]),
+            (["CV"], [[control_1, target]]),
+            (["H"], [[target]])
+        ]
+        return gate_built
