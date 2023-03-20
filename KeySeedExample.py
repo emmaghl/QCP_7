@@ -21,7 +21,7 @@ def main():
     if t == "L" or t == "l":
         qc = QuantumComputer(n, 'Lazy')
 
-    np.random.seed(0)
+    np.random.seed(40)
 
     # Step 0 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
     start_1 = time.time()
@@ -31,14 +31,14 @@ def main():
 
     # Step 1 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    np.random.seed(0)
+    np.random.seed(40)
     A_bits = np.random.randint(2, size=n)
 
     #print('Step 1 complete:', 'A bits =', A_bits, '!This is not shared publicly!')
 
     #Step 2 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    np.random.seed(0)
+    np.random.seed(40)
     A_bases = np.random.randint(2, size=n)
 
     #print('Step 2 complete:', 'A bases =', A_bases, '!This is not shared publicly!')
@@ -84,7 +84,7 @@ def main():
         y = str(input('Do you want to intercept and try and read their message?\n >'))
         if y == "Yes" or y == "yes" or y == "YES":
             start_2 = time.time()
-            np.random.seed(0)
+            np.random.seed(40)
             C_bases = np.random.randint(2, size=n)
 
             print('The random bases you measure the message with are =', C_bases)
@@ -138,7 +138,7 @@ def main():
             print("Whoops, that was an incorrect input! Accepted inputs: Yes, No")
     # Step 4 ---------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    np.random.seed(0)
+    np.random.seed(40)
     B_bases =  np.random.randint(2, size=n)
 
     measurement = []

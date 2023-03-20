@@ -34,8 +34,7 @@ def encode_message(n, A_bases, A_bits, register):
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
     return register
-def C_intercepts(n, register):
-    C_bases = np.random.randint(2, size=n)
+def C_intercepts(n, C_bases, register):
     print('The random bases you measure the message with are =', C_bases)
     register_intercept = []
     for i in range(n):
@@ -61,7 +60,7 @@ def C_intercepts(n, register):
                 register_intercept.append([0, i, result])
             elif qc.Matrix == LazyMatrix:
                 print("oh no, not quite working for Lazy yet ... ")
-
+    print('Intercepted message =', register_intercept)
     zero_col = qc.Matrix("zerocol")
     one_col = qc.Matrix("onecol")
 
@@ -160,7 +159,8 @@ def Q_Key_Distribution():
     while True:
         y = str(input('Do you want to intercept and try and read their message?\n >'))
         if y == "Yes" or y == "yes" or y == "YES":
-            register = C_intercepts(n, register)
+            C_bases = np.random.randint(2, size=n)
+            register = C_intercepts(n, C_bases, register)
             break
         elif y == "No" or y == "no" or y == "NO":
             break
@@ -240,8 +240,120 @@ def Q_Key_Distribution():
     print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
     print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
 def KeyDist_report_example():
+    print("You are acting as a communication channel for person A to send secret messages to person B.")
+    t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
+    print('Person A would like to send a 5 qubit message')
+    n = 5
+    global qc
+    if t == "D" or t == "d":
+        qc = QuantumComputer(n, 'Dense')
+    if t == "S" or t == "s":
+        qc = QuantumComputer(n, 'Sparse')
+    if t == "L" or t == "l":
+        qc = QuantumComputer(n, 'Lazy')
 
+    '''Step 0 set up number of qubits '''
+    register = qc.Matrix.quantum_register(n)
 
+    ''' Step 1 random A bit message '''
+
+    A_bits = (0, 1, 0, 1, 1)
+    print('A Bit message =', A_bits)
+
+    ''' Step 2 random A bases'''
+    A_bases = (0, 1, 1, 0, 1)
+    print('A Bases =', A_bases)
+
+    ''' Step 3 encode qubits using A bits and A bases'''
+    register = encode_message(n, A_bases, A_bits, register)
+
+    print('Person A has their secretly encoded message ready to send to person B.')
+
+    ''' Step ! interception '''
+    while True:
+        y = str(input('Do you want to intercept and try and read their message?\n >'))
+        if y == "Yes" or y == "yes" or y == "YES":
+            C_bases = ( 0, 1, 1, 0, 0)
+            register = C_intercepts(n, C_bases, register)
+            break
+        elif y == "No" or y == "no" or y == "NO":
+            break
+        else:
+            print("Whoops, that was an incorrect input! Accepted inputs: Yes, No")
+
+    ''' Step 4 '''
+    B_bases = (0, 1, 1, 0, 0)
+    measurement = B_measure(n, B_bases, register)
+
+    print('Person B has measured the message.')
+    print(
+        'Person B shares the bases which they measured the message with, and vice versa so that they can both create a key from the matching bases.')
+    print('A bases =', A_bases)
+    print('B bases =', B_bases)
+    print('B measured =', measurement)
+
+    ''' Step 5 '''
+    A_Key = A_garbage_function(n, A_bases, B_bases, A_bits)
+    B_Key = B_garbage_collection(n, A_bases, B_bases, measurement)
+
+    print('After garbage collection the length of both keys is:', len(A_Key))
+
+    if len(A_Key) == 0:
+        print('No Key was created because none of the bases matched, try again.')
+        exit()
+    elif len(A_Key) == 1:
+        print('No useful sample can be created because the key length was less then 2, try again.')
+        exit()
+    else:
+        pass
+
+    ''' Step 6'''
+    print('Now a random sample is generated to test if the keys for person A and B are secure.')
+    sample_A = []
+    sample_B = []
+    s = (1, 3)
+
+    for i in s:
+        f = A_Key[i]
+        h = B_Key[i]
+        sample_A.append(f)
+        sample_B.append(h)
+
+    print(
+        'Person A and person B share their random sample of the message they measured using the bases already shared:')
+    print('A random sample = ', sample_A)
+    print('B random sample = ', sample_B)
+
+    ''' Step 7 '''
+    j = len(sample_A)
+
+    for i in range(j):
+        p = 1
+        if sample_A[i] == sample_B[i]:
+            p = p + 1
+        else:
+            print('You were caught listening!')
+            exit()
+    print('Secret Key is probably secure.')
+
+    ''' Step 8 '''
+    j = len(A_Key)
+    t = range(0, j)
+    t = list(t)
+
+    for i in s:
+        t.remove(i)
+
+    A_secret_key = []
+    B_secret_key = []
+
+    for i in t:
+        A_secret_key.append(A_Key[i])
+        B_secret_key.append(B_Key[i])
+
+    print('Both person A and person B have their secret keys now:')
+    print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
+    print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
 
 if __name__=="__main__":
     # Runs example algorithms if not testing contents if not testing
@@ -253,7 +365,7 @@ if __name__=="__main__":
     user_input = user_validation('Enter the number beside the option that you would like to run.',
                                  ['1', '2', 'exit'])
     if user_input == '1':
-        print('Not working yet')
+        KeyDist_report_example()
     elif user_input == '2':
         Q_Key_Distribution()
     else:
@@ -262,7 +374,7 @@ if __name__=="__main__":
 
 
 
-
+#changessss
 
 
 
