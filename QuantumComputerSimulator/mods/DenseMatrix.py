@@ -134,6 +134,7 @@ class DenseMatrix(MatrixFrame):
     @classmethod
     def conjugate(cls, M):
         return np.conj(M)
+
     @classmethod
     def trace(cls, M):
         '''
@@ -235,9 +236,4 @@ class DenseMatrix(MatrixFrame):
         '''
         Output of the DenseMatrix class, returns this when called by Quantum Computer
         '''
-        return DenseMatrix.matrix_multiply(self.matrix, inputs)
-
-    def apply_register(self, input_vector: list) -> list:
-        '''Returns the output state vector.'''
-        amplitudes = self.output([[v] for v in input_vector])
-        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes.matrix]
+        return DenseMatrix.matrix_multiply(self.matrix, inputs).matrix
