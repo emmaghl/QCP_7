@@ -222,9 +222,13 @@ def main():
 
     number_of_samples = round(j*0.5)
 
+    number_of_samples = 3
+
     s = random.sample(range(0, j), number_of_samples)
 
-    print (s)
+
+
+    #print (s)
 
     for i in s:
         f = A_Key[i]
