@@ -100,30 +100,18 @@ def B_measure(n, B_bases, register):
             measurement.append(result)
     return measurement
 
-def A_garbage_function(n, A_bases, B_bases, A_bits):
-    A_Key = []
+def garbage_function(n, bases_1, bases_2, bits_1):
+    Key = []
     for i in range(n):
-        a = A_bases[i]
-        b = B_bases[i]
-        c = A_bits[i]
+        a = bases_1[i]
+        b = bases_2[i]
+        c = bits_1[i]
         if a == b:
-            A_Key.append(c)
+            Key.append(c)
         else:
             pass
 
-    return A_Key
-
-def B_garbage_collection(n, A_bases, B_bases, measurement):
-    B_Key = []
-    for i in range(n):
-        a = A_bases[i]
-        b = B_bases[i]
-        c = measurement[i]
-        if a == b:
-            B_Key.append(c)
-        else:
-            pass
-    return B_Key
+    return Key
 
 def user_validation(msg: str, options: list[str]) -> str:
     print(msg)
@@ -183,8 +171,8 @@ def Q_Key_Distribution():
     print('B bases =', B_bases)
 
     ''' Step 5 '''
-    A_Key = A_garbage_function(n, A_bases, B_bases, A_bits)
-    B_Key = B_garbage_collection(n, A_bases, B_bases, measurement)
+    A_Key = garbage_function(n, A_bases, B_bases, A_bits)
+    B_Key = garbage_function(n, A_bases, B_bases, measurement)
 
     print('After garbage collection the length of both keys is:', len(A_Key))
 
@@ -299,8 +287,8 @@ def KeyDist_report_example():
     print('B bases =', B_bases)
 
     ''' Step 5 '''
-    A_Key = A_garbage_function(n, A_bases, B_bases, A_bits)
-    B_Key = B_garbage_collection(n, A_bases, B_bases, measurement)
+    A_Key = garbage_function(n, A_bases, B_bases, A_bits)
+    B_Key = garbage_function(n, A_bases, B_bases, measurement)
 
     print('After garbage collection the length of both keys is:', len(A_Key))
 
