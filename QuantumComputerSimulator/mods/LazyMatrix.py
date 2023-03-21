@@ -108,9 +108,6 @@ class LazyMatrix(MatrixFrame):
     def trace(cls, M):
         pass
 
-    @classmethod
-    def conjugate(cls, M):
-        pass
 
     def cnot(self, d, c, t):
         digits = copy.deepcopy(d)
@@ -138,7 +135,18 @@ class LazyMatrix(MatrixFrame):
         return cv
 
     def cz(self, d, c, t):
-        pass
+        digits = copy.deepcopy(d)
+        cz = []
+
+        index = super().CZ_logic(digits, c, t)
+
+        for i in range(0, len(digits)):
+            if index[i] == 1:
+                cz.append(lambda x, y=i: -1 * x[y])
+            else:
+                cz.append(lambda x, y=i: x[y])
+
+        return cz
 
     def output(self,inputs):
         new_in = []
