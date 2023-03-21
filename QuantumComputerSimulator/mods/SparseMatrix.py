@@ -59,7 +59,7 @@ class SparseMatrix(MatrixFrame):
         for i in range(len(mat)):
             print('real',np.real(mat[i][2]))
             print("imag", np.imag(mat[i][2]) )
-            if np.abs(np.real(mat[i][2])) >= 10 ** (-10) or np.abs(np.imag(mat[i][2])) >= 10 ** (-10):
+            if np.abs(np.real(mat[i][2])) >= 10 ** (-10) or np.abs(np.imag(mat[i][2])) >= 10 ** (-10) or i == len(mat)-1:
                 del_entries.append(i)
         print(del_entries)
 
@@ -101,13 +101,12 @@ class SparseMatrix(MatrixFrame):
     @classmethod
     def quantum_register(cls, qnum):
         register = np.array([[0, 0, 1], [0, 1, 0]])
-        register = SparseMatrix("general", register)
-        register = register.matrix
         w = 2 ** (qnum) - 2
         for i in range(w):
             register[-1] = [0, i + 2, 0]
 
-        register = SparseMatrix.transpose(register)
+        register = SparseMatrix("general", register)
+        register.matrix = SparseMatrix.transpose(register.matrix)
         return register
 
     @classmethod
