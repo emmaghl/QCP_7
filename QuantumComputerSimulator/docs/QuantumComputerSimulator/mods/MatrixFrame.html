@@ -121,10 +121,6 @@ class MatrixFrame(ABC):
 
     @abstractmethod
     def output(self, input):
-        pass
-
-    @abstractmethod
-    def conjugate(self, M):
         pass</code></pre>
 </details>
 </section>
@@ -240,10 +236,6 @@ inheritance.</p>
 
     @abstractmethod
     def output(self, input):
-        pass
-
-    @abstractmethod
-    def conjugate(self, M):
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -345,20 +337,6 @@ inheritance.</p>
     &#39;&#39;&#39;Returns the output state vector.&#39;&#39;&#39;
     amplitudes = self.output(input_vector)
     return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes]</code></pre>
-</details>
-</dd>
-<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.conjugate"><code class="name flex">
-<span>def <span class="ident">conjugate</span></span>(<span>self, M)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@abstractmethod
-def conjugate(self, M):
-    pass</code></pre>
 </details>
 </dd>
 <dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product"><code class="name flex">
@@ -499,7 +477,6 @@ def trace(self, M):
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic">CZ_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.conjugate" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.conjugate">conjugate</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product">inner_product</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply">matrix_multiply</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output">output</a></code></li>

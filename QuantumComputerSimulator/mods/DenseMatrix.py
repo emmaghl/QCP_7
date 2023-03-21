@@ -9,8 +9,8 @@ class DenseMatrix(MatrixFrame):
     def __init__(self, Type, *args):
         '''
         Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        <b>param Type<\b> Gate to be built
-        <b>param args<\b>
+        <b>param Type</b> Gate to be built
+        <b>param args</b>
         '''
         if Type == 'H':
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -57,9 +57,9 @@ class DenseMatrix(MatrixFrame):
     def tensor_prod(cls, M2, M1):
         '''
         Do the tensor product of matrix 1 and matrix 2.
-        <b>param M2<\b> Matrix 2
-        <b>param M1<\b> Matrix 1
-        <b>return<\b> Tensor product of Matrix 1 with Matrix 2
+        <b>param M2</b> Matrix 2
+        <b>param M1</b> Matrix 1
+        <b>return</b> Tensor product of Matrix 1 with Matrix 2
         '''
         if type(M1) == DenseMatrix:
             m1 = M1.matrix

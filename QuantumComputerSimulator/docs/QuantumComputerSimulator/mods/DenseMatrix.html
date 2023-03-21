@@ -37,8 +37,8 @@ class DenseMatrix(MatrixFrame):
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
         Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        &lt;b&gt;param Type&lt;\b&gt; Gate to be built
-        &lt;b&gt;param args&lt;\b&gt;
+        &lt;b&gt;param Type&lt;/b&gt; Gate to be built
+        &lt;b&gt;param args&lt;/b&gt;
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -85,9 +85,9 @@ class DenseMatrix(MatrixFrame):
     def tensor_prod(cls, M2, M1):
         &#39;&#39;&#39;
         Do the tensor product of matrix 1 and matrix 2.
-        &lt;b&gt;param M2&lt;\b&gt; Matrix 2
-        &lt;b&gt;param M1&lt;\b&gt; Matrix 1
-        &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
+        &lt;b&gt;param M2&lt;/b&gt; Matrix 2
+        &lt;b&gt;param M1&lt;/b&gt; Matrix 1
+        &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
         &#39;&#39;&#39;
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
@@ -286,8 +286,8 @@ class DenseMatrix(MatrixFrame):
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
 <p>Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-<b>param Type&lt;&gt; Gate to be built
-<b>param args&lt;&gt;</p></div>
+<b>param Type</b> Gate to be built
+<b>param args</b></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -297,8 +297,8 @@ inheritance.</p>
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
         Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        &lt;b&gt;param Type&lt;\b&gt; Gate to be built
-        &lt;b&gt;param args&lt;\b&gt;
+        &lt;b&gt;param Type&lt;/b&gt; Gate to be built
+        &lt;b&gt;param args&lt;/b&gt;
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -345,9 +345,9 @@ inheritance.</p>
     def tensor_prod(cls, M2, M1):
         &#39;&#39;&#39;
         Do the tensor product of matrix 1 and matrix 2.
-        &lt;b&gt;param M2&lt;\b&gt; Matrix 2
-        &lt;b&gt;param M1&lt;\b&gt; Matrix 1
-        &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
+        &lt;b&gt;param M2&lt;/b&gt; Matrix 2
+        &lt;b&gt;param M1&lt;/b&gt; Matrix 1
+        &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
         &#39;&#39;&#39;
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
@@ -640,9 +640,9 @@ def quantum_register(cls, qnum):
 </code></dt>
 <dd>
 <div class="desc"><p>Do the tensor product of matrix 1 and matrix 2.
-<b>param M2&lt;&gt; Matrix 2
-<b>param M1&lt;&gt; Matrix 1
-<b>return&lt;&gt; Tensor product of Matrix 1 with Matrix 2</p></div>
+<b>param M2</b> Matrix 2
+<b>param M1</b> Matrix 1
+<b>return</b> Tensor product of Matrix 1 with Matrix 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -651,9 +651,9 @@ def quantum_register(cls, qnum):
 def tensor_prod(cls, M2, M1):
     &#39;&#39;&#39;
     Do the tensor product of matrix 1 and matrix 2.
-    &lt;b&gt;param M2&lt;\b&gt; Matrix 2
-    &lt;b&gt;param M1&lt;\b&gt; Matrix 1
-    &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
+    &lt;b&gt;param M2&lt;/b&gt; Matrix 2
+    &lt;b&gt;param M1&lt;/b&gt; Matrix 1
+    &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
     &#39;&#39;&#39;
     if type(M1) == DenseMatrix:
         m1 = M1.matrix

@@ -1,5 +1,5 @@
 # Quantum Computer Simulator
-This python package can build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense (lazy and sparse?) methods.
+This python package can build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense, lazy and sparse methods.
 
 ## Python Version and OS
 Tested with Python 3.11.2 on macOS Ventura 13.1. See `Requirements.txt` file to see the python libraries and versions needed to run this code. The package should also run for Linux and Windows operating systems; the only reason why it wouldn't is that `PrintCircuit.py` clears the screen using the terminal/cmd when the circuit is printed in ASCII. This command varies across operating systems, however the package should account for this. 
