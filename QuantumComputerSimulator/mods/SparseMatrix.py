@@ -203,6 +203,7 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def transpose(cls, M):
+        pass
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -277,6 +278,7 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def conjugate(cls, M):
+        pass
         M_conj = M.copy()
         for i in range(len(M)):
             if type(M[i][2]) == "complex":

@@ -133,6 +133,7 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def conjugate(cls, M):
+        pass
         return np.conj(M)
 
     @classmethod

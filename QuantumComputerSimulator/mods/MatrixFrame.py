@@ -24,14 +24,14 @@ class MatrixFrame(ABC):
             numbers.append(num)
         return numbers
 
-    def reverse_digits(self, d):
-        temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
-        temp = np.flip(temp, axis=0)
-        unpack = []
-        for i in temp:
-            for j in i:
-                unpack.append(j)
-        return unpack
+    # def reverse_digits(self, d):
+    #     temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
+    #     temp = np.flip(temp, axis=0)
+    #     unpack = []
+    #     for i in temp:
+    #         for j in i:
+    #             unpack.append(j)
+    #     return unpack
 
     def CNOT_logic(self, digits_in, c, t):
         '''

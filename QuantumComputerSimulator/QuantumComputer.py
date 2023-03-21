@@ -345,43 +345,6 @@ class QuantumComputer(Interface):
                     check.check_type(numbers, int)
 
 
-# computer
-'''comp2 = QuantumComputer(4, 'Dense')
-
-input1 = [(["CZ"], [[1, 0]])]
-
-circ = comp2.gate_logic(input1)'''
-
-# print(circ.matrix)
-
-
-'''
-comp = QuantumComputer(3,'Dense')
-
-input1 = [(["H"],[[0,1,2]])]
-input2 = [(["H"],[[0]]),(["H"],[[1]]),(["H"],[[2]])]
-
-input3 = [(["H","Y"],[[0,2],[1]])]
-input4 = [(["H"],[[0]]),(["Y"],[[1]]),(["H"],[[2]])]
-
-circ1 = comp.gate_logic(input1)
-circ2 = comp.gate_logic(input2)
-
-circ3 = comp.gate_logic(input3)
-circ4 = comp.gate_logic(input4)
-
-print(circ3.matrix)
-print(circ4.matrix)
-
-#print(circ1.matrix)
-#print(circ2.matrix)
-
-#new_psi1 = comp.output(circ1)
-#new_psi2 = comp.output(circ2)
-
-#comp3 = QuantumComputer(3,'Lazy')
-
-'''
 
 
 
