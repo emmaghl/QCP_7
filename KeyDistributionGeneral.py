@@ -5,7 +5,6 @@ from QuantumComputerSimulator.mods.LazyMatrix import LazyMatrix
 
 import numpy as np
 import random
-import time
 
 def encode_message(n, A_bases, A_bits, register):
     for i in range(n):

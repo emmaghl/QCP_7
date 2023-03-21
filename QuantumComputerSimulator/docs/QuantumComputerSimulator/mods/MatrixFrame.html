@@ -41,8 +41,7 @@ class MatrixFrame(ABC):
     def recog_digits(self, digits):
         &#39;&#39;&#39;
 
-        :param digits:
-        :return:
+        &lt;b&gt;param digits&lt;\b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -65,10 +64,9 @@ class MatrixFrame(ABC):
     def CNOT_logic(self, digits_in, c, t):
         &#39;&#39;&#39;
         Logic to build the Control Not gate, has children in dense and sparse
-        :param digits_in:
-        :param c:
-        :param t:
-        :return:
+        &lt;b&gt;param digits_in&lt;\b&gt;
+        &lt;b&gt;param c&lt;\b&gt;
+        &lt;b&gt;param t&lt;\b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -84,10 +82,9 @@ class MatrixFrame(ABC):
     def CV_logic(self, digits, c, t):
         &#39;&#39;&#39;
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-        :param digits:
-        :param c:
-        :param t:
-        :return:
+        &lt;b&gt;param digits&lt;\b&gt;
+        &lt;b&gt;param c&lt;\b&gt;
+        &lt;b&gt;param t&lt;\b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -101,6 +98,11 @@ class MatrixFrame(ABC):
     def CZ_logic(self, digits, c, t):
         return self.CV_logic(digits, c, t)
 
+    def apply_register(self, input_vector: list) -&gt; list:
+        &#39;&#39;&#39;Returns the output state vector.&#39;&#39;&#39;
+        amplitudes = self.output(input_vector)
+        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes]
+
     @abstractmethod
     def tensor_prod(self, M1, M2):
         pass
@@ -109,8 +111,20 @@ class MatrixFrame(ABC):
     def matrix_multiply(self, M1, M2):
         pass
 
-    # @abstractmethod
-    def apply_register(self):
+    @abstractmethod
+    def inner_product(self, M):
+        pass
+
+    @abstractmethod
+    def trace(self, M):
+        pass
+
+    @abstractmethod
+    def output(self, input):
+        pass
+
+    @abstractmethod
+    def conjugate(self, M):
         pass</code></pre>
 </details>
 </section>
@@ -146,8 +160,7 @@ inheritance.</p>
     def recog_digits(self, digits):
         &#39;&#39;&#39;
 
-        :param digits:
-        :return:
+        &lt;b&gt;param digits&lt;\b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -170,10 +183,9 @@ inheritance.</p>
     def CNOT_logic(self, digits_in, c, t):
         &#39;&#39;&#39;
         Logic to build the Control Not gate, has children in dense and sparse
-        :param digits_in:
-        :param c:
-        :param t:
-        :return:
+        &lt;b&gt;param digits_in&lt;\b&gt;
+        &lt;b&gt;param c&lt;\b&gt;
+        &lt;b&gt;param t&lt;\b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -189,10 +201,9 @@ inheritance.</p>
     def CV_logic(self, digits, c, t):
         &#39;&#39;&#39;
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-        :param digits:
-        :param c:
-        :param t:
-        :return:
+        &lt;b&gt;param digits&lt;\b&gt;
+        &lt;b&gt;param c&lt;\b&gt;
+        &lt;b&gt;param t&lt;\b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -206,6 +217,11 @@ inheritance.</p>
     def CZ_logic(self, digits, c, t):
         return self.CV_logic(digits, c, t)
 
+    def apply_register(self, input_vector: list) -&gt; list:
+        &#39;&#39;&#39;Returns the output state vector.&#39;&#39;&#39;
+        amplitudes = self.output(input_vector)
+        return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes]
+
     @abstractmethod
     def tensor_prod(self, M1, M2):
         pass
@@ -214,8 +230,20 @@ inheritance.</p>
     def matrix_multiply(self, M1, M2):
         pass
 
-    # @abstractmethod
-    def apply_register(self):
+    @abstractmethod
+    def inner_product(self, M):
+        pass
+
+    @abstractmethod
+    def trace(self, M):
+        pass
+
+    @abstractmethod
+    def output(self, input):
+        pass
+
+    @abstractmethod
+    def conjugate(self, M):
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -226,7 +254,7 @@ inheritance.</p>
 <ul class="hlist">
 <li><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix" href="DenseMatrix.html#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix">DenseMatrix</a></li>
 <li><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix" href="LazyMatrix.html#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix">LazyMatrix</a></li>
-<li><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrixSingle" href="LazyMatrix.html#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrixSingle">LazyMatrixSingle</a></li>
+<li><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle" href="LazyMatrixSingle.html#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle">LazyMatrixSingle</a></li>
 <li><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix" href="SparseMatrix.html#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix">SparseMatrix</a></li>
 </ul>
 <h3>Methods</h3>
@@ -236,10 +264,9 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Logic to build the Control Not gate, has children in dense and sparse
-:param digits_in:
-:param c:
-:param t:
-:return:</p></div>
+<b>param digits_in&lt;&gt;
+<b>param c&lt;&gt;
+<b>param t&lt;&gt;</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -247,10 +274,9 @@ inheritance.</p>
 <pre><code class="python">def CNOT_logic(self, digits_in, c, t):
     &#39;&#39;&#39;
     Logic to build the Control Not gate, has children in dense and sparse
-    :param digits_in:
-    :param c:
-    :param t:
-    :return:
+    &lt;b&gt;param digits_in&lt;\b&gt;
+    &lt;b&gt;param c&lt;\b&gt;
+    &lt;b&gt;param t&lt;\b&gt;
     &#39;&#39;&#39;
     N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -269,10 +295,9 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-:param digits:
-:param c:
-:param t:
-:return:</p></div>
+<b>param digits&lt;&gt;
+<b>param c&lt;&gt;
+<b>param t&lt;&gt;</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -280,10 +305,9 @@ inheritance.</p>
 <pre><code class="python">def CV_logic(self, digits, c, t):
     &#39;&#39;&#39;
     Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-    :param digits:
-    :param c:
-    :param t:
-    :return:
+    &lt;b&gt;param digits&lt;\b&gt;
+    &lt;b&gt;param c&lt;\b&gt;
+    &lt;b&gt;param t&lt;\b&gt;
     &#39;&#39;&#39;
     N = int(np.log(len(digits)) / np.log(2))
     index = []
@@ -309,7 +333,22 @@ inheritance.</p>
 </details>
 </dd>
 <dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register"><code class="name flex">
-<span>def <span class="ident">apply_register</span></span>(<span>self)</span>
+<span>def <span class="ident">apply_register</span></span>(<span>self, input_vector: list) ‑> list</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns the output state vector.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def apply_register(self, input_vector: list) -&gt; list:
+    &#39;&#39;&#39;Returns the output state vector.&#39;&#39;&#39;
+    amplitudes = self.output(input_vector)
+    return [amp[0]*np.conjugate(amp)[0] for amp in amplitudes]</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.conjugate"><code class="name flex">
+<span>def <span class="ident">conjugate</span></span>(<span>self, M)</span>
 </code></dt>
 <dd>
 <div class="desc"></div>
@@ -317,7 +356,22 @@ inheritance.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def apply_register(self):
+<pre><code class="python">@abstractmethod
+def conjugate(self, M):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product"><code class="name flex">
+<span>def <span class="ident">inner_product</span></span>(<span>self, M)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def inner_product(self, M):
     pass</code></pre>
 </details>
 </dd>
@@ -335,12 +389,25 @@ def matrix_multiply(self, M1, M2):
     pass</code></pre>
 </details>
 </dd>
+<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output"><code class="name flex">
+<span>def <span class="ident">output</span></span>(<span>self, input)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def output(self, input):
+    pass</code></pre>
+</details>
+</dd>
 <dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits"><code class="name flex">
 <span>def <span class="ident">recog_digits</span></span>(<span>self, digits)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>:param digits:
-:return:</p></div>
+<div class="desc"><p><b>param digits&lt;&gt;</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -348,8 +415,7 @@ def matrix_multiply(self, M1, M2):
 <pre><code class="python">def recog_digits(self, digits):
     &#39;&#39;&#39;
 
-    :param digits:
-    :return:
+    &lt;b&gt;param digits&lt;\b&gt;
     &#39;&#39;&#39;
     N = int(np.log(len(digits)) / np.log(2))
     numbers = []
@@ -394,6 +460,20 @@ def tensor_prod(self, M1, M2):
     pass</code></pre>
 </details>
 </dd>
+<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace"><code class="name flex">
+<span>def <span class="ident">trace</span></span>(<span>self, M)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@abstractmethod
+def trace(self, M):
+    pass</code></pre>
+</details>
+</dd>
 </dl>
 </dd>
 </dl>
@@ -419,10 +499,14 @@ def tensor_prod(self, M1, M2):
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic">CZ_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.conjugate" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.conjugate">conjugate</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product">inner_product</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply">matrix_multiply</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output">output</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.reverse_digits" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.reverse_digits">reverse_digits</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod">tensor_prod</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace">trace</a></code></li>
 </ul>
 </li>
 </ul>

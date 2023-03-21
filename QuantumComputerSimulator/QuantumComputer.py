@@ -100,12 +100,13 @@ class QuantumComputer(Interface):
         digits = np.flip(digits, axis=1)
         return digits
 
-    def single_gates(self, gate: str, qnum: int) -> MatrixFrame:
+    def __single_gates(self, gate: list, qnum: list) -> MatrixFrame:
         '''
         Build the single input gates to a 2^N matrix where N is the number of Qubits.
-        <b>param: gate<\b> Specified gate to build
-        <b>param: qnum<\b> Number of qubits
-        <b>return<\b> Properly sized gate for number of qubits
+
+        <b>gate<\b> A list of gates to build.
+        <b>qnum<\b> List of the number of qubits corresponding to each gate.
+        <b>return<\b> A gate as the specified matrix object.
         '''
         M = [0] * self.N
 
@@ -128,11 +129,12 @@ class QuantumComputer(Interface):
 
         return m
 
-    def double_gates(self, gate, qnum):
+    def __double_gates(self, gate: list, qnum: list) -> MatrixFrame:
         '''
         Use the Matrix method in the given desired method to build a multi-input gate.
-        <b>param: gate<\b> Take specified multi-input gate
-        <b>param: qnu<\b> number of qubits
+
+        <b>gate<\b> A list with one elemnt being the double gate.
+        <b>qnum<\b> Qubit list.
         <b>return<\b> Returns correctly sized multi-input gate.
         '''
         if gate[0] == "CV":
@@ -142,12 +144,33 @@ class QuantumComputer(Interface):
         if gate[0] == "CZ":
             return self.Matrix("CZ", self.binary, qnum[0][0], qnum[0][1])
 
-    def gate_logic(self, inputs, add_gate_name: str = "") -> np.array:
+    def __validate_gate_logic_inputs(self, inputs: list):
         '''
-        Builds the quantum circuit of gates in time step of type tuple.
-        <b>param: inputs<\b> Number of input gates?
-        <b>param: add_gate_name<\b> Name of gates to be added.
-        <b>return<\b> Circuit?
+        A custom check function to verify the list of time steps when the user is adding gates to the circuit.
+        '''
+        check.check_type(inputs, list)
+
+        for time_step in inputs:
+            check.check_type(time_step, tuple)
+            check.check_array_length(time_step, 2)
+            check.check_type(time_step[0], list)
+            check.check_type(time_step[1], list)
+            check.check_array_length(time_step[0], len(time_step[1]))
+            for gate in time_step[0]: #Looping through gates, check to see they're recognisable.
+                check.check_type(gate, str)
+                check.check_in_list(gate, self.single_inputs + self.double_inputs)
+            for gate_positions in time_step[1]:
+                check.check_type(gate_positions, list)
+                for numbers in gate_positions:
+                    check.check_type(numbers, int)
+
+    def gate_logic(self, inputs: list, add_gate_name: str = "") -> MatrixFrame:
+        '''
+        Builds the quantum circuit from a list of time steps. See README.md for examples of what to enter into the parameter `input`.
+
+        <b>inputs<\b> List of time steps.
+        <b>add_gate_name<\b> Name of gates to be added.
+        <b>return<\b> The circuit of type determined from the instantiation of quantum computer.
         '''
 
         check.check_type(add_gate_name, str)
@@ -180,9 +203,9 @@ class QuantumComputer(Interface):
                     gate_double.append(False)
 
             if all(gate_single) == True:
-                M.append(self.single_gates(inputs[i][0], inputs[i][1]))
+                M.append(self.__single_gates(inputs[i][0], inputs[i][1]))
             elif all(gate_double) == True:
-                M.append(self.double_gates(inputs[i][0], inputs[i][1]))
+                M.append(self.__double_gates(inputs[i][0], inputs[i][1]))
             else:
                 print(
                     "Input error: single gates and double gates must be in separate steps. Returning identity matrix instead.")
@@ -195,21 +218,23 @@ class QuantumComputer(Interface):
 
         return m
 
-    def measure_any(self, qnum, state, register):
+    def measure_any(self, qnum: int, state: int, register: list) -> int:
         '''
         Generate the measurment of the quantum circuit. Once measured the system's wavefunction is collapsed.
-        <b>param: qnum<\b> Number of qubits?
-        <b>param: state<\b> State of the qubit
+
+        <b>qnum<\b> Number of qubits.
+        <b>state<\b> State of the qubit.
+        <b>state<\b> Result of the measurement of qubit qnum.
         '''
-        #print('Qnum =', qnum)
-        #print('state', state)
-        #print('reg', register)
+        check.check_type(qnum, int)
+        check.check_type(state, int)
+        check.check_type(qnum, list)
+
         inner_register = self.Matrix.inner_product(register)
-        #print('IR', inner_register.matrix)
         if state == 0:
-            matrix = self.single_gates(["M0"], [[qnum]])
+            matrix = self.__single_gates(["M0"], [[qnum]])
         elif state == 1:
-            matrix = self.single_gates(["M1"], [[qnum]])
+            matrix = self.__single_gates(["M1"], [[qnum]])
 
         QP = self.Matrix.trace(self.Matrix.matrix_multiply(matrix, inner_register))
         #print('QP= ', QP)
@@ -217,47 +242,25 @@ class QuantumComputer(Interface):
             result = 0
         else:
             result = 1
-        #print('result', result)
         return result
 
-    def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
-        '''
-        Generates the probability of a measured state?
-        <b>param: glued_circuit<\b>
-        <b>param: input_vector <\b>
-        <b>return:<\b> Funciton returns probability
-        '''
-        num_qubits = 2**self.N
-        check.check_type(glued_circuit, np.ndarray)
-        check.check_array_shape(glued_circuit, (num_qubits, num_qubits))
-
-        temp_vec = np.zeros((num_qubits))
-        temp_vec[0] = 1
-        if not np.isnan(input_vector):
-            check.check_type(input_vector, np.ndarray)
-            check.check_array_shape(input_vector, (num_qubits))
-            temp_vec = input_vector
-
-        outVec = np.matmul(glued_circuit,temp_vec)
-        props = {}
-        for i, basis in enumerate(self.binary):
-            string_basis = ''.join([str(j) for j in basis[::-1]])
-            props[string_basis] = np.real(outVec[i]*np.conjugate(outVec[i]))
-
-        return props
-
-    def apply_register_and_measure(self, repeats: int = 1000, user_input_vector: list = []):
+    def apply_register_and_measure(self, repeats: int = 1000, user_input_vector: list = []) -> dict:
         '''
         Apply's a register to the circuit built with `add_gate_to_circuit`, with default being the |0> state in the computatinal basis.
+
+        <b>repeats</b> The number of measurements to be taken; assuming upon each measurement a new register is applied.
+        <b>user_input_vector</b> Allows custom choice of a register.
+        <b>returns</b> A dictionary of keys labelling the binary states, and the values the number of times that state was measured over.
         '''
         check.check_type(repeats, int)
 
-        # Switches to user inputed register if needed, and checks it
+        # Checks to see if user has defined their own register. If so, switch to theirs and validate
         input_vector = np.zeros(2**self.N)
         input_vector[0] = 1
         if not user_input_vector == []:
             check.check_type(user_input_vector, list)
             check.check_array_shape(user_input_vector, (2**self.N))
+            check.check_sum(user_input_vector, 1.00) # Check normalisation.
             input_vector = user_input_vector
 
         probabilities = self.circuit.apply_register(input_vector) #Get probabilities from applying input vector
@@ -283,7 +286,12 @@ class QuantumComputer(Interface):
         return binary_states
 
     def add_gate_to_circuit(self, inputs: list, add_gate_name:str = ""):
-        '''Adds the gates to the class ready to for building the circuit later.'''
+        '''
+        Adds the gates to the class ready to for building the circuit later. See README.md for examples of what to enter into the paramter `input`.
+
+        <b>inputs</b> A list of time steps.
+        <b>add_gate_name</b> A label to replace the list of time steps with when the circuit is printed to the terminal using `print_circuit`.
+        '''
         check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
 
@@ -295,71 +303,10 @@ class QuantumComputer(Interface):
         self.__gate_history = self.__gate_history + inputs
 
     def build_circuit(self) -> MatrixFrame:
-        '''Builds the circuit from the gates added via `add_gate_to_circuit` function.'''
+        '''
+        Builds the circuit from the gates added via `add_gate_to_circuit` function.
+
+        <b>return</b> The object specified by the instantiation of the class Dense/Sparse/Lazy object.
+        '''
         self.circuit = self.gate_logic(self.__gate_history)
         return self.circuit
-
-    def __validate_gate_logic_inputs(self, inputs: list):
-        '''
-        Check function. Checking gates make sense and are of the correct type.
-        <b>param:<\b> inputs
-        <b>return:<\b> Through other methods, pass/fail.
-        '''
-        check.check_type(inputs, list)
-
-        for time_step in inputs:
-            check.check_type(time_step, tuple)
-            check.check_array_length(time_step, 2)
-            check.check_type(time_step[0], list)
-            check.check_type(time_step[1], list)
-            check.check_array_length(time_step[0], len(time_step[1]))
-            for gate in time_step[0]: #Looping through gates, check to see they're recognisable.
-                check.check_type(gate, str)
-                check.check_in_list(gate, self.single_inputs + self.double_inputs)
-            for gate_positions in time_step[1]:
-                check.check_type(gate_positions, list)
-                for numbers in gate_positions:
-                    check.check_type(numbers, int)
-
-
-# computer
-'''comp2 = QuantumComputer(4, 'Dense')
-
-input1 = [(["CZ"], [[1, 0]])]
-
-circ = comp2.gate_logic(input1)'''
-
-# print(circ.matrix)
-
-
-'''
-comp = QuantumComputer(3,'Dense')
-
-input1 = [(["H"],[[0,1,2]])]
-input2 = [(["H"],[[0]]),(["H"],[[1]]),(["H"],[[2]])]
-
-input3 = [(["H","Y"],[[0,2],[1]])]
-input4 = [(["H"],[[0]]),(["Y"],[[1]]),(["H"],[[2]])]
-
-circ1 = comp.gate_logic(input1)
-circ2 = comp.gate_logic(input2)
-
-circ3 = comp.gate_logic(input3)
-circ4 = comp.gate_logic(input4)
-
-print(circ3.matrix)
-print(circ4.matrix)
-
-#print(circ1.matrix)
-#print(circ2.matrix)
-
-#new_psi1 = comp.output(circ1)
-#new_psi2 = comp.output(circ2)
-
-#comp3 = QuantumComputer(3,'Lazy')
-
-'''
-
-
-
-

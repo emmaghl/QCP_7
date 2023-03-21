@@ -37,8 +37,8 @@ class DenseMatrix(MatrixFrame):
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
         Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        :param Type: Gate to be built
-        :param args:
+        &lt;b&gt;param Type&lt;\b&gt; Gate to be built
+        &lt;b&gt;param args&lt;\b&gt;
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -52,8 +52,10 @@ class DenseMatrix(MatrixFrame):
             self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == &#39;Z&#39;:
             self.matrix = np.array([[1, 0], [0, -1]])
-        if Type == &#39;TP&#39; or Type == &#39;MM&#39;:
+        if Type == &#39;TP&#39; or Type == &#39;MM&#39; or Type == &#34;general&#34;:
             self.matrix = args[0]
+
+
         if Type == &#39;CNOT&#39;:
             self.matrix = self.cnot(args[0], args[1], args[2])
         if Type == &#39;CV&#39;:
@@ -65,14 +67,27 @@ class DenseMatrix(MatrixFrame):
         if Type == &#39;M1&#39;:
             self.matrix = np.array([[0, 0], [0, 1]])
 
+        if Type == &#39;zerocol&#39;:
+            self.matrix = np.array([[1], [0]])
+        if Type == &#39;onecol&#39;:
+            self.matrix = np.array([[0], [1]])
+
+    @classmethod
+    def quantum_register(cls, qnum):
+        register = np.array([[1, 0]])
+        w = 2 ** (qnum) - 2
+        for i in range(w):
+            register = np.append(register, [0])
+        register = np.array([register]).T
+        return register
 
     @classmethod
     def tensor_prod(cls, M2, M1):
         &#39;&#39;&#39;
         Do the tensor product of matrix 1 and matrix 2.
-        :param M2: Matrix 2
-        :param M1: Matrix 1
-        :return: Tensor product of Matrix 1 with Matrix 2
+        &lt;b&gt;param M2&lt;\b&gt; Matrix 2
+        &lt;b&gt;param M1&lt;\b&gt; Matrix 1
+        &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
         &#39;&#39;&#39;
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
@@ -108,9 +123,9 @@ class DenseMatrix(MatrixFrame):
     def matrix_multiply(cls, M1, M2):
         &#39;&#39;&#39;
         Multiply two matrices
-        :param M1: Matrix 1
-        :param M2: Matrix 2
-        :return: Matrix 1 multiplied by matrix 2
+        &lt;b&gt;param M1&lt;\b&gt; Matrix 1
+        &lt;b&gt;param M2&lt;\b&gt; Matrix 2
+        &lt;b&gt;return&lt;\b&gt; Matrix 1 multiplied by matrix 2
         &#39;&#39;&#39;
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
@@ -121,6 +136,8 @@ class DenseMatrix(MatrixFrame):
         else:
             m2 = M2
 
+        if len(m2.shape) == 1:
+            m2 = [[m] for m in m2]
         M = np.zeros(len(m1) * len(m2[0]), dtype=&#39;complex&#39;)
         M.shape = (len(m1), len(m2[0]))
 
@@ -131,28 +148,45 @@ class DenseMatrix(MatrixFrame):
         return DenseMatrix(&#39;MM&#39;, M)
 
     @classmethod
-    def inner_prod(cls, M):
+    def inner_product(cls, M):
         &#39;&#39;&#39;
         Find the inner product
-        :param M: input matrix
-        :return: inner product of state
+        &lt;b&gt;param M&lt;\b&gt; input matrix
+        &lt;b&gt;return&lt;\b&gt; inner product of state
         &#39;&#39;&#39;
-        return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))
+        if type(M) == DenseMatrix:
+            m = M.matrix
+        else:
+            m = M
+
+        return DenseMatrix.matrix_multiply(m, np.transpose(np.conj(m)))
+
+    @classmethod
+    def conjugate(cls, M):
+        return np.conj(M)
 
     @classmethod
     def trace(cls, M):
         &#39;&#39;&#39;
         Matrix trace
-        :param M: Input matrix
-        :return: matrix trace
+        &lt;b&gt;param M&lt;\b&gt; Input matrix
+        &lt;b&gt;return&lt;\b&gt; matrix trace
         &#39;&#39;&#39;
         return np.trace(M.matrix)
+
+    @classmethod
+    def transpose(cls, M):
+        if type(M) == DenseMatrix:
+            m = M.matrix
+        else:
+            m = M
+        return m.T
 
     def Basis(self, N):
         &#39;&#39;&#39;
         Define the basis state of N qubits
-        :param N: Number of Qubits
-        :return: basis state
+        &lt;b&gt;param N&lt;\b&gt; Number of Qubits
+        &lt;b&gt;return&lt;\b&gt; basis state
         &#39;&#39;&#39;
         Q = []
         for i in range(0, 2 ** N):
@@ -164,10 +198,6 @@ class DenseMatrix(MatrixFrame):
     def cnot(self, d, c, t):
         &#39;&#39;&#39;
         Produce the multi-input gate CNOT, inherits from MatrixFrame and builds in dense method.
-        :param d:
-        :param c:
-        :param t:
-        :return:
         &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cn = []
@@ -187,10 +217,6 @@ class DenseMatrix(MatrixFrame):
     def cv(self, d, c, t):
         &#39;&#39;&#39;
         Build the control V gate, inherits from MatrixFrame and builds in dense method
-        :param d:
-        :param c:
-        :param t:
-        :return:
         &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cv = []
@@ -212,13 +238,6 @@ class DenseMatrix(MatrixFrame):
         return cv
 
     def cz(self, d, c, t):
-        &#39;&#39;&#39;
-
-        :param d:
-        :param c:
-        :param t:
-        :return:
-        &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cz = []
 
@@ -243,15 +262,11 @@ class DenseMatrix(MatrixFrame):
         CROT_k = cls.tensor_prod(self.M0, self.I) + cls.tensor_prod(self.M1, UROT_k)
         return CROT_k
 
-
-
     def output(self, inputs):
         &#39;&#39;&#39;
         Output of the DenseMatrix class, returns this when called by Quantum Computer
-        :param inputs:
-        :return:
         &#39;&#39;&#39;
-        return DenseMatrix.matrix_multiply(self.matrix, inputs)</code></pre>
+        return DenseMatrix.matrix_multiply(self.matrix, inputs).matrix</code></pre>
 </details>
 </section>
 <section>
@@ -271,8 +286,8 @@ class DenseMatrix(MatrixFrame):
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
 <p>Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-:param Type: Gate to be built
-:param args:</p></div>
+<b>param Type&lt;&gt; Gate to be built
+<b>param args&lt;&gt;</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -282,8 +297,8 @@ inheritance.</p>
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
         Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        :param Type: Gate to be built
-        :param args:
+        &lt;b&gt;param Type&lt;\b&gt; Gate to be built
+        &lt;b&gt;param args&lt;\b&gt;
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -297,8 +312,10 @@ inheritance.</p>
             self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == &#39;Z&#39;:
             self.matrix = np.array([[1, 0], [0, -1]])
-        if Type == &#39;TP&#39; or Type == &#39;MM&#39;:
+        if Type == &#39;TP&#39; or Type == &#39;MM&#39; or Type == &#34;general&#34;:
             self.matrix = args[0]
+
+
         if Type == &#39;CNOT&#39;:
             self.matrix = self.cnot(args[0], args[1], args[2])
         if Type == &#39;CV&#39;:
@@ -310,14 +327,27 @@ inheritance.</p>
         if Type == &#39;M1&#39;:
             self.matrix = np.array([[0, 0], [0, 1]])
 
+        if Type == &#39;zerocol&#39;:
+            self.matrix = np.array([[1], [0]])
+        if Type == &#39;onecol&#39;:
+            self.matrix = np.array([[0], [1]])
+
+    @classmethod
+    def quantum_register(cls, qnum):
+        register = np.array([[1, 0]])
+        w = 2 ** (qnum) - 2
+        for i in range(w):
+            register = np.append(register, [0])
+        register = np.array([register]).T
+        return register
 
     @classmethod
     def tensor_prod(cls, M2, M1):
         &#39;&#39;&#39;
         Do the tensor product of matrix 1 and matrix 2.
-        :param M2: Matrix 2
-        :param M1: Matrix 1
-        :return: Tensor product of Matrix 1 with Matrix 2
+        &lt;b&gt;param M2&lt;\b&gt; Matrix 2
+        &lt;b&gt;param M1&lt;\b&gt; Matrix 1
+        &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
         &#39;&#39;&#39;
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
@@ -353,9 +383,9 @@ inheritance.</p>
     def matrix_multiply(cls, M1, M2):
         &#39;&#39;&#39;
         Multiply two matrices
-        :param M1: Matrix 1
-        :param M2: Matrix 2
-        :return: Matrix 1 multiplied by matrix 2
+        &lt;b&gt;param M1&lt;\b&gt; Matrix 1
+        &lt;b&gt;param M2&lt;\b&gt; Matrix 2
+        &lt;b&gt;return&lt;\b&gt; Matrix 1 multiplied by matrix 2
         &#39;&#39;&#39;
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
@@ -366,6 +396,8 @@ inheritance.</p>
         else:
             m2 = M2
 
+        if len(m2.shape) == 1:
+            m2 = [[m] for m in m2]
         M = np.zeros(len(m1) * len(m2[0]), dtype=&#39;complex&#39;)
         M.shape = (len(m1), len(m2[0]))
 
@@ -376,28 +408,45 @@ inheritance.</p>
         return DenseMatrix(&#39;MM&#39;, M)
 
     @classmethod
-    def inner_prod(cls, M):
+    def inner_product(cls, M):
         &#39;&#39;&#39;
         Find the inner product
-        :param M: input matrix
-        :return: inner product of state
+        &lt;b&gt;param M&lt;\b&gt; input matrix
+        &lt;b&gt;return&lt;\b&gt; inner product of state
         &#39;&#39;&#39;
-        return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))
+        if type(M) == DenseMatrix:
+            m = M.matrix
+        else:
+            m = M
+
+        return DenseMatrix.matrix_multiply(m, np.transpose(np.conj(m)))
+
+    @classmethod
+    def conjugate(cls, M):
+        return np.conj(M)
 
     @classmethod
     def trace(cls, M):
         &#39;&#39;&#39;
         Matrix trace
-        :param M: Input matrix
-        :return: matrix trace
+        &lt;b&gt;param M&lt;\b&gt; Input matrix
+        &lt;b&gt;return&lt;\b&gt; matrix trace
         &#39;&#39;&#39;
         return np.trace(M.matrix)
+
+    @classmethod
+    def transpose(cls, M):
+        if type(M) == DenseMatrix:
+            m = M.matrix
+        else:
+            m = M
+        return m.T
 
     def Basis(self, N):
         &#39;&#39;&#39;
         Define the basis state of N qubits
-        :param N: Number of Qubits
-        :return: basis state
+        &lt;b&gt;param N&lt;\b&gt; Number of Qubits
+        &lt;b&gt;return&lt;\b&gt; basis state
         &#39;&#39;&#39;
         Q = []
         for i in range(0, 2 ** N):
@@ -409,10 +458,6 @@ inheritance.</p>
     def cnot(self, d, c, t):
         &#39;&#39;&#39;
         Produce the multi-input gate CNOT, inherits from MatrixFrame and builds in dense method.
-        :param d:
-        :param c:
-        :param t:
-        :return:
         &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cn = []
@@ -432,10 +477,6 @@ inheritance.</p>
     def cv(self, d, c, t):
         &#39;&#39;&#39;
         Build the control V gate, inherits from MatrixFrame and builds in dense method
-        :param d:
-        :param c:
-        :param t:
-        :return:
         &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cv = []
@@ -457,13 +498,6 @@ inheritance.</p>
         return cv
 
     def cz(self, d, c, t):
-        &#39;&#39;&#39;
-
-        :param d:
-        :param c:
-        :param t:
-        :return:
-        &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cz = []
 
@@ -488,15 +522,11 @@ inheritance.</p>
         CROT_k = cls.tensor_prod(self.M0, self.I) + cls.tensor_prod(self.M1, UROT_k)
         return CROT_k
 
-
-
     def output(self, inputs):
         &#39;&#39;&#39;
         Output of the DenseMatrix class, returns this when called by Quantum Computer
-        :param inputs:
-        :return:
         &#39;&#39;&#39;
-        return DenseMatrix.matrix_multiply(self.matrix, inputs)</code></pre>
+        return DenseMatrix.matrix_multiply(self.matrix, inputs).matrix</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
@@ -505,25 +535,44 @@ inheritance.</p>
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_prod"><code class="name flex">
-<span>def <span class="ident">inner_prod</span></span>(<span>M)</span>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.conjugate"><code class="name flex">
+<span>def <span class="ident">conjugate</span></span>(<span>M)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Find the inner product
-:param M: input matrix
-:return: inner product of state</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def inner_prod(cls, M):
+def conjugate(cls, M):
+    return np.conj(M)</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_product"><code class="name flex">
+<span>def <span class="ident">inner_product</span></span>(<span>M)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Find the inner product
+<b>param M&lt;&gt; input matrix
+<b>return&lt;&gt; inner product of state</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def inner_product(cls, M):
     &#39;&#39;&#39;
     Find the inner product
-    :param M: input matrix
-    :return: inner product of state
+    &lt;b&gt;param M&lt;\b&gt; input matrix
+    &lt;b&gt;return&lt;\b&gt; inner product of state
     &#39;&#39;&#39;
-    return DenseMatrix.matrix_multiply(M.matrix, np.transpose(np.conj(M.matrix)))</code></pre>
+    if type(M) == DenseMatrix:
+        m = M.matrix
+    else:
+        m = M
+
+    return DenseMatrix.matrix_multiply(m, np.transpose(np.conj(m)))</code></pre>
 </details>
 </dd>
 <dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.matrix_multiply"><code class="name flex">
@@ -531,9 +580,9 @@ def inner_prod(cls, M):
 </code></dt>
 <dd>
 <div class="desc"><p>Multiply two matrices
-:param M1: Matrix 1
-:param M2: Matrix 2
-:return: Matrix 1 multiplied by matrix 2</p></div>
+<b>param M1&lt;&gt; Matrix 1
+<b>param M2&lt;&gt; Matrix 2
+<b>return&lt;&gt; Matrix 1 multiplied by matrix 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -542,9 +591,9 @@ def inner_prod(cls, M):
 def matrix_multiply(cls, M1, M2):
     &#39;&#39;&#39;
     Multiply two matrices
-    :param M1: Matrix 1
-    :param M2: Matrix 2
-    :return: Matrix 1 multiplied by matrix 2
+    &lt;b&gt;param M1&lt;\b&gt; Matrix 1
+    &lt;b&gt;param M2&lt;\b&gt; Matrix 2
+    &lt;b&gt;return&lt;\b&gt; Matrix 1 multiplied by matrix 2
     &#39;&#39;&#39;
     if type(M1) == DenseMatrix:
         m1 = M1.matrix
@@ -555,6 +604,8 @@ def matrix_multiply(cls, M1, M2):
     else:
         m2 = M2
 
+    if len(m2.shape) == 1:
+        m2 = [[m] for m in m2]
     M = np.zeros(len(m1) * len(m2[0]), dtype=&#39;complex&#39;)
     M.shape = (len(m1), len(m2[0]))
 
@@ -565,14 +616,33 @@ def matrix_multiply(cls, M1, M2):
     return DenseMatrix(&#39;MM&#39;, M)</code></pre>
 </details>
 </dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.quantum_register"><code class="name flex">
+<span>def <span class="ident">quantum_register</span></span>(<span>qnum)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def quantum_register(cls, qnum):
+    register = np.array([[1, 0]])
+    w = 2 ** (qnum) - 2
+    for i in range(w):
+        register = np.append(register, [0])
+    register = np.array([register]).T
+    return register</code></pre>
+</details>
+</dd>
 <dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.tensor_prod"><code class="name flex">
 <span>def <span class="ident">tensor_prod</span></span>(<span>M2, M1)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Do the tensor product of matrix 1 and matrix 2.
-:param M2: Matrix 2
-:param M1: Matrix 1
-:return: Tensor product of Matrix 1 with Matrix 2</p></div>
+<b>param M2&lt;&gt; Matrix 2
+<b>param M1&lt;&gt; Matrix 1
+<b>return&lt;&gt; Tensor product of Matrix 1 with Matrix 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -581,9 +651,9 @@ def matrix_multiply(cls, M1, M2):
 def tensor_prod(cls, M2, M1):
     &#39;&#39;&#39;
     Do the tensor product of matrix 1 and matrix 2.
-    :param M2: Matrix 2
-    :param M1: Matrix 1
-    :return: Tensor product of Matrix 1 with Matrix 2
+    &lt;b&gt;param M2&lt;\b&gt; Matrix 2
+    &lt;b&gt;param M1&lt;\b&gt; Matrix 1
+    &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
     &#39;&#39;&#39;
     if type(M1) == DenseMatrix:
         m1 = M1.matrix
@@ -621,8 +691,8 @@ def tensor_prod(cls, M2, M1):
 </code></dt>
 <dd>
 <div class="desc"><p>Matrix trace
-:param M: Input matrix
-:return: matrix trace</p></div>
+<b>param M&lt;&gt; Input matrix
+<b>return&lt;&gt; matrix trace</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -631,10 +701,28 @@ def tensor_prod(cls, M2, M1):
 def trace(cls, M):
     &#39;&#39;&#39;
     Matrix trace
-    :param M: Input matrix
-    :return: matrix trace
+    &lt;b&gt;param M&lt;\b&gt; Input matrix
+    &lt;b&gt;return&lt;\b&gt; matrix trace
     &#39;&#39;&#39;
     return np.trace(M.matrix)</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.transpose"><code class="name flex">
+<span>def <span class="ident">transpose</span></span>(<span>M)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def transpose(cls, M):
+    if type(M) == DenseMatrix:
+        m = M.matrix
+    else:
+        m = M
+    return m.T</code></pre>
 </details>
 </dd>
 </dl>
@@ -645,8 +733,8 @@ def trace(cls, M):
 </code></dt>
 <dd>
 <div class="desc"><p>Define the basis state of N qubits
-:param N: Number of Qubits
-:return: basis state</p></div>
+<b>param N&lt;&gt; Number of Qubits
+<b>return&lt;&gt; basis state</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -654,8 +742,8 @@ def trace(cls, M):
 <pre><code class="python">def Basis(self, N):
     &#39;&#39;&#39;
     Define the basis state of N qubits
-    :param N: Number of Qubits
-    :return: basis state
+    &lt;b&gt;param N&lt;\b&gt; Number of Qubits
+    &lt;b&gt;return&lt;\b&gt; basis state
     &#39;&#39;&#39;
     Q = []
     for i in range(0, 2 ** N):
@@ -684,11 +772,7 @@ def trace(cls, M):
 <span>def <span class="ident">cnot</span></span>(<span>self, d, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Produce the multi-input gate CNOT, inherits from MatrixFrame and builds in dense method.
-:param d:
-:param c:
-:param t:
-:return:</p></div>
+<div class="desc"><p>Produce the multi-input gate CNOT, inherits from MatrixFrame and builds in dense method.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -696,10 +780,6 @@ def trace(cls, M):
 <pre><code class="python">def cnot(self, d, c, t):
     &#39;&#39;&#39;
     Produce the multi-input gate CNOT, inherits from MatrixFrame and builds in dense method.
-    :param d:
-    :param c:
-    :param t:
-    :return:
     &#39;&#39;&#39;
     digits = copy.deepcopy(d)
     cn = []
@@ -721,11 +801,7 @@ def trace(cls, M):
 <span>def <span class="ident">cv</span></span>(<span>self, d, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Build the control V gate, inherits from MatrixFrame and builds in dense method
-:param d:
-:param c:
-:param t:
-:return:</p></div>
+<div class="desc"><p>Build the control V gate, inherits from MatrixFrame and builds in dense method</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -733,10 +809,6 @@ def trace(cls, M):
 <pre><code class="python">def cv(self, d, c, t):
     &#39;&#39;&#39;
     Build the control V gate, inherits from MatrixFrame and builds in dense method
-    :param d:
-    :param c:
-    :param t:
-    :return:
     &#39;&#39;&#39;
     digits = copy.deepcopy(d)
     cv = []
@@ -762,22 +834,12 @@ def trace(cls, M):
 <span>def <span class="ident">cz</span></span>(<span>self, d, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>:param d:
-:param c:
-:param t:
-:return:</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cz(self, d, c, t):
-    &#39;&#39;&#39;
-
-    :param d:
-    :param c:
-    :param t:
-    :return:
-    &#39;&#39;&#39;
     digits = copy.deepcopy(d)
     cz = []
 
@@ -802,9 +864,7 @@ def trace(cls, M):
 <span>def <span class="ident">output</span></span>(<span>self, inputs)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Output of the DenseMatrix class, returns this when called by Quantum Computer
-:param inputs:
-:return:</p></div>
+<div class="desc"><p>Output of the DenseMatrix class, returns this when called by Quantum Computer</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -812,10 +872,8 @@ def trace(cls, M):
 <pre><code class="python">def output(self, inputs):
     &#39;&#39;&#39;
     Output of the DenseMatrix class, returns this when called by Quantum Computer
-    :param inputs:
-    :return:
     &#39;&#39;&#39;
-    return DenseMatrix.matrix_multiply(self.matrix, inputs)</code></pre>
+    return DenseMatrix.matrix_multiply(self.matrix, inputs).matrix</code></pre>
 </details>
 </dd>
 </dl>
@@ -825,6 +883,7 @@ def trace(cls, M):
 <ul class="hlist">
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
 </ul>
 </li>
@@ -852,13 +911,16 @@ def trace(cls, M):
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.Basis" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.Basis">Basis</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.CROT_k" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.CROT_k">CROT_k</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cnot" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cnot">cnot</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.conjugate" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.conjugate">conjugate</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cv" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cv">cv</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cz" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.cz">cz</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_prod" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_prod">inner_prod</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_product" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.inner_product">inner_product</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.matrix_multiply" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.matrix_multiply">matrix_multiply</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.output" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.output">output</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.quantum_register" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.quantum_register">quantum_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.tensor_prod" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.tensor_prod">tensor_prod</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.trace" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.trace">trace</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.transpose" href="#QuantumComputerSimulator.mods.DenseMatrix.DenseMatrix.transpose">transpose</a></code></li>
 </ul>
 </li>
 </ul>
