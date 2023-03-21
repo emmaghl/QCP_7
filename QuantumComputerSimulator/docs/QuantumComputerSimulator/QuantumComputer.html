@@ -38,16 +38,14 @@ import numpy as np
 from abc import ABC
 import random
 
-class Interface(ABC):
-    pass
-
-class QuantumComputer(Interface):
+class QuantumComputer(ABC):
 
     def __init__(self, qubits: int, matrix_type:str = &#34;Dense&#34;):
         &#39;&#39;&#39;
         Simulates quantum circuits via Dense, Sparse and Lazy methods.
-        &lt;b&gt;param: qubits&lt;\b&gt; Number of Qubits
-        &lt;b&gt;param: matrix_type&lt;\b&gt; Desired type of matrix formulation to use. Default: Dense
+
+        &lt;b&gt;qubits&lt;/b&gt; Number of qubits in the circuit.&lt;br&gt;
+        &lt;b&gt;matrix_type&lt;/b&gt; Desired implementation of quantum computer to use. Default is Dense.
         &#39;&#39;&#39;
 
         check.check_type(qubits, int)
@@ -109,6 +107,9 @@ class QuantumComputer(Interface):
         pc.print_circuit_ascii()
 
     def __produce_digits(self):  # this is the flipped basis, working on
+        &#39;&#39;&#39;
+        This produces the binary basis needed for the register.
+        &#39;&#39;&#39;
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
@@ -132,9 +133,9 @@ class QuantumComputer(Interface):
         &#39;&#39;&#39;
         Build the single input gates to a 2^N matrix where N is the number of Qubits.
 
-        &lt;b&gt;gate&lt;\b&gt; A list of gates to build.
-        &lt;b&gt;qnum&lt;\b&gt; List of the number of qubits corresponding to each gate.
-        &lt;b&gt;return&lt;\b&gt; A gate as the specified matrix object.
+        &lt;b&gt;gate&lt;/b&gt; A list of gates to build. &lt;br&gt;
+        &lt;b&gt;qnum&lt;/b&gt; List of the number of qubits corresponding to each gate.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; A gate as the specified matrix object.
         &#39;&#39;&#39;
         M = [0] * self.N
 
@@ -161,9 +162,9 @@ class QuantumComputer(Interface):
         &#39;&#39;&#39;
         Use the Matrix method in the given desired method to build a multi-input gate.
 
-        &lt;b&gt;gate&lt;\b&gt; A list with one elemnt being the double gate.
-        &lt;b&gt;qnum&lt;\b&gt; Qubit list.
-        &lt;b&gt;return&lt;\b&gt; Returns correctly sized multi-input gate.
+        &lt;b&gt;gate&lt;/b&gt; A list with one elemnt being the double gate. &lt;br&gt;
+        &lt;b&gt;qnum&lt;/b&gt; Qubit list. &lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; Returns correctly sized multi-input gate.
         &#39;&#39;&#39;
         if gate[0] == &#34;CV&#34;:
             return self.Matrix(&#34;CV&#34;, self.binary, qnum[0][0], qnum[0][1])
@@ -196,9 +197,9 @@ class QuantumComputer(Interface):
         &#39;&#39;&#39;
         Builds the quantum circuit from a list of time steps. See README.md for examples of what to enter into the parameter `input`.
 
-        &lt;b&gt;inputs&lt;\b&gt; List of time steps.
-        &lt;b&gt;add_gate_name&lt;\b&gt; Name of gates to be added.
-        &lt;b&gt;return&lt;\b&gt; The circuit of type determined from the instantiation of quantum computer.
+        &lt;b&gt;inputs&lt;/b&gt; List of time steps. &lt;br&gt;
+        &lt;b&gt;add_gate_name&lt;/b&gt; Name of gates to be added. &lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The circuit of type determined from the instantiation of quantum computer.
         &#39;&#39;&#39;
 
         check.check_type(add_gate_name, str)
@@ -248,15 +249,15 @@ class QuantumComputer(Interface):
 
     def measure_any(self, qnum: int, state: int, register: list) -&gt; int:
         &#39;&#39;&#39;
-        Generate the measurment of the quantum circuit. Once measured the system&#39;s wavefunction is collapsed.
+        Generate the measurement of the quantum circuit; once measured the system&#39;s wave function is collapsed.
 
-        &lt;b&gt;qnum&lt;\b&gt; Number of qubits.
-        &lt;b&gt;state&lt;\b&gt; State of the qubit.
-        &lt;b&gt;state&lt;\b&gt; Result of the measurement of qubit qnum.
+        &lt;b&gt;qnum&lt;/b&gt; Number of qubits. &lt;br&gt;
+        &lt;b&gt;state&lt;/b&gt; State of the qubit. &lt;br&gt;
+        &lt;b&gt;state&lt;/b&gt; Result of the measurement of qubit qnum.
         &#39;&#39;&#39;
         check.check_type(qnum, int)
         check.check_type(state, int)
-        check.check_type(qnum, list)
+        check.check_type(register, list)
 
         inner_register = self.Matrix.inner_product(register)
         if state == 0:
@@ -276,8 +277,8 @@ class QuantumComputer(Interface):
         &#39;&#39;&#39;
         Apply&#39;s a register to the circuit built with `add_gate_to_circuit`, with default being the |0&gt; state in the computatinal basis.
 
-        &lt;b&gt;repeats&lt;/b&gt; The number of measurements to be taken; assuming upon each measurement a new register is applied.
-        &lt;b&gt;user_input_vector&lt;/b&gt; Allows custom choice of a register.
+        &lt;b&gt;repeats&lt;/b&gt; The number of measurements to be taken; assuming upon each measurement a new register is applied. &lt;br&gt;
+        &lt;b&gt;user_input_vector&lt;/b&gt; Allows custom choice of a register. &lt;br&gt;
         &lt;b&gt;returns&lt;/b&gt; A dictionary of keys labelling the binary states, and the values the number of times that state was measured over.
         &#39;&#39;&#39;
         check.check_type(repeats, int)
@@ -317,8 +318,8 @@ class QuantumComputer(Interface):
         &#39;&#39;&#39;
         Adds the gates to the class ready to for building the circuit later. See README.md for examples of what to enter into the paramter `input`.
 
-        &lt;b&gt;inputs&lt;/b&gt; A list of time steps.
-        &lt;b&gt;add_gate_name&lt;/b&gt; A label to replace the list of time steps with when the circuit is printed to the terminal using `print_circuit`.
+        &lt;b&gt;inputs&lt;/b&gt; A list of time steps. &lt;br&gt;
+        &lt;b&gt;add_gate_name&lt;/b&gt; A label to replace the list of time steps with when the circuit is printed to the terminal using `print_circuit`.&lt;br&gt;
         &#39;&#39;&#39;
         check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
@@ -349,28 +350,6 @@ class QuantumComputer(Interface):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="QuantumComputerSimulator.QuantumComputer.Interface"><code class="flex name class">
-<span>class <span class="ident">Interface</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Interface(ABC):
-    pass</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer">QuantumComputer</a></li>
-</ul>
-</dd>
 <dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer"><code class="flex name class">
 <span>class <span class="ident">QuantumComputer</span></span>
 <span>(</span><span>qubits: int, matrix_type: str = 'Dense')</span>
@@ -378,20 +357,21 @@ inheritance.</p></div>
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
-<p>Simulates quantum circuits via Dense, Sparse and Lazy methods.
-<b>param: qubits&lt;&gt; Number of Qubits
-<b>param: matrix_type&lt;&gt; Desired type of matrix formulation to use. Default: Dense</p></div>
+<p>Simulates quantum circuits via Dense, Sparse and Lazy methods.</p>
+<p><b>qubits</b> Number of qubits in the circuit.<br>
+<b>matrix_type</b> Desired implementation of quantum computer to use. Default is Dense.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class QuantumComputer(Interface):
+<pre><code class="python">class QuantumComputer(ABC):
 
     def __init__(self, qubits: int, matrix_type:str = &#34;Dense&#34;):
         &#39;&#39;&#39;
         Simulates quantum circuits via Dense, Sparse and Lazy methods.
-        &lt;b&gt;param: qubits&lt;\b&gt; Number of Qubits
-        &lt;b&gt;param: matrix_type&lt;\b&gt; Desired type of matrix formulation to use. Default: Dense
+
+        &lt;b&gt;qubits&lt;/b&gt; Number of qubits in the circuit.&lt;br&gt;
+        &lt;b&gt;matrix_type&lt;/b&gt; Desired implementation of quantum computer to use. Default is Dense.
         &#39;&#39;&#39;
 
         check.check_type(qubits, int)
@@ -453,6 +433,9 @@ inheritance.</p>
         pc.print_circuit_ascii()
 
     def __produce_digits(self):  # this is the flipped basis, working on
+        &#39;&#39;&#39;
+        This produces the binary basis needed for the register.
+        &#39;&#39;&#39;
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
@@ -476,9 +459,9 @@ inheritance.</p>
         &#39;&#39;&#39;
         Build the single input gates to a 2^N matrix where N is the number of Qubits.
 
-        &lt;b&gt;gate&lt;\b&gt; A list of gates to build.
-        &lt;b&gt;qnum&lt;\b&gt; List of the number of qubits corresponding to each gate.
-        &lt;b&gt;return&lt;\b&gt; A gate as the specified matrix object.
+        &lt;b&gt;gate&lt;/b&gt; A list of gates to build. &lt;br&gt;
+        &lt;b&gt;qnum&lt;/b&gt; List of the number of qubits corresponding to each gate.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; A gate as the specified matrix object.
         &#39;&#39;&#39;
         M = [0] * self.N
 
@@ -505,9 +488,9 @@ inheritance.</p>
         &#39;&#39;&#39;
         Use the Matrix method in the given desired method to build a multi-input gate.
 
-        &lt;b&gt;gate&lt;\b&gt; A list with one elemnt being the double gate.
-        &lt;b&gt;qnum&lt;\b&gt; Qubit list.
-        &lt;b&gt;return&lt;\b&gt; Returns correctly sized multi-input gate.
+        &lt;b&gt;gate&lt;/b&gt; A list with one elemnt being the double gate. &lt;br&gt;
+        &lt;b&gt;qnum&lt;/b&gt; Qubit list. &lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; Returns correctly sized multi-input gate.
         &#39;&#39;&#39;
         if gate[0] == &#34;CV&#34;:
             return self.Matrix(&#34;CV&#34;, self.binary, qnum[0][0], qnum[0][1])
@@ -540,9 +523,9 @@ inheritance.</p>
         &#39;&#39;&#39;
         Builds the quantum circuit from a list of time steps. See README.md for examples of what to enter into the parameter `input`.
 
-        &lt;b&gt;inputs&lt;\b&gt; List of time steps.
-        &lt;b&gt;add_gate_name&lt;\b&gt; Name of gates to be added.
-        &lt;b&gt;return&lt;\b&gt; The circuit of type determined from the instantiation of quantum computer.
+        &lt;b&gt;inputs&lt;/b&gt; List of time steps. &lt;br&gt;
+        &lt;b&gt;add_gate_name&lt;/b&gt; Name of gates to be added. &lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The circuit of type determined from the instantiation of quantum computer.
         &#39;&#39;&#39;
 
         check.check_type(add_gate_name, str)
@@ -592,15 +575,15 @@ inheritance.</p>
 
     def measure_any(self, qnum: int, state: int, register: list) -&gt; int:
         &#39;&#39;&#39;
-        Generate the measurment of the quantum circuit. Once measured the system&#39;s wavefunction is collapsed.
+        Generate the measurement of the quantum circuit; once measured the system&#39;s wave function is collapsed.
 
-        &lt;b&gt;qnum&lt;\b&gt; Number of qubits.
-        &lt;b&gt;state&lt;\b&gt; State of the qubit.
-        &lt;b&gt;state&lt;\b&gt; Result of the measurement of qubit qnum.
+        &lt;b&gt;qnum&lt;/b&gt; Number of qubits. &lt;br&gt;
+        &lt;b&gt;state&lt;/b&gt; State of the qubit. &lt;br&gt;
+        &lt;b&gt;state&lt;/b&gt; Result of the measurement of qubit qnum.
         &#39;&#39;&#39;
         check.check_type(qnum, int)
         check.check_type(state, int)
-        check.check_type(qnum, list)
+        check.check_type(register, list)
 
         inner_register = self.Matrix.inner_product(register)
         if state == 0:
@@ -620,8 +603,8 @@ inheritance.</p>
         &#39;&#39;&#39;
         Apply&#39;s a register to the circuit built with `add_gate_to_circuit`, with default being the |0&gt; state in the computatinal basis.
 
-        &lt;b&gt;repeats&lt;/b&gt; The number of measurements to be taken; assuming upon each measurement a new register is applied.
-        &lt;b&gt;user_input_vector&lt;/b&gt; Allows custom choice of a register.
+        &lt;b&gt;repeats&lt;/b&gt; The number of measurements to be taken; assuming upon each measurement a new register is applied. &lt;br&gt;
+        &lt;b&gt;user_input_vector&lt;/b&gt; Allows custom choice of a register. &lt;br&gt;
         &lt;b&gt;returns&lt;/b&gt; A dictionary of keys labelling the binary states, and the values the number of times that state was measured over.
         &#39;&#39;&#39;
         check.check_type(repeats, int)
@@ -661,8 +644,8 @@ inheritance.</p>
         &#39;&#39;&#39;
         Adds the gates to the class ready to for building the circuit later. See README.md for examples of what to enter into the paramter `input`.
 
-        &lt;b&gt;inputs&lt;/b&gt; A list of time steps.
-        &lt;b&gt;add_gate_name&lt;/b&gt; A label to replace the list of time steps with when the circuit is printed to the terminal using `print_circuit`.
+        &lt;b&gt;inputs&lt;/b&gt; A list of time steps. &lt;br&gt;
+        &lt;b&gt;add_gate_name&lt;/b&gt; A label to replace the list of time steps with when the circuit is printed to the terminal using `print_circuit`.&lt;br&gt;
         &#39;&#39;&#39;
         check.check_type(add_gate_name, str)
         self.__validate_gate_logic_inputs(inputs)
@@ -685,7 +668,6 @@ inheritance.</p>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="QuantumComputerSimulator.QuantumComputer.Interface" href="#QuantumComputerSimulator.QuantumComputer.Interface">Interface</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
@@ -695,8 +677,8 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Adds the gates to the class ready to for building the circuit later. See README.md for examples of what to enter into the paramter <code>input</code>.</p>
-<p><b>inputs</b> A list of time steps.
-<b>add_gate_name</b> A label to replace the list of time steps with when the circuit is printed to the terminal using <code>print_circuit</code>.</p></div>
+<p><b>inputs</b> A list of time steps. <br>
+<b>add_gate_name</b> A label to replace the list of time steps with when the circuit is printed to the terminal using <code>print_circuit</code>.<br></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -705,8 +687,8 @@ inheritance.</p>
     &#39;&#39;&#39;
     Adds the gates to the class ready to for building the circuit later. See README.md for examples of what to enter into the paramter `input`.
 
-    &lt;b&gt;inputs&lt;/b&gt; A list of time steps.
-    &lt;b&gt;add_gate_name&lt;/b&gt; A label to replace the list of time steps with when the circuit is printed to the terminal using `print_circuit`.
+    &lt;b&gt;inputs&lt;/b&gt; A list of time steps. &lt;br&gt;
+    &lt;b&gt;add_gate_name&lt;/b&gt; A label to replace the list of time steps with when the circuit is printed to the terminal using `print_circuit`.&lt;br&gt;
     &#39;&#39;&#39;
     check.check_type(add_gate_name, str)
     self.__validate_gate_logic_inputs(inputs)
@@ -724,8 +706,8 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Apply's a register to the circuit built with <code>add_gate_to_circuit</code>, with default being the |0&gt; state in the computatinal basis.</p>
-<p><b>repeats</b> The number of measurements to be taken; assuming upon each measurement a new register is applied.
-<b>user_input_vector</b> Allows custom choice of a register.
+<p><b>repeats</b> The number of measurements to be taken; assuming upon each measurement a new register is applied. <br>
+<b>user_input_vector</b> Allows custom choice of a register. <br>
 <b>returns</b> A dictionary of keys labelling the binary states, and the values the number of times that state was measured over.</p></div>
 <details class="source">
 <summary>
@@ -735,8 +717,8 @@ inheritance.</p>
     &#39;&#39;&#39;
     Apply&#39;s a register to the circuit built with `add_gate_to_circuit`, with default being the |0&gt; state in the computatinal basis.
 
-    &lt;b&gt;repeats&lt;/b&gt; The number of measurements to be taken; assuming upon each measurement a new register is applied.
-    &lt;b&gt;user_input_vector&lt;/b&gt; Allows custom choice of a register.
+    &lt;b&gt;repeats&lt;/b&gt; The number of measurements to be taken; assuming upon each measurement a new register is applied. &lt;br&gt;
+    &lt;b&gt;user_input_vector&lt;/b&gt; Allows custom choice of a register. &lt;br&gt;
     &lt;b&gt;returns&lt;/b&gt; A dictionary of keys labelling the binary states, and the values the number of times that state was measured over.
     &#39;&#39;&#39;
     check.check_type(repeats, int)
@@ -798,9 +780,9 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Builds the quantum circuit from a list of time steps. See README.md for examples of what to enter into the parameter <code>input</code>.</p>
-<p><b>inputs&lt;&gt; List of time steps.
-<b>add_gate_name&lt;&gt; Name of gates to be added.
-<b>return&lt;&gt; The circuit of type determined from the instantiation of quantum computer.</p></div>
+<p><b>inputs</b> List of time steps. <br>
+<b>add_gate_name</b> Name of gates to be added. <br>
+<b>return</b> The circuit of type determined from the instantiation of quantum computer.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -809,9 +791,9 @@ inheritance.</p>
     &#39;&#39;&#39;
     Builds the quantum circuit from a list of time steps. See README.md for examples of what to enter into the parameter `input`.
 
-    &lt;b&gt;inputs&lt;\b&gt; List of time steps.
-    &lt;b&gt;add_gate_name&lt;\b&gt; Name of gates to be added.
-    &lt;b&gt;return&lt;\b&gt; The circuit of type determined from the instantiation of quantum computer.
+    &lt;b&gt;inputs&lt;/b&gt; List of time steps. &lt;br&gt;
+    &lt;b&gt;add_gate_name&lt;/b&gt; Name of gates to be added. &lt;br&gt;
+    &lt;b&gt;return&lt;/b&gt; The circuit of type determined from the instantiation of quantum computer.
     &#39;&#39;&#39;
 
     check.check_type(add_gate_name, str)
@@ -864,25 +846,25 @@ inheritance.</p>
 <span>def <span class="ident">measure_any</span></span>(<span>self, qnum: int, state: int, register: list) ‑> int</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Generate the measurment of the quantum circuit. Once measured the system's wavefunction is collapsed.</p>
-<p><b>qnum&lt;&gt; Number of qubits.
-<b>state&lt;&gt; State of the qubit.
-<b>state&lt;&gt; Result of the measurement of qubit qnum.</p></div>
+<div class="desc"><p>Generate the measurement of the quantum circuit; once measured the system's wave function is collapsed.</p>
+<p><b>qnum</b> Number of qubits. <br>
+<b>state</b> State of the qubit. <br>
+<b>state</b> Result of the measurement of qubit qnum.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def measure_any(self, qnum: int, state: int, register: list) -&gt; int:
     &#39;&#39;&#39;
-    Generate the measurment of the quantum circuit. Once measured the system&#39;s wavefunction is collapsed.
+    Generate the measurement of the quantum circuit; once measured the system&#39;s wave function is collapsed.
 
-    &lt;b&gt;qnum&lt;\b&gt; Number of qubits.
-    &lt;b&gt;state&lt;\b&gt; State of the qubit.
-    &lt;b&gt;state&lt;\b&gt; Result of the measurement of qubit qnum.
+    &lt;b&gt;qnum&lt;/b&gt; Number of qubits. &lt;br&gt;
+    &lt;b&gt;state&lt;/b&gt; State of the qubit. &lt;br&gt;
+    &lt;b&gt;state&lt;/b&gt; Result of the measurement of qubit qnum.
     &#39;&#39;&#39;
     check.check_type(qnum, int)
     check.check_type(state, int)
-    check.check_type(qnum, list)
+    check.check_type(register, list)
 
     inner_register = self.Matrix.inner_product(register)
     if state == 0:
@@ -939,9 +921,6 @@ Prints the quantum circuit in an ascii format on the terminal.</p></div>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="QuantumComputerSimulator.QuantumComputer.Interface" href="#QuantumComputerSimulator.QuantumComputer.Interface">Interface</a></code></h4>
-</li>
 <li>
 <h4><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer">QuantumComputer</a></code></h4>
 <ul class="">
