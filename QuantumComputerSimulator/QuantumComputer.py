@@ -187,8 +187,11 @@ class QuantumComputer(Interface):
 
         M = np.flip(M, axis=0)
         m = M[0]
+        print(M)
         for i in range(1, len(M)):
+            print(M[i])
             m = self.Matrix.matrix_multiply(m, M[i])
+            print(i)
 
         return m
 

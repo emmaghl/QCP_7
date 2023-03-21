@@ -24,9 +24,9 @@ class DenseMatrix(MatrixFrame):
             self.matrix = np.array([[0, 0 - 1j], [0 + 1j, 0]], dtype=complex)
         if Type == 'Z':
             self.matrix = np.array([[1, 0], [0, -1]])
+
         if Type == 'TP' or Type == 'MM' or Type == "general":
             self.matrix = args[0]
-
 
         if Type == 'CNOT':
             self.matrix = self.cnot(args[0], args[1], args[2])
@@ -34,6 +34,7 @@ class DenseMatrix(MatrixFrame):
             self.matrix = self.cv(args[0], args[1], args[2])
         if Type == 'CZ':
             self.matrix = self.cz(args[0], args[1], args[2])
+
         if Type == 'M0':
             self.matrix = np.array([[1, 0], [0, 0]])
         if Type == 'M1':
@@ -44,14 +45,14 @@ class DenseMatrix(MatrixFrame):
         if Type == 'onecol':
             self.matrix = np.array([[0], [1]])
 
-    @classmethod
-    def quantum_register(cls, qnum):
-        register = np.array([[1, 0]])
-        w = 2 ** (qnum) - 2
-        for i in range(w):
-            register = np.append(register, [0])
-        register = np.array([register]).T
-        return register
+    # @classmethod
+    # def quantum_register(cls, qnum):
+    #     register = np.array([[1, 0]])
+    #     w = 2 ** (qnum) - 2
+    #     for i in range(w):
+    #         register = np.append(register, [0])
+    #     register = np.array([register]).T
+    #     return register
 
     @classmethod
     def tensor_prod(cls, M2, M1):
@@ -227,10 +228,10 @@ class DenseMatrix(MatrixFrame):
 
         return cz
 
-    def CROT_k(self, k):
-        UROT_k =  np.array([[1, 0], [0, math.exp(2*math.pi*1j/2**k)]])
-        CROT_k = cls.tensor_prod(self.M0, self.I) + cls.tensor_prod(self.M1, UROT_k)
-        return CROT_k
+    # def CROT_k(self, k):
+    #     UROT_k = np.array([[1, 0], [0, math.exp(2*math.pi*1j/2**k)]])
+    #     CROT_k = cls.tensor_prod(self.M0, self.I) + cls.tensor_prod(self.M1, UROT_k)
+    #     return CROT_k
 
     def output(self, inputs):
         '''

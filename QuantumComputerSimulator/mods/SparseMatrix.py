@@ -69,6 +69,7 @@ class SparseMatrix(MatrixFrame):
                 if i == j:
                     mat_strip.append(mat[i])
 
+
         return mat_strip
 
 
@@ -96,19 +97,19 @@ class SparseMatrix(MatrixFrame):
                 nr = m[j][1]
         nrow = nr + 1
         # print(int(ncol), int(nrow))
-        return (int(ncol), int(nrow))
+        return (int(np.real(ncol)), int(np.real(nrow)))
 
-    @classmethod
-    def quantum_register(cls, qnum):
-        register = np.array([[0, 0, 1], [0, 1, 0]])
-        register = SparseMatrix("general", register)
-        register = register.matrix
-        w = 2 ** (qnum) - 2
-        for i in range(w):
-            register[-1] = [0, i + 2, 0]
-
-        register = SparseMatrix.transpose(register)
-        return register
+    # @classmethod
+    # def quantum_register(cls, qnum):
+    #     register = np.array([[0, 0, 1], [0, 1, 0]])
+    #     register = SparseMatrix("general", register)
+    #     register = register.matrix
+    #     w = 2 ** (qnum) - 2
+    #     for i in range(w):
+    #         register[-1] = [0, i + 2, 0]
+    #
+    #     register = SparseMatrix.transpose(register)
+    #     return register
 
     @classmethod
     def tensor_prod(cls, M2, M1):
@@ -118,6 +119,7 @@ class SparseMatrix(MatrixFrame):
         <b>param m2<\b> Matrix 2
         <b>return<\b> Tensor product of Matrix 1 with Matrix 2
         '''
+        print('TENSOR')
         if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
@@ -137,6 +139,7 @@ class SparseMatrix(MatrixFrame):
 
         for j in range(len(m1)):
             for i in range(len(m2)):
+                print(j, i)
                 # if ((type(m1[j][2]) == "float" and m1[j][2] >= 10**(-10)) or (type(m1[j][2]) == "complex" and abs(m1[j][2]) >= 10**(-10))) and ((type(m2[j][2]) == "float" and m2[j][2] >= 10**(-10)) or (type(m2[j][2]) == "complex" and abs(m2[j][2]) >= 10**(-10))):
                 # if abs(m1[j][2]) >= 10**(-10) and abs(m2[i][2]) >= 10**(-10):
                 if 1>0:
@@ -191,13 +194,13 @@ class SparseMatrix(MatrixFrame):
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
         return SparseMatrix("general", matmul)
 
-    def sparse_multiply(self, num: float, mat):
-        '''multiplies a scalar by a sparse matrix'''
-        # multiply matrix entry by a scalar and keep row and column information unchanged
-        mul = []
-        for i in range(len(mat)):
-            mul.append([mat[i][0], mat[i][1], num * mat[i][2]])
-        return mul
+    # def sparse_multiply(self, num: float, mat):
+    #     '''multiplies a scalar by a sparse matrix'''
+    #     # multiply matrix entry by a scalar and keep row and column information unchanged
+    #     mul = []
+    #     for i in range(len(mat)):
+    #         mul.append([mat[i][0], mat[i][1], num * mat[i][2]])
+    #     return mul
 
     @classmethod
     def transpose(cls, M):
@@ -400,7 +403,7 @@ class SparseMatrix(MatrixFrame):
                 inputs_sparse.append([i, 0, inputs[i]])
         sparse_outputs = SparseMatrix.matrix_multiply(self.matrix, inputs_sparse).matrix
 
-        outputs_dense = np.zeros(len(inputs))
+        outputs_dense = np.zeros(len(inputs), dtype = complex)
         for j in range(len(inputs)):
             for i in range(len(sparse_outputs)):
                 if sparse_outputs[i][0] == j:
