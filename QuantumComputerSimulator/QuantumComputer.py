@@ -10,10 +10,7 @@ import numpy as np
 from abc import ABC
 import random
 
-class Interface(ABC):
-    pass
-
-class QuantumComputer(Interface):
+class QuantumComputer(ABC):
 
     def __init__(self, qubits: int, matrix_type:str = "Dense"):
         '''

@@ -38,10 +38,7 @@ import numpy as np
 from abc import ABC
 import random
 
-class Interface(ABC):
-    pass
-
-class QuantumComputer(Interface):
+class QuantumComputer(ABC):
 
     def __init__(self, qubits: int, matrix_type:str = &#34;Dense&#34;):
         &#39;&#39;&#39;
@@ -353,28 +350,6 @@ class QuantumComputer(Interface):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="QuantumComputerSimulator.QuantumComputer.Interface"><code class="flex name class">
-<span>class <span class="ident">Interface</span></span>
-</code></dt>
-<dd>
-<div class="desc"><p>Helper class that provides a standard way to create an ABC using
-inheritance.</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Interface(ABC):
-    pass</code></pre>
-</details>
-<h3>Ancestors</h3>
-<ul class="hlist">
-<li>abc.ABC</li>
-</ul>
-<h3>Subclasses</h3>
-<ul class="hlist">
-<li><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer">QuantumComputer</a></li>
-</ul>
-</dd>
 <dt id="QuantumComputerSimulator.QuantumComputer.QuantumComputer"><code class="flex name class">
 <span>class <span class="ident">QuantumComputer</span></span>
 <span>(</span><span>qubits: int, matrix_type: str = 'Dense')</span>
@@ -389,7 +364,7 @@ inheritance.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class QuantumComputer(Interface):
+<pre><code class="python">class QuantumComputer(ABC):
 
     def __init__(self, qubits: int, matrix_type:str = &#34;Dense&#34;):
         &#39;&#39;&#39;
@@ -693,7 +668,6 @@ inheritance.</p>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li><a title="QuantumComputerSimulator.QuantumComputer.Interface" href="#QuantumComputerSimulator.QuantumComputer.Interface">Interface</a></li>
 <li>abc.ABC</li>
 </ul>
 <h3>Methods</h3>
@@ -947,9 +921,6 @@ Prints the quantum circuit in an ascii format on the terminal.</p></div>
 </li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="QuantumComputerSimulator.QuantumComputer.Interface" href="#QuantumComputerSimulator.QuantumComputer.Interface">Interface</a></code></h4>
-</li>
 <li>
 <h4><code><a title="QuantumComputerSimulator.QuantumComputer.QuantumComputer" href="#QuantumComputerSimulator.QuantumComputer.QuantumComputer">QuantumComputer</a></code></h4>
 <ul class="">
