@@ -5,15 +5,14 @@ class MatrixFrame(ABC):
 
     def __init__(self):
         '''
-        Abstract class
+        Abstract class for implementations of quantum computers.
         '''
         self.matrix = 0
         pass
 
     def recog_digits(self, digits):
         '''
-
-        <b>param digits<\b>
+        <b>param digits</b>
         '''
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -24,21 +23,12 @@ class MatrixFrame(ABC):
             numbers.append(num)
         return numbers
 
-    # def reverse_digits(self, d):
-    #     temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
-    #     temp = np.flip(temp, axis=0)
-    #     unpack = []
-    #     for i in temp:
-    #         for j in i:
-    #             unpack.append(j)
-    #     return unpack
-
     def CNOT_logic(self, digits_in, c, t):
         '''
         Logic to build the Control Not gate, has children in dense and sparse
-        <b>param digits_in<\b>
-        <b>param c<\b>
-        <b>param t<\b>
+        <b>param digits_in</b>
+        <b>param c</b>
+        <b>param t</b>
         '''
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -54,9 +44,10 @@ class MatrixFrame(ABC):
     def CV_logic(self, digits, c, t):
         '''
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-        <b>param digits<\b>
-        <b>param c<\b>
-        <b>param t<\b>
+
+        <b>param digits</b>
+        <b>param c</b>
+        <b>param t</b>
         '''
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -77,14 +68,33 @@ class MatrixFrame(ABC):
 
     @abstractmethod
     def tensor_prod(self, M1, M2):
+        '''
+        Do the tensor product of matrix 1 and matrix 2.
+
+        <b>param M2</b> Matrix 2 </br>
+        <b>param M1</b> Matrix 1 </br>
+        <b>return</b> Tensor product of Matrix 1 with Matrix 2
+        '''
         pass
 
     @abstractmethod
     def matrix_multiply(self, M1, M2):
+        '''
+        Multiply two matrices
+        <b>param M1</b> Matrix 1 </br>
+        <b>param M2</b> Matrix 2 </br>
+        <b>return</b> Matrix 1 multiplied by matrix 2
+        '''
         pass
 
     @abstractmethod
     def inner_product(self, M):
+        '''
+        Find the inner product
+
+        <b>param M</b> input matrix </br>
+        <b>return</b> inner product of state
+        '''
         pass
 
     @abstractmethod
@@ -93,9 +103,5 @@ class MatrixFrame(ABC):
 
     @abstractmethod
     def output(self, input):
-        pass
-
-    @abstractmethod
-    def conjugate(self, M):
         pass
 

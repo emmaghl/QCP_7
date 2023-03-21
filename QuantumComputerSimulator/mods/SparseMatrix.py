@@ -57,9 +57,7 @@ class SparseMatrix(MatrixFrame):
     def strip_matrix(self, mat): #future take care of real and imag separately to only strip half
         del_entries = []
         for i in range(len(mat)):
-            # print('real',np.real(mat[i][2]))
-            # print("imag", np.imag(mat[i][2]) )
-            if np.abs(np.real(mat[i][2])) >= 10 ** (-10) or np.abs(np.imag(mat[i][2])) >= 10 ** (-10):
+            if np.abs(np.real(mat[i][2])) >= 10 ** (-10) or np.abs(np.imag(mat[i][2])) >= 10 ** (-10) or i == len(mat)-1:
                 del_entries.append(i)
         # print(del_entries)
 
@@ -71,13 +69,11 @@ class SparseMatrix(MatrixFrame):
 
         return mat_strip
 
-
     @classmethod
     def size_matrix(cls, M):
         '''
         Gives the dimensions of the matrix. Used to preserve matrix structure information.
         '''
-        # print(M)
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -96,18 +92,17 @@ class SparseMatrix(MatrixFrame):
                 nr = m[j][1]
         nrow = nr + 1
         # print(int(ncol), int(nrow))
-        return (int(ncol), int(nrow))
+        return (int(np.real(ncol)), int(np.real(nrow)))
 
     @classmethod
     def quantum_register(cls, qnum):
         register = np.array([[0, 0, 1], [0, 1, 0]])
-        register = SparseMatrix("general", register)
-        register = register.matrix
         w = 2 ** (qnum) - 2
         for i in range(w):
             register[-1] = [0, i + 2, 0]
 
-        register = SparseMatrix.transpose(register)
+        register = SparseMatrix("general", register)
+        register.matrix = SparseMatrix.transpose(register.matrix)
         return register
 
     @classmethod
@@ -152,7 +147,6 @@ class SparseMatrix(MatrixFrame):
         return SparseMatrix("general", tensorprod)
 
     @classmethod
-
     def matrix_multiply(cls, M1, M2):
         '''
         Multiply two matrices
@@ -172,25 +166,18 @@ class SparseMatrix(MatrixFrame):
         # print(f"m2{m2}")
 
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
-        dict1 = {(row, col): val for [(row), col, val] in m1}
-
-        dict2 = {(row, col): val for [(row), (col), val] in m2}
+        dict1 = {(row, col): val for [row, col, val] in m1}
+        dict2 = {(row, col): val for [row, col, val] in m2}
 
         dictm = {}
-        loop = 0
+
         for (r1, c1), v1 in dict1.items():  # iterate over SM1
             for (r2, c2), v2 in dict2.items():  # and SM2
                 # if ((type(v1) == "float" and v1 >= 10**(-10)) or (type(v1) == "complex" and abs(v1) >= 10**(-10))) and ((type(v2) == "float" and v2 >= 10**(-10)) or (type(v2) == "complex" and abs(v2) >= 10**(-10))):
                 # if abs(v1) >= 10**(-10) and abs(v2) >= 10**(-10):
-                if 1>0:
-                    if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
-                        dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
-                elif loop == len(list(dict1.items())):
-                    if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
-                        dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
-            loop += 1
+                if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
+                    dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
-        #print (SparseMatrix("general", matmul).matrix)
         return SparseMatrix("general", matmul)
 
     def sparse_multiply(self, num: float, mat):
@@ -200,20 +187,6 @@ class SparseMatrix(MatrixFrame):
         for i in range(len(mat)):
             mul.append([mat[i][0], mat[i][1], num * mat[i][2]])
         return mul
-
-    @classmethod
-    def transpose(cls, M):
-        pass
-        if type(M) == SparseMatrix:
-            m = M.matrix
-        else:
-            m = M
-
-        m_transpose = m.copy()
-        for i in range(len(m)):
-            row, column, entry = m[i]
-            m_transpose[i] = [column, row, entry]
-        return m_transpose.matrix
 
     @classmethod
     def transpose(cls, M):
@@ -244,11 +217,7 @@ class SparseMatrix(MatrixFrame):
         else:
             m = M
 
-        #print('1', M)
-        #print('2', np.conj(m))
-        #print('3', SparseMatrix.transpose(np.conj(m)))
         return SparseMatrix.matrix_multiply(m, SparseMatrix.transpose(np.conj(m)))
-
 
     @classmethod
     def trace(cls, M):
@@ -274,30 +243,13 @@ class SparseMatrix(MatrixFrame):
                     trace += m[i][2]
         return trace
 
-
-
     @classmethod
     def conjugate(cls, M):
-        pass
         M_conj = M.copy()
         for i in range(len(M)):
             if type(M[i][2]) == "complex":
                 M_conj[i][2] = - M[i][2]
         return M_conj
-
-
-    # def Basis(self, N:float): # need to check it's doing what i want it to
-    #   '''
-    #   Builds the sparse basis.
-    #   :param N:
-    #   :return: Returns the basis in the form of a list
-    #   '''
-    #     Q = []
-    #     for i in range(0, 2 ** N):
-    #         Q.append([i,0,1])
-    #         if i != 2**N - 1:
-    #             Q.append([2**N - 1,0,0])
-    #     return Q
 
     def cnot(self, d: list, c: float, t: float):
         '''
@@ -369,10 +321,10 @@ class SparseMatrix(MatrixFrame):
             typex = "complex"
 
         DMatrix = np.zeros((self.size_matrix(SMatrix)[0]) * self.size_matrix(SMatrix)[1],
-                           dtype=typex)  # create an array of zeros of the right size
+                           dtype=np.complex)  # create an array of zeros of the right size
         DMatrix.shape = self.size_matrix(SMatrix)
         for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
-            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
+            DMatrix[int(SMatrix[j][0])][int(SMatrix[j][1])] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
         return DMatrix
 
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
@@ -408,7 +360,7 @@ class SparseMatrix(MatrixFrame):
                 inputs_sparse.append([i, 0, inputs[i]])
         sparse_outputs = SparseMatrix.matrix_multiply(self.matrix, inputs_sparse).matrix
 
-        outputs_dense = np.zeros(len(inputs))
+        outputs_dense = np.zeros(len(inputs), dtype = np.complex)
         for j in range(len(inputs)):
             for i in range(len(sparse_outputs)):
                 if sparse_outputs[i][0] == j:

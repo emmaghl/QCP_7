@@ -1,5 +1,5 @@
 # Quantum Computer Simulator
-This python package can build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense (lazy and sparse?) methods.
+This python package can build, print and simulate a quantum computer. The simulated quantum computer can be chosen to implement dense, lazy and sparse methods.
 
 ## Python Version and OS
 Tested with Python 3.11.2 on macOS Ventura 13.1. See `Requirements.txt` file to see the python libraries and versions needed to run this code. The package should also run for Linux and Windows operating systems; the only reason why it wouldn't is that `PrintCircuit.py` clears the screen using the terminal/cmd when the circuit is printed in ASCII. This command varies across operating systems, however the package should account for this. 
@@ -141,11 +141,20 @@ This returns a dictionary where the keys are in the binary basis. The values are
 ## Key distribution
 The file `KeyDistributionGeneral.py` contains the quantum key distrbution programme based on the BB84 protocol. This can be run in either your ide or command line as desceribed before.
 
-Once initiated the programme will start by asking which matrix type you would like to use.
+Once initiated the programme will start by asking:
+```
+1. Report Example
+2. Normal
+```
+The report example runs preset case where the number of qubits is defined to 5 as well as a set basis, matrix type (dense) and bit message. This is to provide a detailed example of the funcionality and limits of the protocol
+
+The normal routine will run the fully unlocked programme and proceeds as follows:
+
+After starting the normal method the programme will ask which matrix type you would like to use:
 ```python
 t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
 ```
-Next the programme needs to know how many qubits will be used in the encryption:
+Next the programme needs to know how many bits are in the meassage which will be applied to the register and thus the qubits to provide encryption:
 ```python
 n = int(input('How long would person A like their bit message to be?: '))
 ```
@@ -159,4 +168,40 @@ Now the programme will call the QuantumComputer class and pass the matrix type a
     if t == "L" or t == "l":
         qc = QuantumComputer(n, 'Lazy')
 ```
-The register is then called and both the bits and the basis are setup to be vectors filled with n random numbers.
+The register is then called and both the bits and the basis are setup and printed to the terminal. They are then passed to the method `encode_message` which follows  the flow diagram, as seen in the report, to setup the qubits. The user knows this is completed once the terminal prints:
+```
+Person A has their secretly encoded message ready to send to person B.
+```
+The programme will then ask whether the message is to be intercepted:
+```python
+y = str(input('Do you want to intercept and try and read their message?\n >'))
+```
+If yes, the programme passes to the intercept function which takes the register and then uses a random basis to measure the register and returns a collapsed register.
+
+If no, the programme continues without interception and the register reamins unchanged.
+
+The next step repeats the same functioanlity as the intercept function but just returns the measured result.
+```python
+print('Person B has measured the message.')
+print('Person B shares the bases which they measured the message with, and vice versa so that they can both create a key from the matching bases.')
+```
+If the values of the random bases of both person A and B are the same then keep the values of the private bit messages and make individual keys. Discard otherwise. If after this step the legnth of the key is less than 2 the user will be prompted to start again. Otherwise a random sample is generated which is half the length of the key.
+
+Person A and person B publicly share the values of their keys corrosponding to the random sample. 
+```python
+print('Person A and person B share their random sample of the message they measured using the bases already shared:')
+print('A random sample = ', sample_A)
+print('B random sample = ', sample_B)
+```
+If the values in the samples match, then it is likely that the keys are secure and subsequently the left over values in the keys are used to create a shared secret key.
+```python
+print('Secret Key is probably secure.')
+print('Both person A and person B have their secret keys now:')
+print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
+print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
+```
+If the values do not match, then there was an evesdropper and the keys are not secure.
+```python
+print('You were caught listening!')
+```
+Note: This message should only be displayed if the option to listen was selected. Additioanlly there is a chance inversly proportional to the number of qubits sampled that this message will not be displayed if listening and an evesdropper has breached the encryption undetected.  

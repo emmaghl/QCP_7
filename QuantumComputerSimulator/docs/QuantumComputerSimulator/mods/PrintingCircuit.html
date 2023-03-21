@@ -28,6 +28,7 @@
 </summary>
 <pre><code class="python">import os
 import sys
+import platform
 
 class PrintingCircuit():
 
@@ -52,7 +53,7 @@ class PrintingCircuit():
         self.__SPACE_HOZ_MIDDLE = SPACE_HOZ_MIDDLE
 
     def print_circuit_ascii(self):
-        &#39;&#39;&#39;WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation.&#39;&#39;&#39;
+        &#39;&#39;&#39;WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation in an ASCII format.&#39;&#39;&#39;
         self.__clear_screen()
         if not self.__custom_gate_names == []: #non-empty list
             self.__replace_with_custom_names()
@@ -62,7 +63,7 @@ class PrintingCircuit():
 
         # Creates the horizontal wires (not most efficient way to concatenate strings)
         for i in range(self.num_qubits):
-            circuit_string += f&#34;|0&gt; &#34; + &#34;-&#34;*(circuit_length*self.__SPACE_HOZ) + &#34;\n\n&#34;
+            circuit_string += &#34;    &#34;+&#34;-&#34;*(circuit_length*self.__SPACE_HOZ) + &#34;\n\n&#34;
         print(circuit_string)
 
         # Go through each time step, and print characters
@@ -100,7 +101,7 @@ class PrintingCircuit():
 
     def __clear_screen(self):
         &#39;&#39;&#39;Clears the screen depending on the operating system (checked for windows and MacOs).&#39;&#39;&#39;
-        os.system(&#34;cls&#34;) if os.name == &#34;nt&#34; else os.system(&#34;clear&#34;)
+        os.system(&#34;cls&#34;) if platform.system() == &#34;Windows&#34; else os.system(&#34;clear&#34;)
 
     def __print_singleGate(self, time_step: list[vars], x: int):
         &#39;&#39;&#39;Handles the printing of a single gate at the time step position of `x`.&#39;&#39;&#39;
@@ -176,7 +177,7 @@ Prints the quantum circuit in an ascii format on the terminal.</p>
         self.__SPACE_HOZ_MIDDLE = SPACE_HOZ_MIDDLE
 
     def print_circuit_ascii(self):
-        &#39;&#39;&#39;WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation.&#39;&#39;&#39;
+        &#39;&#39;&#39;WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation in an ASCII format.&#39;&#39;&#39;
         self.__clear_screen()
         if not self.__custom_gate_names == []: #non-empty list
             self.__replace_with_custom_names()
@@ -186,7 +187,7 @@ Prints the quantum circuit in an ascii format on the terminal.</p>
 
         # Creates the horizontal wires (not most efficient way to concatenate strings)
         for i in range(self.num_qubits):
-            circuit_string += f&#34;|0&gt; &#34; + &#34;-&#34;*(circuit_length*self.__SPACE_HOZ) + &#34;\n\n&#34;
+            circuit_string += &#34;    &#34;+&#34;-&#34;*(circuit_length*self.__SPACE_HOZ) + &#34;\n\n&#34;
         print(circuit_string)
 
         # Go through each time step, and print characters
@@ -224,7 +225,7 @@ Prints the quantum circuit in an ascii format on the terminal.</p>
 
     def __clear_screen(self):
         &#39;&#39;&#39;Clears the screen depending on the operating system (checked for windows and MacOs).&#39;&#39;&#39;
-        os.system(&#34;cls&#34;) if os.name == &#34;nt&#34; else os.system(&#34;clear&#34;)
+        os.system(&#34;cls&#34;) if platform.system() == &#34;Windows&#34; else os.system(&#34;clear&#34;)
 
     def __print_singleGate(self, time_step: list[vars], x: int):
         &#39;&#39;&#39;Handles the printing of a single gate at the time step position of `x`.&#39;&#39;&#39;
@@ -259,13 +260,13 @@ Prints the quantum circuit in an ascii format on the terminal.</p>
 <span>def <span class="ident">print_circuit_ascii</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation.</p></div>
+<div class="desc"><p>WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation in an ASCII format.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def print_circuit_ascii(self):
-    &#39;&#39;&#39;WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation.&#39;&#39;&#39;
+    &#39;&#39;&#39;WARNING: Needs to be run from terminal/cmd, and clears the screen. This function will print the circuit defined from instantiation in an ASCII format.&#39;&#39;&#39;
     self.__clear_screen()
     if not self.__custom_gate_names == []: #non-empty list
         self.__replace_with_custom_names()
@@ -275,7 +276,7 @@ Prints the quantum circuit in an ascii format on the terminal.</p>
 
     # Creates the horizontal wires (not most efficient way to concatenate strings)
     for i in range(self.num_qubits):
-        circuit_string += f&#34;|0&gt; &#34; + &#34;-&#34;*(circuit_length*self.__SPACE_HOZ) + &#34;\n\n&#34;
+        circuit_string += &#34;    &#34;+&#34;-&#34;*(circuit_length*self.__SPACE_HOZ) + &#34;\n\n&#34;
     print(circuit_string)
 
     # Go through each time step, and print characters

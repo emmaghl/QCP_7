@@ -1,4 +1,6 @@
 from QuantumComputerSimulator.mods.MatrixFrame import MatrixFrame
+from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
+
 
 import copy
 import numpy as np
@@ -8,8 +10,8 @@ class LazyMatrix(MatrixFrame):
     def __init__(self, Type, *args):
         '''
         Set up the lazy gates using lambda functions.
-        <b>param Type<\b> Gate to be initialised
-        <b>param args<\b>
+        :param Type: Gate to be initialised
+        :param args:
         '''
         if Type == 'I':
             self.matrix = [lambda x: x[0], lambda x: x[1]]
@@ -41,30 +43,28 @@ class LazyMatrix(MatrixFrame):
             self.matrix = [lambda x: 0, lambda x: x[1]]
 
         if Type == 'zerocol':
-            pass
+            self.matrix = []
         if Type == 'onecol':
-            pass
+            self.matrix = []
 
         self.dim = len(self.matrix)
 
     @classmethod
-    def tensor_prod(cls, M1, M2):
+    def quantum_register(cls, qnum):
+        reg = []
+        for i in range(0,qnum):
+            reg.append([lambda x: x[i]])
+        #reg = [lambda x: x[0]]
+        return LazyMatrix('General',reg)
+
+    @classmethod
+    def tensor_prod(cls, m2, m1):
         '''
         Lazy tensor product
-        <b>param m1<\b> Gate 1
-        <b>param m2<\b> Gate 2
-        <b>return<\b> Tensor product of Gate 1 with Gate 2
+        :param m1: Gate 1
+        :param m2: Gate 2
+        :return: Tensor product of Gate 1 with Gate 2
         '''
-
-        if type(M1) == LazyMatrix:
-            m1 = M1.matrix
-        else:
-            m1 = M1
-        if type(M2) == LazyMatrix:
-            m2 = M2.matrix
-        else:
-            m2 = M2
-
         tp = []
         for i in range(0, m1.dim):
             for j in range(0, m2.dim):
@@ -75,23 +75,13 @@ class LazyMatrix(MatrixFrame):
         return new_matrix
 
     @classmethod
-    def matrix_multiply(cls, M1, M2):
+    def matrix_multiply(cls, m1, m2):
         '''
         Use list comprehension to preform a matrix multiplication between two 'matrices'
-        <b>param m1<\b> Gate 1
-        <b>param m2<\b> Gate 2
-        <b>return<\b> Multiplication of gate 1 and gate 2
+        :param m1: Gate 1
+        :param m2: Gate 2
+        :return: Multiplication of gate 1 and gate 2
         '''
-
-        if type(M1) == LazyMatrix:
-            m1 = M1.matrix
-        else:
-            m1 = M1
-        if type(M2) == LazyMatrix:
-            m2 = M2.matrix
-        else:
-            m2 = M2
-
         mm = []
         for i in range(0, m1.dim):
             mm.append(
@@ -102,15 +92,11 @@ class LazyMatrix(MatrixFrame):
 
     @classmethod
     def inner_product(cls, M):
-        pass
+        return DenseMatrix.inner_product(M)
 
     @classmethod
     def trace(cls, M):
-        pass
-
-    @classmethod
-    def conjugate(cls, M):
-        pass
+        return DenseMatrix.trace(M)
 
     def cnot(self, d, c, t):
         digits = copy.deepcopy(d)
@@ -138,19 +124,28 @@ class LazyMatrix(MatrixFrame):
         return cv
 
     def cz(self, d, c, t):
-        pass
+        digits = copy.deepcopy(d)
+        cz = []
+
+        index = super().CZ_logic(digits,c,t)
+
+        for i in range(0,len(digits)):
+            if index[i] == 1:
+                cz.append(lambda x,y=i: -1*x[y])
+            else:
+                cz.append(lambda x,y=i: x[y])
+
+        return cz
 
     def output(self,inputs):
         new_in = []
         for i in range(0,len(inputs)):
-            new_in.append(inputs[i][0])
+            new_in.append(inputs[i])
         out = []
         for i in range(0,self.dim):
             out.append(self.matrix[i](new_in))
 
-        #to vector form
+        #To Vector form:
         out = np.array(out)
-        out.shape = (len(out), 1)
-
+        out.shape = (len(out),1)
         return out
-

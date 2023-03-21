@@ -9,8 +9,8 @@ class DenseMatrix(MatrixFrame):
     def __init__(self, Type, *args):
         '''
         Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        <b>param Type<\b> Gate to be built
-        <b>param args<\b>
+        <b>param Type</b> Gate to be built
+        <b>param args</b>
         '''
         if Type == 'H':
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -55,12 +55,6 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def tensor_prod(cls, M2, M1):
-        '''
-        Do the tensor product of matrix 1 and matrix 2.
-        <b>param M2<\b> Matrix 2
-        <b>param M1<\b> Matrix 1
-        <b>return<\b> Tensor product of Matrix 1 with Matrix 2
-        '''
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
         else:
@@ -93,12 +87,6 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def matrix_multiply(cls, M1, M2):
-        '''
-        Multiply two matrices
-        <b>param M1<\b> Matrix 1
-        <b>param M2<\b> Matrix 2
-        <b>return<\b> Matrix 1 multiplied by matrix 2
-        '''
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
         else:
@@ -108,6 +96,8 @@ class DenseMatrix(MatrixFrame):
         else:
             m2 = M2
 
+        if len(m2.shape) == 1:
+            m2 = [[m] for m in m2]
         M = np.zeros(len(m1) * len(m2[0]), dtype='complex')
         M.shape = (len(m1), len(m2[0]))
 
@@ -119,11 +109,6 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def inner_product(cls, M):
-        '''
-        Find the inner product
-        <b>param M<\b> input matrix
-        <b>return<\b> inner product of state
-        '''
         if type(M) == DenseMatrix:
             m = M.matrix
         else:
@@ -140,8 +125,8 @@ class DenseMatrix(MatrixFrame):
     def trace(cls, M):
         '''
         Matrix trace
-        <b>param M<\b> Input matrix
-        <b>return<\b> matrix trace
+        <b>param M</b> Input matrix
+        <b>return</b> matrix trace
         '''
         return np.trace(M.matrix)
 
@@ -156,8 +141,8 @@ class DenseMatrix(MatrixFrame):
     def Basis(self, N):
         '''
         Define the basis state of N qubits
-        <b>param N<\b> Number of Qubits
-        <b>return<\b> basis state
+        <b>param N</b> Number of Qubits
+        <b>return</b> basis state
         '''
         Q = []
         for i in range(0, 2 ** N):
@@ -230,7 +215,7 @@ class DenseMatrix(MatrixFrame):
 
     def CROT_k(self, k):
         UROT_k =  np.array([[1, 0], [0, math.exp(2*math.pi*1j/2**k)]])
-        CROT_k = cls.tensor_prod(self.M0, self.I) + cls.tensor_prod(self.M1, UROT_k)
+        CROT_k = self.tensor_prod(self.M0, self.I) + self.tensor_prod(self.M1, UROT_k)
         return CROT_k
 
     def output(self, inputs):

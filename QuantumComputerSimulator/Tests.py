@@ -2,19 +2,21 @@ from QuantumComputerSimulator.QuantumComputer import QuantumComputer
 from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
 
 import numpy as np
+import warnings
+warnings.filterwarnings('ignore')
 
 class Test():
     '''
-    This class contains functions that can be called by adding the --test arfument from the terminal:
-`   python3 sample.py --test`
-    which will verify that the circuit should be operating as expected. Functions were added throughout the duration of the project.
+    This class contains functions that can be called by adding the `--test` argument from the terminal:
+    `python3 sample.py --test`
+    which will verify that the circuit should be operating as expected. Functions were added throughout the duration of the project. Some functions are not called for lazy; as they only test the matrix structure that only appears in Sparse and Dense.
     '''
     def __init__(self):
-        # Gets all methods to test (except for private methods with _ in front.
+        # Gets all methods to test from this class (except for private methods with _ in front.
         list_methods = [method for method in dir(Test) if method.startswith('_') is False]
 
         # Loops through printing all methods and checking running them
-        for quantum_computer_type in ["Dense", "Lazy", "Sparse"]:
+        for quantum_computer_type in ["Dense", "Sparse", "Lazy"]:
             print(f"Testing {quantum_computer_type}.")
             for method in list_methods:
                 print(f"\t-> Checking: {method}...")
@@ -59,7 +61,7 @@ class Test():
         assert (probs['110'] == 10), f"Incorrect basis orientation of basis! It should be that |110> : 10, instead it's {probs['110']}. Most likely that |011> is measured instead: |011> : {probs['011']}"
 
     def catch_incorrect_user_input(self, type: str):
-        '''Tests if the gate logic functions catches incorrect inputs from the user.'''
+        '''Tests if the gate logic functions catches incorrect inputs from the user. These are filled with non-examples of how to interact with the user.'''
         qc = QuantumComputer(2, type)
         try:
             qc.gate_logic( (["H"], [[0]]) )
@@ -107,15 +109,14 @@ class Test():
 
         qc.add_gate_to_circuit(init_states),
 
-        # Prints the matrix representation of the circuits, and the output vector when the |00> is sent in. Should be able
-        # to amplify the |11> states.
+        # Prints the matrix representation of the circuits, and the output vector when the |000> is sent in. Should be aonaly able to measure the |011> state.
         qc.build_circuit()
-        probs = qc.apply_register_and_measure(10)
+        probs = qc.apply_register_and_measure(50)
 
-        assert (probs['011'] == 10), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, the bin count is \n {probs}"
+        assert (probs['011'] == 50), f"CNOT gate isn't working properly! Check CNOT_gate_and_Tensor_Product function in Test.py class for more details about the setup of the circuit. Instead, the bin count is \n {probs}"
 
     def order_of_tensor_product(self, type: str):
-        '''Checks the ordering of tensor product with two different and single gates.'''
+        '''Checks the ordering of tensor product with two different and single gates, only implemented for Sparse and Dense.'''
         if not type == "Lazy":
             qc = QuantumComputer(2, type)
 
@@ -146,7 +147,7 @@ class Test():
             print("\t\t-> Skipping for lazy...")
 
     def single_gate(self, type: str):
-        '''Checks the ordering of tensor product with two different and single gates.'''
+        '''Checks the ordering of tensor product with two different single gates. Only implemented for sparse and dense.'''
         if not type == "Lazy":
             qc = QuantumComputer(2, type)
 
@@ -176,7 +177,7 @@ class Test():
             print("\t\t-> Skipping for lazy...")
 
     def three_qubit_circuit(self, type: str):
-        '''Runs a 3 qubit circuit of grover's algorithm.'''
+        '''Runs a 3 qubit circuit of grover's algorithm, that produces asymmetric binary states.'''
         qc = QuantumComputer(3, type)
 
         # Defines the gates for grover's algorithm
@@ -201,15 +202,14 @@ class Test():
         qc.add_gate_to_circuit(self.__CCnot(0, 1, 2)),
         qc.add_gate_to_circuit(half_of_amplification[::-1]) # Reverses list
 
-        # Builds the circuit using 'Dense' methods
-        circuit = qc.build_circuit()
+        qc.build_circuit()
 
         # The regiseter is set to be |000>, and the states that amplified should be |110> and |111>
         probs = qc.apply_register_and_measure(repeats=1000)
         assert (probs['110']+probs['111']==1000), f"3 qubit circuit of grover's algorithm not working. Should only measure states |110> and |111>. Instead, it measured\n{probs}"
 
     def __CCnot(self, control_1, control_2, target) -> list:
-        '''Defines the Toffoli gate, and an example for implementing other gates from the elementary ones.'''
+        '''Defines the Toffoli gate, used for grovers algorithm examples.'''
         gate_built = [
             (["H"], [[target]]),
             (["CV"], [[control_2, target]]),
