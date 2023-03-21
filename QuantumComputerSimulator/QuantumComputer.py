@@ -2,6 +2,7 @@ from QuantumComputerSimulator.mods.PrintingCircuit import PrintingCircuit
 from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
 from QuantumComputerSimulator.mods.SparseMatrix import SparseMatrix
 from QuantumComputerSimulator.mods.LazyMatrix import LazyMatrix
+from QuantumComputerSimulator.mods.LazyMatrixSingle import LazyMatrixSingle
 from QuantumComputerSimulator.mods.MatrixFrame import MatrixFrame
 from QuantumComputerSimulator.mods.check import check
 
@@ -25,7 +26,7 @@ class QuantumComputer(Interface):
         self.N = qubits
 
         check.check_type(matrix_type, str)
-        check.check_in_list(matrix_type, ["Dense", "Sparse", "Lazy"])
+        check.check_in_list(matrix_type, ["Dense", "Sparse", "Lazy", "LazySingle"])
 
         '''
         Take desired method: Dense, Sparse or Lazy; and set the quantum computer to use that method.
@@ -36,6 +37,8 @@ class QuantumComputer(Interface):
             self.Matrix = SparseMatrix
         if matrix_type == "Lazy":
             self.Matrix = LazyMatrix
+        if matrix_type == "LazySingle":
+            self.Matrix = LazyMatrixSingle
 
         '''
         Build the different gates using the desired method. Gate building is handled within the matrix method.

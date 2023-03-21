@@ -261,15 +261,6 @@ def GroverAlgorithm_SingleRow_Suduko(matrixtype, show_plots = False):
 if __name__=="__main__":
     # Runs example algorithms if not testing contents if not testing
     if len(sys.argv) == 1:
-        # Prints the options to the user
-        t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
-        if t == "D" or t == "d":
-            matrixtype = 'Dense'
-        if t == "S" or t == "s":
-            matrixtype = 'Sparse'
-        if t == "L" or t == "l":
-            matrixtype = 'Sparse'
-
         options = [
             '[1] 3 qubit Grovers (Dense)',
             '[2] Single binary row of 3x3 sudoko (Dense)',
@@ -277,22 +268,32 @@ if __name__=="__main__":
         ]
         [print(f'{o}') for o in options]
 
-
-
         user_input = user_validation('Enter the number beside the algorithm that you would like to run.', ['1', '2', '3', 'exit'])
 
         if user_input == 'exit':
             exit()
 
+        matrix_input = user_validation(
+            'Enter type of matrix to be used with your chosen algorithm. Type D for Dense, S for Sparse, L for Lazy, LS for Single Lazy',
+            ['d', 's', 'l', 'ls'])
+        if matrix_input == 'd' or matrix_input == 'D':
+            matrix_type = 'Dense'
+        if matrix_input == 's' or matrix_input == 'S':
+            matrix_type = 'Sparse'
+        if matrix_input == 'l' or matrix_input == 'L':
+            matrix_type = 'Lazy'
+        if matrix_input == 'ls' or matrix_input == 'LS':
+            matrix_type = 'LazySingle'
+
         np.set_printoptions(linewidth=np.inf, precision=2, suppress=True)# Makes output from numpy arrays more pleasant.
         print('Running, this may take a bit...')
 
         if user_input == '1':
-            GroverAlgorithm_3Qubit(matrixtype, show_plots=False)
+            GroverAlgorithm_3Qubit(matrix_type, show_plots=False)
         elif user_input == '2':
-            GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrixtype, show_plots=False)
+            GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrix_type, show_plots=False)
         elif user_input == '3':
-            GroverAlgorithm_SingleRow_Suduko(matrixtype, show_plots=False)
+            GroverAlgorithm_SingleRow_Suduko(matrix_type, show_plots=False)
 
     elif '--test' in sys.argv:
         print("Running tests...")

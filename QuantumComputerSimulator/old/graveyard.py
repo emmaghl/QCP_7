@@ -157,3 +157,14 @@ for i in range(0, step_n):
     #         if m[j][0] > nc:
     #             nc = m[j][0]
     #     ncol = nc + 1
+
+# Prints the options to the user
+        t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy, LS for lazy single: '))
+        if t == "D" or t == "d":
+            matrixtype = 'Dense'
+        if t == "S" or t == "s":
+            matrixtype = 'Sparse'
+        if t == "L" or t == "l":
+            matrixtype = 'Lazy'
+        if t == "LS" or t = "ls":
+            matrixtype = 'LazySingle'
