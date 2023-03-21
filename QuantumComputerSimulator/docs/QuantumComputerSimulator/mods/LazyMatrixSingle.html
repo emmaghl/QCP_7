@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.10.0" />
-<title>QuantumComputerSimulator.mods.LazyMatrix API documentation</title>
+<title>QuantumComputerSimulator.mods.LazyMatrixSingle API documentation</title>
 <meta name="description" content="" />
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
 <link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
@@ -19,7 +19,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>QuantumComputerSimulator.mods.LazyMatrix</code></h1>
+<h1 class="title">Module <code>QuantumComputerSimulator.mods.LazyMatrixSingle</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -27,13 +27,12 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">from QuantumComputerSimulator.mods.MatrixFrame import MatrixFrame
-from QuantumComputerSimulator.mods.DenseMatrix import DenseMatrix
-
 
 import copy
 import numpy as np
 
-class LazyMatrix(MatrixFrame):
+
+class LazyMatrixSingle(MatrixFrame):
 
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
@@ -42,100 +41,97 @@ class LazyMatrix(MatrixFrame):
         :param args:
         &#39;&#39;&#39;
         if Type == &#39;I&#39;:
-            self.matrix = [lambda x: x[0], lambda x: x[1]]
+            self.matrix = lambda x: [x[0], x[1]]
+            self.dim = 2
         if Type == &#39;H&#39;:
-            self.matrix = [lambda x: (x[0] + x[1]) / np.sqrt(2), lambda x: (x[0] - x[1]) / np.sqrt(2)]
+            self.matrix = lambda x: [(x[0] + x[1]) / np.sqrt(2), (x[0] - x[1]) / np.sqrt(2)]
+            self.dim = 2
         if Type == &#39;P&#39;:
-            self.matrix = [lambda x: x[0], lambda x: np.exp(1j * args[0]) * x[1]]
+            self.matrix = lambda x: [x[0], np.exp(1j * args[0]) * x[1]]
+            self.dim = 2
 
         if Type == &#39;X&#39;:
-            self.matrix = [lambda x: x[1], lambda x: x[0]]
+            self.matrix = lambda x: [x[1], x[0]]
+            self.dim = 2
         if Type == &#39;Y&#39;:
-            self.matrix = [lambda x: 1j * x[1], lambda x: -1j * x[0]]
+            self.matrix = lambda x: [1j * x[1], -1j * x[0]]
+            self.dim = 2
         if Type == &#39;Z&#39;:
-            self.matrix = [lambda x: x[0], lambda x: -1 * x[1]]
+            self.matrix = lambda x: [x[0], -1 * x[1]]
+            self.dim = 2
 
         if Type == &#39;TP&#39; or Type == &#39;MM&#39; or Type == &#34;General&#34;:
             self.matrix = args[0]
+            self.dim = args[1]
 
         if Type == &#39;CNOT&#39;:
-            self.matrix = self.cnot(args[0], args[1], args[2])
+            self.matrix, self.dim = self.cnot(args[0], args[1], args[2])
         if Type == &#39;CV&#39;:
-            self.matrix = self.cv(args[0], args[1], args[2])
+            self.matrix, self.dim = self.cv(args[0], args[1], args[2])
         if Type == &#39;CZ&#39;:
-            self.matrix = self.cz(args[0], args[1], args[2])
+            self.matrix, self.dim = self.cz(args[0], args[1], args[2])
 
         if Type == &#39;M0&#39;:
-            self.matrix = [lambda x: x[0], lambda x: 0]
+            self.matrix = lambda x: [x[0], 0]
+            self.dim = 2
         if Type == &#39;M1&#39;:
-            self.matrix = [lambda x: 0, lambda x: x[1]]
+            self.matrix = lambda x: [0, x[1]]
+            self.dim = 2
 
         if Type == &#39;zerocol&#39;:
             self.matrix = []
         if Type == &#39;onecol&#39;:
             self.matrix = []
 
-        self.dim = len(self.matrix)
-
     @classmethod
     def quantum_register(cls, qnum):
-        reg = []
-        for i in range(0,qnum):
-            reg.append([lambda x: x[i]])
-        #reg = [lambda x: x[0]]
-        return LazyMatrix(&#39;General&#39;,reg)
+        pass
 
     @classmethod
-    def tensor_prod(cls, m2, m1):
+    def tensor_prod(cls, m1, m2):
         &#39;&#39;&#39;
         Lazy tensor product
         :param m1: Gate 1
         :param m2: Gate 2
         :return: Tensor product of Gate 1 with Gate 2
         &#39;&#39;&#39;
-        tp = []
-        for i in range(0, m1.dim):
-            for j in range(0, m2.dim):
-                tp.append(lambda x, y=i, z=j: m1.matrix[y](
-                    [m2.matrix[z]([x[m2.dim * k + l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
 
-        new_matrix = LazyMatrix(&#39;TP&#39;, tp)
-        return new_matrix
+        tp = lambda x: [[m1.matrix(
+            [[m2.matrix([x[m2.dim * n + m] for m in range(0, m2.dim)]) for n in range(0, m1.dim)][i][j] for i in
+             range(0, m1.dim)]) for j in range(0, m2.dim)][l][k] for k in range(0, m1.dim) for l in range(0, m2.dim)]
+
+        return LazyMatrixSingle(&#39;TP&#39;, tp, m1.dim * m2.dim)
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
         &#39;&#39;&#39;
-        Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
+        Lazy matrix multiplication between two &#39;matrices&#39;
         :param m1: Gate 1
         :param m2: Gate 2
         :return: Multiplication of gate 1 and gate 2
         &#39;&#39;&#39;
-        mm = []
-        for i in range(0, m1.dim):
-            mm.append(
-                lambda x, y=i: m1.matrix[y]([m2.matrix[k]([x[l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
+        mm = lambda x: m1.matrix(m2.matrix(x))
 
-        new_matrix = LazyMatrix(&#39;MM&#39;, mm)
-        return new_matrix
+        return LazyMatrixSingle(&#39;MM&#39;, mm, m1.dim)
 
     @classmethod
     def inner_product(cls, M):
-        return DenseMatrix.inner_product(M)
+        pass
 
     @classmethod
     def trace(cls, M):
-        return DenseMatrix.trace(M)
+        pass
+
+    @classmethod
+    def conjugate(cls, M):
+        pass
 
     def cnot(self, d, c, t):
         digits = copy.deepcopy(d)
-        cn = []
 
         index = super().CNOT_logic(digits, c, t)
 
-        for i in range(0, len(index)):
-            cn.append(lambda x, y=i: x[index[y]])
-
-        return cn
+        return lambda x: [x[index[i]] for i in range(0, len(index))], int(np.log(len(index)) / np.log(2))
 
     def cv(self, d, c, t):
         digits = copy.deepcopy(d)
@@ -143,39 +139,30 @@ class LazyMatrix(MatrixFrame):
 
         index = super().CV_logic(digits, c, t)
 
-        for i in range(0, len(digits)):
-            if index[i] == 1:
-                cv.append(lambda x, y=i: 1j * x[y])
-            else:
-                cv.append(lambda x, y=i: x[y])
+        cv = lambda x: [1j * x[i] if index[i] == 1 else x[i] for i in range(0, len(index))]
 
-        return cv
+        return cv, int(np.log(len(index)) / np.log(2))
 
     def cz(self, d, c, t):
         digits = copy.deepcopy(d)
         cz = []
 
-        index = super().CZ_logic(digits,c,t)
+        index = super().CZ_logic(digits, c, t)
 
-        for i in range(0,len(digits)):
-            if index[i] == 1:
-                cz.append(lambda x,y=i: -1*x[y])
-            else:
-                cz.append(lambda x,y=i: x[y])
+        cz = lambda x: [-1 * x[i] if index[i] == 1 else x[i] for i in range(0, len(index))]
 
-        return cz
+        return cz, int(np.log(len(index)) / np.log(2))
 
-    def output(self,inputs):
+    def output(self, inputs):
         new_in = []
-        for i in range(0,len(inputs)):
+        for i in range(0, len(inputs)):
             new_in.append(inputs[i])
-        out = []
-        for i in range(0,self.dim):
-            out.append(self.matrix[i](new_in))
 
-        #To Vector form:
+        out = self.matrix(new_in)
+
+        # To Vector form:
         out = np.array(out)
-        out.shape = (len(out),1)
+        out.shape = (len(out), 1)
         return out</code></pre>
 </details>
 </section>
@@ -188,8 +175,8 @@ class LazyMatrix(MatrixFrame):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix"><code class="flex name class">
-<span>class <span class="ident">LazyMatrix</span></span>
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle"><code class="flex name class">
+<span>class <span class="ident">LazyMatrixSingle</span></span>
 <span>(</span><span>Type, *args)</span>
 </code></dt>
 <dd>
@@ -202,7 +189,7 @@ inheritance.</p>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">class LazyMatrix(MatrixFrame):
+<pre><code class="python">class LazyMatrixSingle(MatrixFrame):
 
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
@@ -211,100 +198,97 @@ inheritance.</p>
         :param args:
         &#39;&#39;&#39;
         if Type == &#39;I&#39;:
-            self.matrix = [lambda x: x[0], lambda x: x[1]]
+            self.matrix = lambda x: [x[0], x[1]]
+            self.dim = 2
         if Type == &#39;H&#39;:
-            self.matrix = [lambda x: (x[0] + x[1]) / np.sqrt(2), lambda x: (x[0] - x[1]) / np.sqrt(2)]
+            self.matrix = lambda x: [(x[0] + x[1]) / np.sqrt(2), (x[0] - x[1]) / np.sqrt(2)]
+            self.dim = 2
         if Type == &#39;P&#39;:
-            self.matrix = [lambda x: x[0], lambda x: np.exp(1j * args[0]) * x[1]]
+            self.matrix = lambda x: [x[0], np.exp(1j * args[0]) * x[1]]
+            self.dim = 2
 
         if Type == &#39;X&#39;:
-            self.matrix = [lambda x: x[1], lambda x: x[0]]
+            self.matrix = lambda x: [x[1], x[0]]
+            self.dim = 2
         if Type == &#39;Y&#39;:
-            self.matrix = [lambda x: 1j * x[1], lambda x: -1j * x[0]]
+            self.matrix = lambda x: [1j * x[1], -1j * x[0]]
+            self.dim = 2
         if Type == &#39;Z&#39;:
-            self.matrix = [lambda x: x[0], lambda x: -1 * x[1]]
+            self.matrix = lambda x: [x[0], -1 * x[1]]
+            self.dim = 2
 
         if Type == &#39;TP&#39; or Type == &#39;MM&#39; or Type == &#34;General&#34;:
             self.matrix = args[0]
+            self.dim = args[1]
 
         if Type == &#39;CNOT&#39;:
-            self.matrix = self.cnot(args[0], args[1], args[2])
+            self.matrix, self.dim = self.cnot(args[0], args[1], args[2])
         if Type == &#39;CV&#39;:
-            self.matrix = self.cv(args[0], args[1], args[2])
+            self.matrix, self.dim = self.cv(args[0], args[1], args[2])
         if Type == &#39;CZ&#39;:
-            self.matrix = self.cz(args[0], args[1], args[2])
+            self.matrix, self.dim = self.cz(args[0], args[1], args[2])
 
         if Type == &#39;M0&#39;:
-            self.matrix = [lambda x: x[0], lambda x: 0]
+            self.matrix = lambda x: [x[0], 0]
+            self.dim = 2
         if Type == &#39;M1&#39;:
-            self.matrix = [lambda x: 0, lambda x: x[1]]
+            self.matrix = lambda x: [0, x[1]]
+            self.dim = 2
 
         if Type == &#39;zerocol&#39;:
             self.matrix = []
         if Type == &#39;onecol&#39;:
             self.matrix = []
 
-        self.dim = len(self.matrix)
-
     @classmethod
     def quantum_register(cls, qnum):
-        reg = []
-        for i in range(0,qnum):
-            reg.append([lambda x: x[i]])
-        #reg = [lambda x: x[0]]
-        return LazyMatrix(&#39;General&#39;,reg)
+        pass
 
     @classmethod
-    def tensor_prod(cls, m2, m1):
+    def tensor_prod(cls, m1, m2):
         &#39;&#39;&#39;
         Lazy tensor product
         :param m1: Gate 1
         :param m2: Gate 2
         :return: Tensor product of Gate 1 with Gate 2
         &#39;&#39;&#39;
-        tp = []
-        for i in range(0, m1.dim):
-            for j in range(0, m2.dim):
-                tp.append(lambda x, y=i, z=j: m1.matrix[y](
-                    [m2.matrix[z]([x[m2.dim * k + l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
 
-        new_matrix = LazyMatrix(&#39;TP&#39;, tp)
-        return new_matrix
+        tp = lambda x: [[m1.matrix(
+            [[m2.matrix([x[m2.dim * n + m] for m in range(0, m2.dim)]) for n in range(0, m1.dim)][i][j] for i in
+             range(0, m1.dim)]) for j in range(0, m2.dim)][l][k] for k in range(0, m1.dim) for l in range(0, m2.dim)]
+
+        return LazyMatrixSingle(&#39;TP&#39;, tp, m1.dim * m2.dim)
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
         &#39;&#39;&#39;
-        Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
+        Lazy matrix multiplication between two &#39;matrices&#39;
         :param m1: Gate 1
         :param m2: Gate 2
         :return: Multiplication of gate 1 and gate 2
         &#39;&#39;&#39;
-        mm = []
-        for i in range(0, m1.dim):
-            mm.append(
-                lambda x, y=i: m1.matrix[y]([m2.matrix[k]([x[l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
+        mm = lambda x: m1.matrix(m2.matrix(x))
 
-        new_matrix = LazyMatrix(&#39;MM&#39;, mm)
-        return new_matrix
+        return LazyMatrixSingle(&#39;MM&#39;, mm, m1.dim)
 
     @classmethod
     def inner_product(cls, M):
-        return DenseMatrix.inner_product(M)
+        pass
 
     @classmethod
     def trace(cls, M):
-        return DenseMatrix.trace(M)
+        pass
+
+    @classmethod
+    def conjugate(cls, M):
+        pass
 
     def cnot(self, d, c, t):
         digits = copy.deepcopy(d)
-        cn = []
 
         index = super().CNOT_logic(digits, c, t)
 
-        for i in range(0, len(index)):
-            cn.append(lambda x, y=i: x[index[y]])
-
-        return cn
+        return lambda x: [x[index[i]] for i in range(0, len(index))], int(np.log(len(index)) / np.log(2))
 
     def cv(self, d, c, t):
         digits = copy.deepcopy(d)
@@ -312,39 +296,30 @@ inheritance.</p>
 
         index = super().CV_logic(digits, c, t)
 
-        for i in range(0, len(digits)):
-            if index[i] == 1:
-                cv.append(lambda x, y=i: 1j * x[y])
-            else:
-                cv.append(lambda x, y=i: x[y])
+        cv = lambda x: [1j * x[i] if index[i] == 1 else x[i] for i in range(0, len(index))]
 
-        return cv
+        return cv, int(np.log(len(index)) / np.log(2))
 
     def cz(self, d, c, t):
         digits = copy.deepcopy(d)
         cz = []
 
-        index = super().CZ_logic(digits,c,t)
+        index = super().CZ_logic(digits, c, t)
 
-        for i in range(0,len(digits)):
-            if index[i] == 1:
-                cz.append(lambda x,y=i: -1*x[y])
-            else:
-                cz.append(lambda x,y=i: x[y])
+        cz = lambda x: [-1 * x[i] if index[i] == 1 else x[i] for i in range(0, len(index))]
 
-        return cz
+        return cz, int(np.log(len(index)) / np.log(2))
 
-    def output(self,inputs):
+    def output(self, inputs):
         new_in = []
-        for i in range(0,len(inputs)):
+        for i in range(0, len(inputs)):
             new_in.append(inputs[i])
-        out = []
-        for i in range(0,self.dim):
-            out.append(self.matrix[i](new_in))
 
-        #To Vector form:
+        out = self.matrix(new_in)
+
+        # To Vector form:
         out = np.array(out)
-        out.shape = (len(out),1)
+        out.shape = (len(out), 1)
         return out</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -354,11 +329,25 @@ inheritance.</p>
 </ul>
 <h3>Static methods</h3>
 <dl>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.matrix_multiply"><code class="name flex">
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.conjugate"><code class="name flex">
+<span>def <span class="ident">conjugate</span></span>(<span>M)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def conjugate(cls, M):
+    pass</code></pre>
+</details>
+</dd>
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.matrix_multiply"><code class="name flex">
 <span>def <span class="ident">matrix_multiply</span></span>(<span>m1, m2)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Use list comprehension to preform a matrix multiplication between two 'matrices'
+<div class="desc"><p>Lazy matrix multiplication between two 'matrices'
 :param m1: Gate 1
 :param m2: Gate 2
 :return: Multiplication of gate 1 and gate 2</p></div>
@@ -369,21 +358,17 @@ inheritance.</p>
 <pre><code class="python">@classmethod
 def matrix_multiply(cls, m1, m2):
     &#39;&#39;&#39;
-    Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
+    Lazy matrix multiplication between two &#39;matrices&#39;
     :param m1: Gate 1
     :param m2: Gate 2
     :return: Multiplication of gate 1 and gate 2
     &#39;&#39;&#39;
-    mm = []
-    for i in range(0, m1.dim):
-        mm.append(
-            lambda x, y=i: m1.matrix[y]([m2.matrix[k]([x[l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
+    mm = lambda x: m1.matrix(m2.matrix(x))
 
-    new_matrix = LazyMatrix(&#39;MM&#39;, mm)
-    return new_matrix</code></pre>
+    return LazyMatrixSingle(&#39;MM&#39;, mm, m1.dim)</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.quantum_register"><code class="name flex">
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.quantum_register"><code class="name flex">
 <span>def <span class="ident">quantum_register</span></span>(<span>qnum)</span>
 </code></dt>
 <dd>
@@ -394,15 +379,11 @@ def matrix_multiply(cls, m1, m2):
 </summary>
 <pre><code class="python">@classmethod
 def quantum_register(cls, qnum):
-    reg = []
-    for i in range(0,qnum):
-        reg.append([lambda x: x[i]])
-    #reg = [lambda x: x[0]]
-    return LazyMatrix(&#39;General&#39;,reg)</code></pre>
+    pass</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.tensor_prod"><code class="name flex">
-<span>def <span class="ident">tensor_prod</span></span>(<span>m2, m1)</span>
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.tensor_prod"><code class="name flex">
+<span>def <span class="ident">tensor_prod</span></span>(<span>m1, m2)</span>
 </code></dt>
 <dd>
 <div class="desc"><p>Lazy tensor product
@@ -414,24 +395,22 @@ def quantum_register(cls, qnum):
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
-def tensor_prod(cls, m2, m1):
+def tensor_prod(cls, m1, m2):
     &#39;&#39;&#39;
     Lazy tensor product
     :param m1: Gate 1
     :param m2: Gate 2
     :return: Tensor product of Gate 1 with Gate 2
     &#39;&#39;&#39;
-    tp = []
-    for i in range(0, m1.dim):
-        for j in range(0, m2.dim):
-            tp.append(lambda x, y=i, z=j: m1.matrix[y](
-                [m2.matrix[z]([x[m2.dim * k + l] for l in range(0, m2.dim)]) for k in range(0, m1.dim)]))
 
-    new_matrix = LazyMatrix(&#39;TP&#39;, tp)
-    return new_matrix</code></pre>
+    tp = lambda x: [[m1.matrix(
+        [[m2.matrix([x[m2.dim * n + m] for m in range(0, m2.dim)]) for n in range(0, m1.dim)][i][j] for i in
+         range(0, m1.dim)]) for j in range(0, m2.dim)][l][k] for k in range(0, m1.dim) for l in range(0, m2.dim)]
+
+    return LazyMatrixSingle(&#39;TP&#39;, tp, m1.dim * m2.dim)</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.trace"><code class="name flex">
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.trace"><code class="name flex">
 <span>def <span class="ident">trace</span></span>(<span>M)</span>
 </code></dt>
 <dd>
@@ -442,13 +421,13 @@ def tensor_prod(cls, m2, m1):
 </summary>
 <pre><code class="python">@classmethod
 def trace(cls, M):
-    return DenseMatrix.trace(M)</code></pre>
+    pass</code></pre>
 </details>
 </dd>
 </dl>
 <h3>Methods</h3>
 <dl>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cnot"><code class="name flex">
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cnot"><code class="name flex">
 <span>def <span class="ident">cnot</span></span>(<span>self, d, c, t)</span>
 </code></dt>
 <dd>
@@ -459,17 +438,13 @@ def trace(cls, M):
 </summary>
 <pre><code class="python">def cnot(self, d, c, t):
     digits = copy.deepcopy(d)
-    cn = []
 
     index = super().CNOT_logic(digits, c, t)
 
-    for i in range(0, len(index)):
-        cn.append(lambda x, y=i: x[index[y]])
-
-    return cn</code></pre>
+    return lambda x: [x[index[i]] for i in range(0, len(index))], int(np.log(len(index)) / np.log(2))</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cv"><code class="name flex">
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cv"><code class="name flex">
 <span>def <span class="ident">cv</span></span>(<span>self, d, c, t)</span>
 </code></dt>
 <dd>
@@ -484,16 +459,12 @@ def trace(cls, M):
 
     index = super().CV_logic(digits, c, t)
 
-    for i in range(0, len(digits)):
-        if index[i] == 1:
-            cv.append(lambda x, y=i: 1j * x[y])
-        else:
-            cv.append(lambda x, y=i: x[y])
+    cv = lambda x: [1j * x[i] if index[i] == 1 else x[i] for i in range(0, len(index))]
 
-    return cv</code></pre>
+    return cv, int(np.log(len(index)) / np.log(2))</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cz"><code class="name flex">
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cz"><code class="name flex">
 <span>def <span class="ident">cz</span></span>(<span>self, d, c, t)</span>
 </code></dt>
 <dd>
@@ -506,18 +477,14 @@ def trace(cls, M):
     digits = copy.deepcopy(d)
     cz = []
 
-    index = super().CZ_logic(digits,c,t)
+    index = super().CZ_logic(digits, c, t)
 
-    for i in range(0,len(digits)):
-        if index[i] == 1:
-            cz.append(lambda x,y=i: -1*x[y])
-        else:
-            cz.append(lambda x,y=i: x[y])
+    cz = lambda x: [-1 * x[i] if index[i] == 1 else x[i] for i in range(0, len(index))]
 
-    return cz</code></pre>
+    return cz, int(np.log(len(index)) / np.log(2))</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.output"><code class="name flex">
+<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.output"><code class="name flex">
 <span>def <span class="ident">output</span></span>(<span>self, inputs)</span>
 </code></dt>
 <dd>
@@ -526,17 +493,16 @@ def trace(cls, M):
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def output(self,inputs):
+<pre><code class="python">def output(self, inputs):
     new_in = []
-    for i in range(0,len(inputs)):
+    for i in range(0, len(inputs)):
         new_in.append(inputs[i])
-    out = []
-    for i in range(0,self.dim):
-        out.append(self.matrix[i](new_in))
 
-    #To Vector form:
+    out = self.matrix(new_in)
+
+    # To Vector form:
     out = np.array(out)
-    out.shape = (len(out),1)
+    out.shape = (len(out), 1)
     return out</code></pre>
 </details>
 </dd>
@@ -571,16 +537,17 @@ def trace(cls, M):
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix">LazyMatrix</a></code></h4>
+<h4><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle">LazyMatrixSingle</a></code></h4>
 <ul class="two-column">
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cnot" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cnot">cnot</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cv" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cv">cv</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cz" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cz">cz</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.matrix_multiply" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.matrix_multiply">matrix_multiply</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.output" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.output">output</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.quantum_register" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.quantum_register">quantum_register</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.tensor_prod" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.tensor_prod">tensor_prod</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.trace" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.trace">trace</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cnot" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cnot">cnot</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.conjugate" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.conjugate">conjugate</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cv" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cv">cv</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cz" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cz">cz</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.matrix_multiply" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.matrix_multiply">matrix_multiply</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.output" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.output">output</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.quantum_register" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.quantum_register">quantum_register</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.tensor_prod" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.tensor_prod">tensor_prod</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.trace" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.trace">trace</a></code></li>
 </ul>
 </li>
 </ul>

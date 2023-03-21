@@ -33,15 +33,14 @@ class MatrixFrame(ABC):
 
     def __init__(self):
         &#39;&#39;&#39;
-        Abstract class
+        Abstract class for implementations of quantum computers.
         &#39;&#39;&#39;
         self.matrix = 0
         pass
 
     def recog_digits(self, digits):
         &#39;&#39;&#39;
-
-        &lt;b&gt;param digits&lt;\b&gt;
+        &lt;b&gt;param digits&lt;/b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -52,21 +51,12 @@ class MatrixFrame(ABC):
             numbers.append(num)
         return numbers
 
-    def reverse_digits(self, d):
-        temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
-        temp = np.flip(temp, axis=0)
-        unpack = []
-        for i in temp:
-            for j in i:
-                unpack.append(j)
-        return unpack
-
     def CNOT_logic(self, digits_in, c, t):
         &#39;&#39;&#39;
         Logic to build the Control Not gate, has children in dense and sparse
-        &lt;b&gt;param digits_in&lt;\b&gt;
-        &lt;b&gt;param c&lt;\b&gt;
-        &lt;b&gt;param t&lt;\b&gt;
+        &lt;b&gt;param digits_in&lt;/b&gt;
+        &lt;b&gt;param c&lt;/b&gt;
+        &lt;b&gt;param t&lt;/b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -82,9 +72,10 @@ class MatrixFrame(ABC):
     def CV_logic(self, digits, c, t):
         &#39;&#39;&#39;
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-        &lt;b&gt;param digits&lt;\b&gt;
-        &lt;b&gt;param c&lt;\b&gt;
-        &lt;b&gt;param t&lt;\b&gt;
+
+        &lt;b&gt;param digits&lt;/b&gt;
+        &lt;b&gt;param c&lt;/b&gt;
+        &lt;b&gt;param t&lt;/b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -105,14 +96,33 @@ class MatrixFrame(ABC):
 
     @abstractmethod
     def tensor_prod(self, M1, M2):
+        &#39;&#39;&#39;
+        Do the tensor product of matrix 1 and matrix 2.
+
+        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def matrix_multiply(self, M1, M2):
+        &#39;&#39;&#39;
+        Multiply two matrices
+        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;return&lt;/b&gt; Matrix 1 multiplied by matrix 2
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def inner_product(self, M):
+        &#39;&#39;&#39;
+        Find the inner product
+
+        &lt;b&gt;param M&lt;/b&gt; input matrix &lt;/br&gt;
+        &lt;b&gt;return&lt;/b&gt; inner product of state
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
@@ -139,7 +149,7 @@ class MatrixFrame(ABC):
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
-<p>Abstract class</p></div>
+<p>Abstract class for implementations of quantum computers.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -148,15 +158,14 @@ inheritance.</p>
 
     def __init__(self):
         &#39;&#39;&#39;
-        Abstract class
+        Abstract class for implementations of quantum computers.
         &#39;&#39;&#39;
         self.matrix = 0
         pass
 
     def recog_digits(self, digits):
         &#39;&#39;&#39;
-
-        &lt;b&gt;param digits&lt;\b&gt;
+        &lt;b&gt;param digits&lt;/b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -167,21 +176,12 @@ inheritance.</p>
             numbers.append(num)
         return numbers
 
-    def reverse_digits(self, d):
-        temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
-        temp = np.flip(temp, axis=0)
-        unpack = []
-        for i in temp:
-            for j in i:
-                unpack.append(j)
-        return unpack
-
     def CNOT_logic(self, digits_in, c, t):
         &#39;&#39;&#39;
         Logic to build the Control Not gate, has children in dense and sparse
-        &lt;b&gt;param digits_in&lt;\b&gt;
-        &lt;b&gt;param c&lt;\b&gt;
-        &lt;b&gt;param t&lt;\b&gt;
+        &lt;b&gt;param digits_in&lt;/b&gt;
+        &lt;b&gt;param c&lt;/b&gt;
+        &lt;b&gt;param t&lt;/b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -197,9 +197,10 @@ inheritance.</p>
     def CV_logic(self, digits, c, t):
         &#39;&#39;&#39;
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-        &lt;b&gt;param digits&lt;\b&gt;
-        &lt;b&gt;param c&lt;\b&gt;
-        &lt;b&gt;param t&lt;\b&gt;
+
+        &lt;b&gt;param digits&lt;/b&gt;
+        &lt;b&gt;param c&lt;/b&gt;
+        &lt;b&gt;param t&lt;/b&gt;
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -220,14 +221,33 @@ inheritance.</p>
 
     @abstractmethod
     def tensor_prod(self, M1, M2):
+        &#39;&#39;&#39;
+        Do the tensor product of matrix 1 and matrix 2.
+
+        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def matrix_multiply(self, M1, M2):
+        &#39;&#39;&#39;
+        Multiply two matrices
+        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;return&lt;/b&gt; Matrix 1 multiplied by matrix 2
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def inner_product(self, M):
+        &#39;&#39;&#39;
+        Find the inner product
+
+        &lt;b&gt;param M&lt;/b&gt; input matrix &lt;/br&gt;
+        &lt;b&gt;return&lt;/b&gt; inner product of state
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
@@ -256,9 +276,9 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Logic to build the Control Not gate, has children in dense and sparse
-<b>param digits_in&lt;&gt;
-<b>param c&lt;&gt;
-<b>param t&lt;&gt;</p></div>
+<b>param digits_in</b>
+<b>param c</b>
+<b>param t</b></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -266,9 +286,9 @@ inheritance.</p>
 <pre><code class="python">def CNOT_logic(self, digits_in, c, t):
     &#39;&#39;&#39;
     Logic to build the Control Not gate, has children in dense and sparse
-    &lt;b&gt;param digits_in&lt;\b&gt;
-    &lt;b&gt;param c&lt;\b&gt;
-    &lt;b&gt;param t&lt;\b&gt;
+    &lt;b&gt;param digits_in&lt;/b&gt;
+    &lt;b&gt;param c&lt;/b&gt;
+    &lt;b&gt;param t&lt;/b&gt;
     &#39;&#39;&#39;
     N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -286,10 +306,10 @@ inheritance.</p>
 <span>def <span class="ident">CV_logic</span></span>(<span>self, digits, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-<b>param digits&lt;&gt;
-<b>param c&lt;&gt;
-<b>param t&lt;&gt;</p></div>
+<div class="desc"><p>Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.</p>
+<p><b>param digits</b>
+<b>param c</b>
+<b>param t</b></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -297,9 +317,10 @@ inheritance.</p>
 <pre><code class="python">def CV_logic(self, digits, c, t):
     &#39;&#39;&#39;
     Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
-    &lt;b&gt;param digits&lt;\b&gt;
-    &lt;b&gt;param c&lt;\b&gt;
-    &lt;b&gt;param t&lt;\b&gt;
+
+    &lt;b&gt;param digits&lt;/b&gt;
+    &lt;b&gt;param c&lt;/b&gt;
+    &lt;b&gt;param t&lt;/b&gt;
     &#39;&#39;&#39;
     N = int(np.log(len(digits)) / np.log(2))
     index = []
@@ -343,13 +364,21 @@ inheritance.</p>
 <span>def <span class="ident">inner_product</span></span>(<span>self, M)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Find the inner product</p>
+<p><b>param M</b> input matrix </br>
+<b>return</b> inner product of state</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def inner_product(self, M):
+    &#39;&#39;&#39;
+    Find the inner product
+
+    &lt;b&gt;param M&lt;/b&gt; input matrix &lt;/br&gt;
+    &lt;b&gt;return&lt;/b&gt; inner product of state
+    &#39;&#39;&#39;
     pass</code></pre>
 </details>
 </dd>
@@ -357,13 +386,22 @@ def inner_product(self, M):
 <span>def <span class="ident">matrix_multiply</span></span>(<span>self, M1, M2)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Multiply two matrices
+<b>param M1</b> Matrix 1 </br>
+<b>param M2</b> Matrix 2 </br>
+<b>return</b> Matrix 1 multiplied by matrix 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def matrix_multiply(self, M1, M2):
+    &#39;&#39;&#39;
+    Multiply two matrices
+    &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+    &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+    &lt;b&gt;return&lt;/b&gt; Matrix 1 multiplied by matrix 2
+    &#39;&#39;&#39;
     pass</code></pre>
 </details>
 </dd>
@@ -385,15 +423,14 @@ def output(self, input):
 <span>def <span class="ident">recog_digits</span></span>(<span>self, digits)</span>
 </code></dt>
 <dd>
-<div class="desc"><p><b>param digits&lt;&gt;</p></div>
+<div class="desc"><p><b>param digits</b></p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def recog_digits(self, digits):
     &#39;&#39;&#39;
-
-    &lt;b&gt;param digits&lt;\b&gt;
+    &lt;b&gt;param digits&lt;/b&gt;
     &#39;&#39;&#39;
     N = int(np.log(len(digits)) / np.log(2))
     numbers = []
@@ -405,36 +442,27 @@ def output(self, input):
     return numbers</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.reverse_digits"><code class="name flex">
-<span>def <span class="ident">reverse_digits</span></span>(<span>self, d)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def reverse_digits(self, d):
-    temp = [[d[i*2], d[i*2+1]] for i in range(int(len(d)/2))]
-    temp = np.flip(temp, axis=0)
-    unpack = []
-    for i in temp:
-        for j in i:
-            unpack.append(j)
-    return unpack</code></pre>
-</details>
-</dd>
 <dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod"><code class="name flex">
 <span>def <span class="ident">tensor_prod</span></span>(<span>self, M1, M2)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Do the tensor product of matrix 1 and matrix 2.</p>
+<p><b>param M2</b> Matrix 2 </br>
+<b>param M1</b> Matrix 1 </br>
+<b>return</b> Tensor product of Matrix 1 with Matrix 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def tensor_prod(self, M1, M2):
+    &#39;&#39;&#39;
+    Do the tensor product of matrix 1 and matrix 2.
+
+    &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+    &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+    &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
+    &#39;&#39;&#39;
     pass</code></pre>
 </details>
 </dd>
@@ -481,7 +509,6 @@ def trace(self, M):
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply">matrix_multiply</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output">output</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.reverse_digits" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.reverse_digits">reverse_digits</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod">tensor_prod</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace">trace</a></code></li>
 </ul>
