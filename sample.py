@@ -10,9 +10,6 @@ import sys
 import numpy as np
 
 def user_validation(msg: str, options: list[str]) -> str:
-    '''
-    Verifies user input, ensuring that user can only choose from the list of `options`. It will repeat answering the question until the user does croecctly choose from this list.
-    '''
     print(msg)
     user_input = input('>')
     while not user_input.lower() in options:
@@ -275,7 +272,7 @@ if __name__=="__main__":
             matrix_type = 'Sparse'
         elif matrix_input == 'l':
             matrix_type = 'Lazy'
-        if matrix_input == 'ls':
+        elif matrix_input == 'ls':
             matrix_type = 'LazySingle'
 
         np.set_printoptions(linewidth=np.inf, precision=2, suppress=True)# Makes output from numpy arrays more pleasant.

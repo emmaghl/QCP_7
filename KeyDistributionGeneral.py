@@ -34,7 +34,6 @@ def encode_message(n, A_bases, A_bits, register):
                 register = qc.Matrix.matrix_multiply(circuit, register)
                 register = register.matrix
     return register
-
 def C_intercepts(n, C_bases, register):
     print('The random bases you measure the message with are =', C_bases)
     register_intercept = []
@@ -81,7 +80,6 @@ def C_intercepts(n, C_bases, register):
                 register = register.matrix
 
     return register
-
 def B_measure(n, B_bases, register):
     measurement = []
     for i in range(n):
@@ -121,7 +119,6 @@ def user_validation(msg: str, options: list[str]) -> str:
         print(msg)
         user_input = input('>')
     return user_input
-
 def Q_Key_Distribution():
     print("You are acting as a communication channel for person A to send secret messages to person B.")
     t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
@@ -233,7 +230,6 @@ def Q_Key_Distribution():
     print('Both person A and person B have their secret keys now:')
     print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
     print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
-
 def KeyDist_report_example():
     print("You are acting as a communication channel for person A to send secret messages to person B.")
     t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
@@ -351,7 +347,7 @@ def KeyDist_report_example():
 
 
 if __name__=="__main__":
-    ''' Runs different uses for QKD'''
+    # Runs example algorithms if not testing contents if not testing
     options = [
             '[1] Report Example',
             '[2] Normal',
