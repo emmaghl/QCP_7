@@ -220,29 +220,6 @@ class QuantumComputer(Interface):
         #print('result', result)
         return result
 
-
-    def histogram(self):
-        pass
-        x = []
-        for i in range(0, 1000):
-            if np.random.random() < QP:
-                x.append(state)
-            else:
-                x.append(1 - state)
-
-        # plt.hist(x)
-        # plt.show()
-
-    # def apply_register(self, inputs):
-    #     outputs = self.circuit.output(inputs)
-    #     probs = np.zeros(len(outputs))
-    #     for i in range(len(outputs)):
-    #         probs[i] = (self.Matrix.conjugate(outputs[i]))**2
-    #
-    #     counts = 1000
-    #     apply_dict = {inputs[i]: counts*probs[i] for i in inputs}
-    #     return apply_dict
-
     def get_probabilities(self, glued_circuit: np.ndarray, input_vector: np.ndarray = np.nan):
         '''
         Generates the probability of a measured state?

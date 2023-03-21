@@ -1,5 +1,3 @@
-import copy
-
 import numpy as np
 
 class check():
@@ -7,7 +5,13 @@ class check():
     error_header = "\n----------------------------------------\nQuantum Computer Simulator Error\n----------------------------------------\n"
 
     def __init__(self):
-        '''Functions that are used to validate multiple things. These should be formatted to give useful error messages when interfacing eith the quantum computer.'''
+        '''
+        Custom errors mainly for handling incorrect user interfacing with the package.
+
+        These Functions are used to validate multiple things. These should be formatted to give useful error messages when interfacing with the quantum computer. Will also print the error producing object in addition to what it was being compared to.
+
+        Can be used for debugging.
+        '''
         pass
 
     @classmethod

@@ -4,6 +4,5 @@ from QuantumComputerSimulator.Tests import Test
 # List of files/folders for the documentation tool to avoid.
 __pdoc__ = {
     "QuantumComputerSimulator.old": False,
-    "QuantumComputerSimulator.docs": False,
-    "QuantumComputerSimulator.Tests": False
+    "QuantumComputerSimulator.docs": False
 }

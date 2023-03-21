@@ -60,7 +60,7 @@ class LazyMatrixSingle(MatrixFrame):
         pass
 
     @classmethod
-    def tensor_prod(cls, m2, m1):
+    def tensor_prod(cls, m1, m2):
         '''
         Lazy tensor product
         :param m1: Gate 1

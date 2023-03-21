@@ -1,32 +1,25 @@
-'''Sample file for testing the QuantumComputerSimulator module, and showcasing the features. To run tests, add `--test` argument when running from the terminal.'''
+'''
+Sample file for testing the QuantumComputerSimulator package, and contains the Grover algorithms as described in the README.md. This file can also be used as an example for how the user interfaces with the QuantumComputerSimulator package.
+
+To run tests, add `--test` argument when running from the terminal.
+'''
 from QuantumComputerSimulator import QuantumComputer, Test
 
 import matplotlib.pyplot as plt
 import sys
 import numpy as np
 
-def glue_circuits(matricies: object) -> np.ndarray:
-    ''' Glues together circuits from left to right. In terms of matricies, `multiply_matricies([a, b, c])`, returns `c*b*a`.'''
-    m = matricies[0]
-
-    for matrix in matricies[::-1]:
-        m = matrix.matrix_multiply(m,matrix)
-    return m
-
 def user_validation(msg: str, options: list[str]) -> str:
+    '''
+    Verifies user input, ensuring that user can only choose from the list of `options`. It will repeat answering the question until the user does croecctly choose from this list.
+    '''
     print(msg)
     user_input = input('>')
     while not user_input.lower() in options:
         print(f'Please select from: {options}.')
         print(msg)
         user_input = input('>')
-    return user_input
-
-def glue_lists(*lists) -> list:
-    '''Adds elments from list_2 to list_1.'''
-    big_list = []
-    [[big_list.append(i) for i in list] for list in lists]
-    return big_list
+    return user_input.lower()
 
 def CCnot(control_1, control_2, target) -> list:
     '''Defines the Toffoli gate, and an example for implementing other gates from the elementary ones.'''
@@ -50,19 +43,16 @@ def CCnot(control_1, control_2, target) -> list:
     return gate_built
 
 def CCCnot(control_1, control_2, control_3, target, auxilary) -> list:
-    return glue_lists(
-        CCnot(control_1, control_3, auxilary),
-        CCnot(control_2,auxilary, target),
-        CCnot(control_1, control_3, auxilary)
-    )
+    '''CCCNot gate.'''
+    return CCnot(control_1, control_3, auxilary) + CCnot(control_2,auxilary, target) +CCnot(control_1, control_3, auxilary) #Python for concatenating lists
 
 def GroverAlgorithm_3Qubit(matrixtype, show_plots=False):
-    '''A function implementing a two qubit version of Grover's algorithm.'''
+    '''A function implementing a three qubit version of Grover's algorithm. Only the states |101> and |111> should be measured.'''
     qc = QuantumComputer(3, matrixtype)
 
     # Defines the gates for grover's algorithm
     init_states = [
-        (["H"], [[0,1,2]])
+        (["H", "H", "H"], [[0], [1], [2]])
     ]
 
     oracle = [
@@ -70,8 +60,8 @@ def GroverAlgorithm_3Qubit(matrixtype, show_plots=False):
     ]
 
     half_of_amplification = [
-        (["H"], [[0,1,2]]),
-        (["X"], [[0,1,2]]),
+        (["H", "H", "H"], [[0], [1], [2]]),
+        (["X", "X", "X"], [[0], [1], [2]]),
         (["H"], [[2]])
     ]
 
@@ -95,7 +85,7 @@ def GroverAlgorithm_3Qubit(matrixtype, show_plots=False):
     print("With the matrix representation:")
     print(circuit.matrix)
 
-    # The regiseter is set to be |000>, and the states that amplified should be |101> and |111>
+    # The register is set to be |000>, and the states that amplified should be |101> and |111>
     print("\nBin count of binary states after 1000 runs:")
     probs = qc.apply_register_and_measure(repeats=1000)
     [print(f"|{i}> : {probs[i]}") for i in probs.keys()]
@@ -161,8 +151,10 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrixtype, show_plots = False):
     if user == 'n':
         exit()
 
-    qc.build_circuit() # Builds matrix
+    # Once the user has verified that the circuit digram is the one intedned, then starts to build it
+    qc.build_circuit()
 
+    # Only selects the non-zero bin counts
     print("\nBin count of binary states after 1000 runs:")
     probs = qc.apply_register_and_measure(repeats=1000)
     for i in probs.keys():
@@ -259,12 +251,12 @@ def GroverAlgorithm_SingleRow_Suduko(matrixtype, show_plots = False):
         plt.show()
 
 if __name__=="__main__":
-    # Runs example algorithms if not testing contents if not testing
+    # Runs example algorithms if not testing contents
     if len(sys.argv) == 1:
         options = [
-            '[1] 3 qubit Grovers (Dense)',
-            '[2] Single binary row of 3x3 sudoko (Dense)',
-            '[3] A full row of 3x3 sudoko (Dense)',
+            '[1] 3 qubit Grovers',
+            '[2] Single binary row of 3x3 sudoko',
+            '[3] A full row of 3x3 sudoko',
         ]
         [print(f'{o}') for o in options]
 
@@ -276,13 +268,14 @@ if __name__=="__main__":
         matrix_input = user_validation(
             'Enter type of matrix to be used with your chosen algorithm. Type D for Dense, S for Sparse, L for Lazy, LS for Single Lazy',
             ['d', 's', 'l', 'ls'])
-        if matrix_input == 'd' or matrix_input == 'D':
+        matrix_type = ''
+        if matrix_input == 'd':
             matrix_type = 'Dense'
-        if matrix_input == 's' or matrix_input == 'S':
+        elif matrix_input == 's':
             matrix_type = 'Sparse'
-        if matrix_input == 'l' or matrix_input == 'L':
+        elif matrix_input == 'l':
             matrix_type = 'Lazy'
-        if matrix_input == 'ls' or matrix_input == 'LS':
+        if matrix_input == 'ls':
             matrix_type = 'LazySingle'
 
         np.set_printoptions(linewidth=np.inf, precision=2, suppress=True)# Makes output from numpy arrays more pleasant.

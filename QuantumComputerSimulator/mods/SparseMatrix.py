@@ -367,10 +367,11 @@ class SparseMatrix(MatrixFrame):
             typex = "complex"
 
         DMatrix = np.zeros((self.size_matrix(SMatrix)[0]) * self.size_matrix(SMatrix)[1],
-                           dtype=typex)  # create an array of zeros of the right size
+                           dtype=np.complex)  # create an array of zeros of the right size
         DMatrix.shape = self.size_matrix(SMatrix)
         for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
-            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
+            DMatrix[int(SMatrix[j][0])][int(SMatrix[j][1])] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
+            # This part gives a complex number warning, as casting Smatrix[j][0] which is complex to int, discarding imaginary part. Okay as we're only accessing for placement anyways.
         return DMatrix
 
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
@@ -410,7 +411,7 @@ class SparseMatrix(MatrixFrame):
         for j in range(len(inputs)):
             for i in range(len(sparse_outputs)):
                 if sparse_outputs[i][0] == j:
-                    outputs_dense[j] = sparse_outputs[i][2]
+                    outputs_dense[j] = np.abs(sparse_outputs[i][2])
 
         #to vector form
         outputs_dense = np.array(outputs_dense)

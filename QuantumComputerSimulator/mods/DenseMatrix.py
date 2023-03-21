@@ -108,6 +108,8 @@ class DenseMatrix(MatrixFrame):
         else:
             m2 = M2
 
+        if len(m2.shape) == 1:
+            m2 = [[m] for m in m2]
         M = np.zeros(len(m1) * len(m2[0]), dtype='complex')
         M.shape = (len(m1), len(m2[0]))
 
