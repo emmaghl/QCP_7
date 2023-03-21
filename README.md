@@ -168,7 +168,7 @@ Now the programme will call the QuantumComputer class and pass the matrix type a
     if t == "L" or t == "l":
         qc = QuantumComputer(n, 'Lazy')
 ```
-The register is then called and both the bits and the basis are setup and printed to the terminal. They are then passed to the method `encode_message` which follows  the flow diagram, as seen in the report, to setup the qubits. The user knows this is compelted once the terminal prints:
+The register is then called and both the bits and the basis are setup and printed to the terminal. They are then passed to the method `encode_message` which follows  the flow diagram, as seen in the report, to setup the qubits. The user knows this is completed once the terminal prints:
 ```
 Person A has their secretly encoded message ready to send to person B.
 ```
