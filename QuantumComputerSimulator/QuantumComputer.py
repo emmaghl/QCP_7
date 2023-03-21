@@ -57,7 +57,7 @@ class QuantumComputer(Interface):
         self.M1 = self.Matrix('M1')
 
         # produce binary digits for 2 input gate logic
-        self.binary = self.produce_digits()
+        self.binary = self.__produce_digits()
 
         # gate inputs
         self.single_inputs = ["H", "P", "X", "Y", "Z", "M0", "M1"]
@@ -80,7 +80,7 @@ class QuantumComputer(Interface):
         pc = PrintingCircuit(self.__gate_history, self.N, custom_gate_names=self.__custom_gate_names)
         pc.print_circuit_ascii()
 
-    def produce_digits(self):  # this is the flipped basis, working on
+    def __produce_digits(self):  # this is the flipped basis, working on
         digits = []
         for i in range(0, 2 ** self.N):
             digit = []
@@ -100,7 +100,7 @@ class QuantumComputer(Interface):
         digits = np.flip(digits, axis=1)
         return digits
 
-    def single_gates(self, gate, qnum):
+    def single_gates(self, gate: str, qnum: int) -> MatrixFrame:
         '''
         Build the single input gates to a 2^N matrix where N is the number of Qubits.
         <b>param: gate<\b> Specified gate to build

@@ -407,11 +407,11 @@ class SparseMatrix(MatrixFrame):
                 inputs_sparse.append([i, 0, inputs[i]])
         sparse_outputs = SparseMatrix.matrix_multiply(self.matrix, inputs_sparse).matrix
 
-        outputs_dense = np.zeros(len(inputs))
+        outputs_dense = np.zeros(len(inputs), dtype = np.complex)
         for j in range(len(inputs)):
             for i in range(len(sparse_outputs)):
                 if sparse_outputs[i][0] == j:
-                    outputs_dense[j] = np.abs(sparse_outputs[i][2])
+                    outputs_dense[j] = sparse_outputs[i][2]
 
         #to vector form
         outputs_dense = np.array(outputs_dense)
