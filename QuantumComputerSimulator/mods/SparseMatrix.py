@@ -69,13 +69,11 @@ class SparseMatrix(MatrixFrame):
 
         return mat_strip
 
-
     @classmethod
     def size_matrix(cls, M):
         '''
         Gives the dimensions of the matrix. Used to preserve matrix structure information.
         '''
-        # print(M)
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -149,7 +147,6 @@ class SparseMatrix(MatrixFrame):
         return SparseMatrix("general", tensorprod)
 
     @classmethod
-
     def matrix_multiply(cls, M1, M2):
         '''
         Multiply two matrices
@@ -222,7 +219,6 @@ class SparseMatrix(MatrixFrame):
 
         return SparseMatrix.matrix_multiply(m, SparseMatrix.transpose(np.conj(m)))
 
-
     @classmethod
     def trace(cls, M):
         '''
@@ -247,8 +243,6 @@ class SparseMatrix(MatrixFrame):
                     trace += m[i][2]
         return trace
 
-
-
     @classmethod
     def conjugate(cls, M):
         M_conj = M.copy()
@@ -256,20 +250,6 @@ class SparseMatrix(MatrixFrame):
             if type(M[i][2]) == "complex":
                 M_conj[i][2] = - M[i][2]
         return M_conj
-
-
-    # def Basis(self, N:float): # need to check it's doing what i want it to
-    #   '''
-    #   Builds the sparse basis.
-    #   :param N:
-    #   :return: Returns the basis in the form of a list
-    #   '''
-    #     Q = []
-    #     for i in range(0, 2 ** N):
-    #         Q.append([i,0,1])
-    #         if i != 2**N - 1:
-    #             Q.append([2**N - 1,0,0])
-    #     return Q
 
     def cnot(self, d: list, c: float, t: float):
         '''
