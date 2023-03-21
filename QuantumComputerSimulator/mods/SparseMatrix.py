@@ -321,10 +321,10 @@ class SparseMatrix(MatrixFrame):
             typex = "complex"
 
         DMatrix = np.zeros((self.size_matrix(SMatrix)[0]) * self.size_matrix(SMatrix)[1],
-                           dtype=typex)  # create an array of zeros of the right size
+                           dtype=np.complex)  # create an array of zeros of the right size
         DMatrix.shape = self.size_matrix(SMatrix)
         for j in range(len(SMatrix)):  # iterate over each row of the sparse matrix
-            DMatrix[SMatrix[j][0]][SMatrix[j][1]] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
+            DMatrix[int(SMatrix[j][0])][int(SMatrix[j][1])] = (SMatrix[j][2])  # change the non zero entries of the dense matrix
         return DMatrix
 
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}

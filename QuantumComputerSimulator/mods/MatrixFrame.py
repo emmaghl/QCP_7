@@ -95,7 +95,3 @@ class MatrixFrame(ABC):
     def output(self, input):
         pass
 
-    @abstractmethod
-    def conjugate(self, M):
-        pass
-
