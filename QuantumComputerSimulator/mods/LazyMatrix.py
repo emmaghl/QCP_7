@@ -48,13 +48,23 @@ class LazyMatrix(MatrixFrame):
         self.dim = len(self.matrix)
 
     @classmethod
-    def tensor_prod(cls, m1, m2):
+    def tensor_prod(cls, M1, M2):
         '''
         Lazy tensor product
         <b>param m1<\b> Gate 1
         <b>param m2<\b> Gate 2
         <b>return<\b> Tensor product of Gate 1 with Gate 2
         '''
+
+        if type(M1) == LazyMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == LazyMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
         tp = []
         for i in range(0, m1.dim):
             for j in range(0, m2.dim):
@@ -65,13 +75,23 @@ class LazyMatrix(MatrixFrame):
         return new_matrix
 
     @classmethod
-    def matrix_multiply(cls, m1, m2):
+    def matrix_multiply(cls, M1, M2):
         '''
         Use list comprehension to preform a matrix multiplication between two 'matrices'
         <b>param m1<\b> Gate 1
         <b>param m2<\b> Gate 2
         <b>return<\b> Multiplication of gate 1 and gate 2
         '''
+
+        if type(M1) == LazyMatrix:
+            m1 = M1.matrix
+        else:
+            m1 = M1
+        if type(M2) == LazyMatrix:
+            m2 = M2.matrix
+        else:
+            m2 = M2
+
         mm = []
         for i in range(0, m1.dim):
             mm.append(
