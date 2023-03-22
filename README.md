@@ -28,7 +28,7 @@ cd QuantumComputer
 ```
 The git repository will be downloaded into this folder. To download the repository, first install git (https://github.com/git-guides/install-git), and then enter:
 ```angular2html
-git clone https://github.com/emmaghl/Project-Bambi
+git clone https://github.com/emmaghl/QCP_7
 ```
 Enter the cloned repository with the `cd` command, and locate the `sample.py` file. Then run:
 ```angular2html
