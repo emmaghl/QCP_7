@@ -36,9 +36,10 @@ class DenseMatrix(MatrixFrame):
 
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
-        Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        &lt;b&gt;param Type&lt;/b&gt; Gate to be built
-        &lt;b&gt;param args&lt;/b&gt;
+        Implements the Dense method for quantum computing simulation.
+
+        &lt;b&gt;Type&lt;/b&gt; Gate to be built. &lt;br&gt;
+        &lt;b&gt;*args&lt;/b&gt; Position of control and target qubits.
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -74,6 +75,7 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def quantum_register(cls, qnum):
+        &#39;&#39;&#39;Initialises register.&#39;&#39;&#39;
         register = np.array([[1, 0]])
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -159,6 +161,7 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def transpose(cls, M):
+        &#39;&#39;&#39;Transpose of matrix&#39;&#39;&#39;
         if type(M) == DenseMatrix:
             m = M.matrix
         else:
@@ -168,7 +171,7 @@ class DenseMatrix(MatrixFrame):
     def Basis(self, N):
         &#39;&#39;&#39;
         Define the basis state of N qubits
-        &lt;b&gt;param N&lt;/b&gt; Number of Qubits
+        &lt;b&gt;N&lt;/b&gt; Number of Qubits &lt;br&gt;
         &lt;b&gt;return&lt;/b&gt; basis state
         &#39;&#39;&#39;
         Q = []
@@ -268,9 +271,9 @@ class DenseMatrix(MatrixFrame):
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
-<p>Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-<b>param Type</b> Gate to be built
-<b>param args</b></p></div>
+<p>Implements the Dense method for quantum computing simulation.</p>
+<p><b>Type</b> Gate to be built. <br>
+<b>*args</b> Position of control and target qubits.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -279,9 +282,10 @@ inheritance.</p>
 
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
-        Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        &lt;b&gt;param Type&lt;/b&gt; Gate to be built
-        &lt;b&gt;param args&lt;/b&gt;
+        Implements the Dense method for quantum computing simulation.
+
+        &lt;b&gt;Type&lt;/b&gt; Gate to be built. &lt;br&gt;
+        &lt;b&gt;*args&lt;/b&gt; Position of control and target qubits.
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -317,6 +321,7 @@ inheritance.</p>
 
     @classmethod
     def quantum_register(cls, qnum):
+        &#39;&#39;&#39;Initialises register.&#39;&#39;&#39;
         register = np.array([[1, 0]])
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -402,6 +407,7 @@ inheritance.</p>
 
     @classmethod
     def transpose(cls, M):
+        &#39;&#39;&#39;Transpose of matrix&#39;&#39;&#39;
         if type(M) == DenseMatrix:
             m = M.matrix
         else:
@@ -411,7 +417,7 @@ inheritance.</p>
     def Basis(self, N):
         &#39;&#39;&#39;
         Define the basis state of N qubits
-        &lt;b&gt;param N&lt;/b&gt; Number of Qubits
+        &lt;b&gt;N&lt;/b&gt; Number of Qubits &lt;br&gt;
         &lt;b&gt;return&lt;/b&gt; basis state
         &#39;&#39;&#39;
         Q = []
@@ -519,13 +525,14 @@ def conjugate(cls, M):
 <span>def <span class="ident">quantum_register</span></span>(<span>qnum)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initialises register.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def quantum_register(cls, qnum):
+    &#39;&#39;&#39;Initialises register.&#39;&#39;&#39;
     register = np.array([[1, 0]])
     w = 2 ** (qnum) - 2
     for i in range(w):
@@ -559,13 +566,14 @@ def trace(cls, M):
 <span>def <span class="ident">transpose</span></span>(<span>M)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Transpose of matrix</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def transpose(cls, M):
+    &#39;&#39;&#39;Transpose of matrix&#39;&#39;&#39;
     if type(M) == DenseMatrix:
         m = M.matrix
     else:
@@ -581,7 +589,7 @@ def transpose(cls, M):
 </code></dt>
 <dd>
 <div class="desc"><p>Define the basis state of N qubits
-<b>param N</b> Number of Qubits
+<b>N</b> Number of Qubits <br>
 <b>return</b> basis state</p></div>
 <details class="source">
 <summary>
@@ -590,7 +598,7 @@ def transpose(cls, M):
 <pre><code class="python">def Basis(self, N):
     &#39;&#39;&#39;
     Define the basis state of N qubits
-    &lt;b&gt;param N&lt;/b&gt; Number of Qubits
+    &lt;b&gt;N&lt;/b&gt; Number of Qubits &lt;br&gt;
     &lt;b&gt;return&lt;/b&gt; basis state
     &#39;&#39;&#39;
     Q = []
@@ -731,10 +739,10 @@ def transpose(cls, M):
 <ul class="hlist">
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic">CZ_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product">inner_product</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply">matrix_multiply</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod">tensor_prod</a></code></li>
 </ul>
 </li>

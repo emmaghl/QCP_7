@@ -37,9 +37,10 @@ class LazyMatrix(MatrixFrame):
 
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
-        Set up the lazy gates using lambda functions.
-        :param Type: Gate to be initialised
-        :param args:
+        Implements the Lazy method for quantum computing simulation.
+
+        &lt;b&gt;Type&lt;/b&gt; Gate to be built. &lt;br&gt;
+        &lt;b&gt;*args&lt;/b&gt; Position of control and target qubits.
         &#39;&#39;&#39;
         if Type == &#39;I&#39;:
             self.matrix = [lambda x: x[0], lambda x: x[1]]
@@ -82,16 +83,15 @@ class LazyMatrix(MatrixFrame):
         reg = []
         for i in range(0,qnum):
             reg.append([lambda x: x[i]])
-        #reg = [lambda x: x[0]]
         return LazyMatrix(&#39;General&#39;,reg)
 
     @classmethod
     def tensor_prod(cls, m2, m1):
         &#39;&#39;&#39;
         Lazy tensor product
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Tensor product of Gate 1 with Gate 2
+        &lt;b&gt;m1&lt;/b&gt; Gate 1
+        &lt;b&gt;m2&lt;/b&gt; Gate 2
+        &lt;b&gt;return&lt;/b&gt; Tensor product of Gate 1 with Gate 2
         &#39;&#39;&#39;
         tp = []
         for i in range(0, m1.dim):
@@ -106,9 +106,9 @@ class LazyMatrix(MatrixFrame):
     def matrix_multiply(cls, m1, m2):
         &#39;&#39;&#39;
         Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Multiplication of gate 1 and gate 2
+        &lt;b&gt; m1&lt;/b&gt; Gate 1
+        &lt;b&gt; m2&lt;/b&gt; Gate 2
+        &lt;b&gt;return&lt;/b&gt; Multiplication of gate 1 and gate 2
         &#39;&#39;&#39;
         mm = []
         for i in range(0, m1.dim):
@@ -195,9 +195,9 @@ class LazyMatrix(MatrixFrame):
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
-<p>Set up the lazy gates using lambda functions.
-:param Type: Gate to be initialised
-:param args:</p></div>
+<p>Implements the Lazy method for quantum computing simulation.</p>
+<p><b>Type</b> Gate to be built. <br>
+<b>*args</b> Position of control and target qubits.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -206,9 +206,10 @@ inheritance.</p>
 
     def __init__(self, Type, *args):
         &#39;&#39;&#39;
-        Set up the lazy gates using lambda functions.
-        :param Type: Gate to be initialised
-        :param args:
+        Implements the Lazy method for quantum computing simulation.
+
+        &lt;b&gt;Type&lt;/b&gt; Gate to be built. &lt;br&gt;
+        &lt;b&gt;*args&lt;/b&gt; Position of control and target qubits.
         &#39;&#39;&#39;
         if Type == &#39;I&#39;:
             self.matrix = [lambda x: x[0], lambda x: x[1]]
@@ -251,16 +252,15 @@ inheritance.</p>
         reg = []
         for i in range(0,qnum):
             reg.append([lambda x: x[i]])
-        #reg = [lambda x: x[0]]
         return LazyMatrix(&#39;General&#39;,reg)
 
     @classmethod
     def tensor_prod(cls, m2, m1):
         &#39;&#39;&#39;
         Lazy tensor product
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Tensor product of Gate 1 with Gate 2
+        &lt;b&gt;m1&lt;/b&gt; Gate 1
+        &lt;b&gt;m2&lt;/b&gt; Gate 2
+        &lt;b&gt;return&lt;/b&gt; Tensor product of Gate 1 with Gate 2
         &#39;&#39;&#39;
         tp = []
         for i in range(0, m1.dim):
@@ -275,9 +275,9 @@ inheritance.</p>
     def matrix_multiply(cls, m1, m2):
         &#39;&#39;&#39;
         Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Multiplication of gate 1 and gate 2
+        &lt;b&gt; m1&lt;/b&gt; Gate 1
+        &lt;b&gt; m2&lt;/b&gt; Gate 2
+        &lt;b&gt;return&lt;/b&gt; Multiplication of gate 1 and gate 2
         &#39;&#39;&#39;
         mm = []
         for i in range(0, m1.dim):
@@ -359,9 +359,9 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Use list comprehension to preform a matrix multiplication between two 'matrices'
-:param m1: Gate 1
-:param m2: Gate 2
-:return: Multiplication of gate 1 and gate 2</p></div>
+<b> m1</b> Gate 1
+<b> m2</b> Gate 2
+<b>return</b> Multiplication of gate 1 and gate 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -370,9 +370,9 @@ inheritance.</p>
 def matrix_multiply(cls, m1, m2):
     &#39;&#39;&#39;
     Use list comprehension to preform a matrix multiplication between two &#39;matrices&#39;
-    :param m1: Gate 1
-    :param m2: Gate 2
-    :return: Multiplication of gate 1 and gate 2
+    &lt;b&gt; m1&lt;/b&gt; Gate 1
+    &lt;b&gt; m2&lt;/b&gt; Gate 2
+    &lt;b&gt;return&lt;/b&gt; Multiplication of gate 1 and gate 2
     &#39;&#39;&#39;
     mm = []
     for i in range(0, m1.dim):
@@ -397,7 +397,6 @@ def quantum_register(cls, qnum):
     reg = []
     for i in range(0,qnum):
         reg.append([lambda x: x[i]])
-    #reg = [lambda x: x[0]]
     return LazyMatrix(&#39;General&#39;,reg)</code></pre>
 </details>
 </dd>
@@ -406,9 +405,9 @@ def quantum_register(cls, qnum):
 </code></dt>
 <dd>
 <div class="desc"><p>Lazy tensor product
-:param m1: Gate 1
-:param m2: Gate 2
-:return: Tensor product of Gate 1 with Gate 2</p></div>
+<b>m1</b> Gate 1
+<b>m2</b> Gate 2
+<b>return</b> Tensor product of Gate 1 with Gate 2</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -417,9 +416,9 @@ def quantum_register(cls, qnum):
 def tensor_prod(cls, m2, m1):
     &#39;&#39;&#39;
     Lazy tensor product
-    :param m1: Gate 1
-    :param m2: Gate 2
-    :return: Tensor product of Gate 1 with Gate 2
+    &lt;b&gt;m1&lt;/b&gt; Gate 1
+    &lt;b&gt;m2&lt;/b&gt; Gate 2
+    &lt;b&gt;return&lt;/b&gt; Tensor product of Gate 1 with Gate 2
     &#39;&#39;&#39;
     tp = []
     for i in range(0, m1.dim):
@@ -429,20 +428,6 @@ def tensor_prod(cls, m2, m1):
 
     new_matrix = LazyMatrix(&#39;TP&#39;, tp)
     return new_matrix</code></pre>
-</details>
-</dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.trace"><code class="name flex">
-<span>def <span class="ident">trace</span></span>(<span>M)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def trace(cls, M):
-    return DenseMatrix.trace(M)</code></pre>
 </details>
 </dd>
 </dl>
@@ -517,29 +502,6 @@ def trace(cls, M):
     return cz</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.output"><code class="name flex">
-<span>def <span class="ident">output</span></span>(<span>self, inputs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def output(self,inputs):
-    new_in = []
-    for i in range(0,len(inputs)):
-        new_in.append(inputs[i])
-    out = []
-    for i in range(0,self.dim):
-        out.append(self.matrix[i](new_in))
-
-    #To Vector form:
-    out = np.array(out)
-    out.shape = (len(out),1)
-    return out</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -547,9 +509,11 @@ def trace(cls, M):
 <ul class="hlist">
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic">CZ_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product">inner_product</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output">output</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace">trace</a></code></li>
 </ul>
 </li>
 </ul>
@@ -577,10 +541,8 @@ def trace(cls, M):
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cv" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cv">cv</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cz" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.cz">cz</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.matrix_multiply" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.matrix_multiply">matrix_multiply</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.output" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.output">output</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.quantum_register" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.quantum_register">quantum_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.tensor_prod" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.tensor_prod">tensor_prod</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.trace" href="#QuantumComputerSimulator.mods.LazyMatrix.LazyMatrix.trace">trace</a></code></li>
 </ul>
 </li>
 </ul>

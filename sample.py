@@ -10,6 +10,7 @@ import sys
 import numpy as np
 
 def user_validation(msg: str, options: list[str]) -> str:
+    '''Validates the user input from the terminal.'''
     print(msg)
     user_input = input('>')
     while not user_input.lower() in options:
@@ -91,7 +92,7 @@ def GroverAlgorithm_3Qubit(matrixtype, show_plots=False):
         plt.bar(probs.keys(), probs.values(), 1)
         plt.show()
 
-def GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrixtype, show_plots = False):
+def GroverAlgorithm_SingleRow_BinaryCol_Sudoku(matrixtype, show_plots = False):
     '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
     # The roles of each qubit are:
     #   - 0, 1, 2: the qubits that are amplified
@@ -163,7 +164,7 @@ def GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrixtype, show_plots = False):
         plt.bar(probs.keys(), probs.values(), 1)
         plt.show()
 
-def GroverAlgorithm_SingleRow_Suduko(matrixtype, show_plots = False):
+def GroverAlgorithm_SingleRow_Sudoku(matrixtype, show_plots = False):
     '''The smaller version of the 3x3 single roq sudoko, in the sense that this checks one binary column.'''
     # The roles of each qubit are:
     #   - 0 to 5: the qubits that are amplified
@@ -281,11 +282,11 @@ if __name__=="__main__":
         if user_input == '1':
             GroverAlgorithm_3Qubit(matrix_type, show_plots=False)
         elif user_input == '2':
-            GroverAlgorithm_SingleRow_BinaryCol_Suduko(matrix_type, show_plots=False)
+            GroverAlgorithm_SingleRow_BinaryCol_Sudoku(matrix_type, show_plots=False)
         elif user_input == '3':
-            GroverAlgorithm_SingleRow_Suduko(matrix_type, show_plots=False)
+            GroverAlgorithm_SingleRow_Sudoku(matrix_type, show_plots=False)
 
-    elif '--test' in sys.argv:
+    elif '--test' in sys.argv: # Running the tests via Test class.
         print("Running tests...")
         Test()
         print("Tests completed successfully.")

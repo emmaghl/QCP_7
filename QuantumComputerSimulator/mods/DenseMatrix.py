@@ -8,9 +8,10 @@ class DenseMatrix(MatrixFrame):
 
     def __init__(self, Type, *args):
         '''
-        Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        <b>param Type</b> Gate to be built
-        <b>param args</b>
+        Implements the Dense method for quantum computing simulation.
+
+        <b>Type</b> Gate to be built. <br>
+        <b>*args</b> Position of control and target qubits.
         '''
         if Type == 'H':
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -46,6 +47,7 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def quantum_register(cls, qnum):
+        '''Initialises register.'''
         register = np.array([[1, 0]])
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -131,6 +133,7 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def transpose(cls, M):
+        '''Transpose of matrix'''
         if type(M) == DenseMatrix:
             m = M.matrix
         else:
@@ -140,7 +143,7 @@ class DenseMatrix(MatrixFrame):
     def Basis(self, N):
         '''
         Define the basis state of N qubits
-        <b>param N</b> Number of Qubits
+        <b>N</b> Number of Qubits <br>
         <b>return</b> basis state
         '''
         Q = []

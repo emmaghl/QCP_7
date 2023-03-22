@@ -410,20 +410,6 @@ def tensor_prod(cls, m1, m2):
     return LazyMatrixSingle(&#39;TP&#39;, tp, m1.dim * m2.dim)</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.trace"><code class="name flex">
-<span>def <span class="ident">trace</span></span>(<span>M)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def trace(cls, M):
-    pass</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Methods</h3>
 <dl>
@@ -484,28 +470,6 @@ def trace(cls, M):
     return cz, int(np.log(len(index)) / np.log(2))</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.output"><code class="name flex">
-<span>def <span class="ident">output</span></span>(<span>self, inputs)</span>
-</code></dt>
-<dd>
-<div class="desc"></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def output(self, inputs):
-    new_in = []
-    for i in range(0, len(inputs)):
-        new_in.append(inputs[i])
-
-    out = self.matrix(new_in)
-
-    # To Vector form:
-    out = np.array(out)
-    out.shape = (len(out), 1)
-    return out</code></pre>
-</details>
-</dd>
 </dl>
 <h3>Inherited members</h3>
 <ul class="hlist">
@@ -513,9 +477,11 @@ def trace(cls, M):
 <ul class="hlist">
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic">CZ_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product">inner_product</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output">output</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace">trace</a></code></li>
 </ul>
 </li>
 </ul>
@@ -544,10 +510,8 @@ def trace(cls, M):
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cv" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cv">cv</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cz" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.cz">cz</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.matrix_multiply" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.matrix_multiply">matrix_multiply</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.output" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.output">output</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.quantum_register" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.quantum_register">quantum_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.tensor_prod" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.tensor_prod">tensor_prod</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.trace" href="#QuantumComputerSimulator.mods.LazyMatrixSingle.LazyMatrixSingle.trace">trace</a></code></li>
 </ul>
 </li>
 </ul>

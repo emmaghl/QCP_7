@@ -72,7 +72,7 @@ class QuantumComputer(ABC):
         '''
         Prints the circuit that is built from using `add_gate_to_circuit` function.
 
-        WARNING: Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
+        <b>WARNING:</b> Need to call `print_circuit_ascii` from terminal/cmd and will clear the terminal screen.
             Prints the quantum circuit in an ascii format on the terminal.
         '''
         pc = PrintingCircuit(self.__gate_history, self.N, custom_gate_names=self.__custom_gate_names)
@@ -105,8 +105,8 @@ class QuantumComputer(ABC):
         '''
         Build the single input gates to a 2^N matrix where N is the number of Qubits.
 
-        <b>gate</b> A list of gates to build. <br>
-        <b>qnum</b> List of the number of qubits corresponding to each gate.<br>
+        <b>gate</b> A list of string single gates. <br>
+        <b>qnum</b> List of the position of the gates corresponding to each gate.<br>
         <b>return</b> A gate as the specified matrix object.
         '''
         M = [0] * self.N
@@ -134,9 +134,9 @@ class QuantumComputer(ABC):
         '''
         Use the Matrix method in the given desired method to build a multi-input gate.
 
-        <b>gate</b> A list with one elemnt being the double gate. <br>
-        <b>qnum</b> Qubit list. <br>
-        <b>return</b> Returns correctly sized multi-input gate.
+        <b>gate</b> A list of string double gates. <br>
+        <b>qnum</b> List of the position of the gates corresponding to each gate.<br>
+        <b>return</b> A gate as the specified matrix object.
         '''
         if gate[0] == "CV":
             return self.Matrix("CV", self.binary, qnum[0][0], qnum[0][1])
@@ -148,6 +148,8 @@ class QuantumComputer(ABC):
     def __validate_gate_logic_inputs(self, inputs: list):
         '''
         A custom check function to verify the list of time steps when the user is adding gates to the circuit.
+
+        <b>inputs</b> The list of time steps the user has entered.
         '''
         check.check_type(inputs, list)
 
@@ -167,11 +169,11 @@ class QuantumComputer(ABC):
 
     def gate_logic(self, inputs: list, add_gate_name: str = "") -> MatrixFrame:
         '''
-        Builds the quantum circuit from a list of time steps. See README.md for examples of what to enter into the parameter `input`.
+        Builds the quantum circuit from a list of time steps. See README.md for examples of what to enter into for the parameter `input`.
 
         <b>inputs</b> List of time steps. <br>
-        <b>add_gate_name</b> Name of gates to be added. <br>
-        <b>return</b> The circuit of type determined from the instantiation of quantum computer.
+        <b>add_gate_name</b> Name to label the section gates when printing the circuit. <br>
+        <b>return</b> The circuit where Dense/Sparse/Lazy is determined from the instantiation of quantum computer.
         '''
 
         check.check_type(add_gate_name, str)
@@ -247,11 +249,11 @@ class QuantumComputer(ABC):
 
     def apply_register_and_measure(self, repeats: int = 1000, user_input_vector: list = []) -> dict:
         '''
-        Apply's a register to the circuit built with `add_gate_to_circuit`, with default being the |0> state in the computatinal basis.
+        Apply a register to the circuit built with `add_gate_to_circuit`, with default being the |0> state in the computational basis.
 
         <b>repeats</b> The number of measurements to be taken; assuming upon each measurement a new register is applied. <br>
         <b>user_input_vector</b> Allows custom choice of a register. <br>
-        <b>returns</b> A dictionary of keys labelling the binary states, and the values the number of times that state was measured over.
+        <b>returns</b> A dictionary of binary states where the values are the number of times that the state was measured over the course of `repeats` iterations.
         '''
         check.check_type(repeats, int)
 
@@ -307,7 +309,7 @@ class QuantumComputer(ABC):
         '''
         Builds the circuit from the gates added via `add_gate_to_circuit` function.
 
-        <b>return</b> The object specified by the instantiation of the class Dense/Sparse/Lazy object.
+        <b>return</b> The object specified by the instantiation of the class: Dense/Sparse/Lazy object.
         '''
         self.circuit = self.gate_logic(self.__gate_history)
         return self.circuit
