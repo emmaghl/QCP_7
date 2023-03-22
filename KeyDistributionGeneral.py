@@ -39,7 +39,7 @@ def C_intercepts(n, C_bases, register):
     for i in range(n):
         g = C_bases[i]
         if g == 0:
-            result = qc.measure_any(i, 0, register)
+            result = qc.measure_any(i, 0, list(register))
             if qc.Matrix == DenseMatrix:
                 register_intercept.append(result)
             elif qc.Matrix == SparseMatrix:
@@ -52,7 +52,7 @@ def C_intercepts(n, C_bases, register):
 
             register = qc.Matrix.matrix_multiply(circuit, register)
             register = register.matrix
-            result = qc.measure_any(i, 0, register)
+            result = qc.measure_any(i, 0, list(register))
             if qc.Matrix == DenseMatrix:
                 register_intercept.append(result)
             elif qc.Matrix == SparseMatrix:
@@ -85,7 +85,7 @@ def B_measure(n, B_bases, register):
         g = B_bases[i]
         if g == 0:
 
-            result = qc.measure_any(i, 0, register)
+            result = qc.measure_any(i, 0, list(register))
             measurement.append(result)
 
         else:
@@ -93,7 +93,7 @@ def B_measure(n, B_bases, register):
             circuit = circuit.matrix
             register = qc.Matrix.matrix_multiply(circuit, register)
             register = register.matrix
-            result = qc.measure_any(i, 0, register)
+            result = qc.measure_any(i, 0, list(register))
             measurement.append(result)
     return measurement
 

@@ -6,7 +6,7 @@ class check():
 
     def __init__(self):
         '''
-        Custom errors mainly for handling incorrect user interfacing with the package.
+        Custom error class mainly for handling when the user incorrectly interfaces with the package.
 
         These Functions are used to validate multiple things. These should be formatted to give useful error messages when interfacing with the quantum computer. Will also print the error producing object in addition to what it was being compared to.
 

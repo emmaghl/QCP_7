@@ -9,9 +9,10 @@ class LazyMatrix(MatrixFrame):
 
     def __init__(self, Type, *args):
         '''
-        Set up the lazy gates using lambda functions.
-        :param Type: Gate to be initialised
-        :param args:
+        Implements the Lazy method for quantum computing simulation.
+
+        <b>Type</b> Gate to be built. <br>
+        <b>*args</b> Position of control and target qubits.
         '''
         if Type == 'I':
             self.matrix = [lambda x: x[0], lambda x: x[1]]
@@ -51,19 +52,16 @@ class LazyMatrix(MatrixFrame):
 
     @classmethod
     def quantum_register(cls, qnum):
+        '''Initialises register.'''
         reg = []
         for i in range(0,qnum):
             reg.append([lambda x: x[i]])
-        #reg = [lambda x: x[0]]
         return LazyMatrix('General',reg)
 
     @classmethod
     def tensor_prod(cls, m2, m1):
         '''
-        Lazy tensor product
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Tensor product of Gate 1 with Gate 2
+        Tensor product.
         '''
         tp = []
         for i in range(0, m1.dim):
@@ -76,12 +74,6 @@ class LazyMatrix(MatrixFrame):
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
-        '''
-        Use list comprehension to preform a matrix multiplication between two 'matrices'
-        :param m1: Gate 1
-        :param m2: Gate 2
-        :return: Multiplication of gate 1 and gate 2
-        '''
         mm = []
         for i in range(0, m1.dim):
             mm.append(
@@ -99,6 +91,7 @@ class LazyMatrix(MatrixFrame):
         return DenseMatrix.trace(M)
 
     def cnot(self, d, c, t):
+        '''CNot gate'''
         digits = copy.deepcopy(d)
         cn = []
 
@@ -110,6 +103,7 @@ class LazyMatrix(MatrixFrame):
         return cn
 
     def cv(self, d, c, t):
+        '''CV gate'''
         digits = copy.deepcopy(d)
         cv = []
 
@@ -124,6 +118,7 @@ class LazyMatrix(MatrixFrame):
         return cv
 
     def cz(self, d, c, t):
+        '''CZ gate'''
         digits = copy.deepcopy(d)
         cz = []
 
@@ -138,6 +133,9 @@ class LazyMatrix(MatrixFrame):
         return cz
 
     def output(self,inputs):
+        '''
+        Gives the output state once the register, given by `inputs`, is applied.
+        '''
         new_in = []
         for i in range(0,len(inputs)):
             new_in.append(inputs[i])

@@ -8,9 +8,10 @@ class DenseMatrix(MatrixFrame):
 
     def __init__(self, Type, *args):
         '''
-        Sets up gates in the dense method. All gates are full matrices and executed through standard linear algebra operations.
-        <b>param Type</b> Gate to be built
-        <b>param args</b>
+        Implements the Dense method for quantum computing simulation.
+
+        <b>Type</b> Gate to be built. <br>
+        <b>*args</b> Position of control and target qubits.
         '''
         if Type == 'H':
             self.matrix = 1 / np.sqrt(2) * np.array([[1, 1], [1, -1]])
@@ -46,6 +47,7 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def quantum_register(cls, qnum):
+        '''Initialises register.'''
         register = np.array([[1, 0]])
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -55,6 +57,7 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def tensor_prod(cls, M2, M1):
+        '''Tensor product.'''
         if type(M1) == DenseMatrix:
             m1 = M1.matrix
         else:
@@ -122,11 +125,6 @@ class DenseMatrix(MatrixFrame):
 
     @classmethod
     def trace(cls, M):
-        '''
-        Matrix trace
-        <b>param M</b> Input matrix
-        <b>return</b> matrix trace
-        '''
         return np.trace(M.matrix)
 
     @classmethod
@@ -140,7 +138,7 @@ class DenseMatrix(MatrixFrame):
     def Basis(self, N):
         '''
         Define the basis state of N qubits
-        <b>param N</b> Number of Qubits
+        <b>N</b> Number of Qubits <br>
         <b>return</b> basis state
         '''
         Q = []
@@ -152,7 +150,7 @@ class DenseMatrix(MatrixFrame):
 
     def cnot(self, d, c, t):
         '''
-        Produce the multi-input gate CNOT, inherits from MatrixFrame and builds in dense method.
+        CNOT gate.
         '''
         digits = copy.deepcopy(d)
         cn = []
@@ -171,7 +169,7 @@ class DenseMatrix(MatrixFrame):
 
     def cv(self, d, c, t):
         '''
-        Build the control V gate, inherits from MatrixFrame and builds in dense method
+        CV gate.
         '''
         digits = copy.deepcopy(d)
         cv = []
@@ -193,6 +191,7 @@ class DenseMatrix(MatrixFrame):
         return cv
 
     def cz(self, d, c, t):
+        '''CZ gate.'''
         digits = copy.deepcopy(d)
         cz = []
 
@@ -219,6 +218,6 @@ class DenseMatrix(MatrixFrame):
 
     def output(self, inputs):
         '''
-        Output of the DenseMatrix class, returns this when called by Quantum Computer
+        Gives the output state once the register, given by `inputs`, is applied.
         '''
         return DenseMatrix.matrix_multiply(self.matrix, inputs).matrix

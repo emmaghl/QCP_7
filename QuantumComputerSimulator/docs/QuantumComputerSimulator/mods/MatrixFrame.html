@@ -33,14 +33,16 @@ class MatrixFrame(ABC):
 
     def __init__(self):
         &#39;&#39;&#39;
-        Abstract class for implementations of quantum computers.
+        Abstract class - forces implementations of necessary functions for Dense/Lazy/Sparse methods.
         &#39;&#39;&#39;
         self.matrix = 0
         pass
 
-    def recog_digits(self, digits):
+    def __recog_digits(self, digits):
         &#39;&#39;&#39;
-        &lt;b&gt;param digits&lt;/b&gt;
+        Used for creating the index for CNOT gate.
+
+        &lt;b&gt;digits&lt;/b&gt; The binary basis.
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -54,9 +56,11 @@ class MatrixFrame(ABC):
     def CNOT_logic(self, digits_in, c, t):
         &#39;&#39;&#39;
         Logic to build the Control Not gate, has children in dense and sparse
-        &lt;b&gt;param digits_in&lt;/b&gt;
-        &lt;b&gt;param c&lt;/b&gt;
-        &lt;b&gt;param t&lt;/b&gt;
+
+        &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+        &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+        &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
         &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -65,7 +69,7 @@ class MatrixFrame(ABC):
             if digits_in[i][c] == 1:
                 digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-        index = self.recog_digits(digits_out)
+        index = self.__recog_digits(digits_out)
 
         return index
 
@@ -73,9 +77,10 @@ class MatrixFrame(ABC):
         &#39;&#39;&#39;
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
 
-        &lt;b&gt;param digits&lt;/b&gt;
-        &lt;b&gt;param c&lt;/b&gt;
-        &lt;b&gt;param t&lt;/b&gt;
+        &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+        &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+        &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -87,6 +92,15 @@ class MatrixFrame(ABC):
         return index
 
     def CZ_logic(self, digits, c, t):
+        &#39;&#39;&#39;
+        CZ logic gate, same as CV.
+
+        &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+        &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+        &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
+        &#39;&#39;&#39;
+
         return self.CV_logic(digits, c, t)
 
     def apply_register(self, input_vector: list) -&gt; list:
@@ -97,10 +111,10 @@ class MatrixFrame(ABC):
     @abstractmethod
     def tensor_prod(self, M1, M2):
         &#39;&#39;&#39;
-        Do the tensor product of matrix 1 and matrix 2.
+        Tensor product of matrix 1 and matrix 2.
 
-        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
-        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
         &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
         &#39;&#39;&#39;
         pass
@@ -109,8 +123,8 @@ class MatrixFrame(ABC):
     def matrix_multiply(self, M1, M2):
         &#39;&#39;&#39;
         Multiply two matrices
-        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
-        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
         &lt;b&gt;return&lt;/b&gt; Matrix 1 multiplied by matrix 2
         &#39;&#39;&#39;
         pass
@@ -120,17 +134,26 @@ class MatrixFrame(ABC):
         &#39;&#39;&#39;
         Find the inner product
 
-        &lt;b&gt;param M&lt;/b&gt; input matrix &lt;/br&gt;
+        &lt;b&gt;M&lt;/b&gt; input matrix &lt;/br&gt;
         &lt;b&gt;return&lt;/b&gt; inner product of state
         &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def trace(self, M):
+        &#39;&#39;&#39;
+        Find the trace of matrix object
+
+        &lt;b&gt;M&lt;/b&gt; Matrix object.
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def output(self, input):
+        &#39;&#39;&#39;Returns the amplitudes of the state vector that is produced from applying the register.
+
+        &lt;b&gt;input&lt;/b&gt; The register.
+        &#39;&#39;&#39;
         pass</code></pre>
 </details>
 </section>
@@ -149,7 +172,7 @@ class MatrixFrame(ABC):
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
-<p>Abstract class for implementations of quantum computers.</p></div>
+<p>Abstract class - forces implementations of necessary functions for Dense/Lazy/Sparse methods.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -158,14 +181,16 @@ inheritance.</p>
 
     def __init__(self):
         &#39;&#39;&#39;
-        Abstract class for implementations of quantum computers.
+        Abstract class - forces implementations of necessary functions for Dense/Lazy/Sparse methods.
         &#39;&#39;&#39;
         self.matrix = 0
         pass
 
-    def recog_digits(self, digits):
+    def __recog_digits(self, digits):
         &#39;&#39;&#39;
-        &lt;b&gt;param digits&lt;/b&gt;
+        Used for creating the index for CNOT gate.
+
+        &lt;b&gt;digits&lt;/b&gt; The binary basis.
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -179,9 +204,11 @@ inheritance.</p>
     def CNOT_logic(self, digits_in, c, t):
         &#39;&#39;&#39;
         Logic to build the Control Not gate, has children in dense and sparse
-        &lt;b&gt;param digits_in&lt;/b&gt;
-        &lt;b&gt;param c&lt;/b&gt;
-        &lt;b&gt;param t&lt;/b&gt;
+
+        &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+        &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+        &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
         &#39;&#39;&#39;
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -190,7 +217,7 @@ inheritance.</p>
             if digits_in[i][c] == 1:
                 digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-        index = self.recog_digits(digits_out)
+        index = self.__recog_digits(digits_out)
 
         return index
 
@@ -198,9 +225,10 @@ inheritance.</p>
         &#39;&#39;&#39;
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
 
-        &lt;b&gt;param digits&lt;/b&gt;
-        &lt;b&gt;param c&lt;/b&gt;
-        &lt;b&gt;param t&lt;/b&gt;
+        &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+        &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+        &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -212,6 +240,15 @@ inheritance.</p>
         return index
 
     def CZ_logic(self, digits, c, t):
+        &#39;&#39;&#39;
+        CZ logic gate, same as CV.
+
+        &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+        &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+        &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
+        &#39;&#39;&#39;
+
         return self.CV_logic(digits, c, t)
 
     def apply_register(self, input_vector: list) -&gt; list:
@@ -222,10 +259,10 @@ inheritance.</p>
     @abstractmethod
     def tensor_prod(self, M1, M2):
         &#39;&#39;&#39;
-        Do the tensor product of matrix 1 and matrix 2.
+        Tensor product of matrix 1 and matrix 2.
 
-        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
-        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
         &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
         &#39;&#39;&#39;
         pass
@@ -234,8 +271,8 @@ inheritance.</p>
     def matrix_multiply(self, M1, M2):
         &#39;&#39;&#39;
         Multiply two matrices
-        &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
-        &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+        &lt;b&gt;M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+        &lt;b&gt;M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
         &lt;b&gt;return&lt;/b&gt; Matrix 1 multiplied by matrix 2
         &#39;&#39;&#39;
         pass
@@ -245,17 +282,26 @@ inheritance.</p>
         &#39;&#39;&#39;
         Find the inner product
 
-        &lt;b&gt;param M&lt;/b&gt; input matrix &lt;/br&gt;
+        &lt;b&gt;M&lt;/b&gt; input matrix &lt;/br&gt;
         &lt;b&gt;return&lt;/b&gt; inner product of state
         &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def trace(self, M):
+        &#39;&#39;&#39;
+        Find the trace of matrix object
+
+        &lt;b&gt;M&lt;/b&gt; Matrix object.
+        &#39;&#39;&#39;
         pass
 
     @abstractmethod
     def output(self, input):
+        &#39;&#39;&#39;Returns the amplitudes of the state vector that is produced from applying the register.
+
+        &lt;b&gt;input&lt;/b&gt; The register.
+        &#39;&#39;&#39;
         pass</code></pre>
 </details>
 <h3>Ancestors</h3>
@@ -275,10 +321,11 @@ inheritance.</p>
 <span>def <span class="ident">CNOT_logic</span></span>(<span>self, digits_in, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Logic to build the Control Not gate, has children in dense and sparse
-<b>param digits_in</b>
-<b>param c</b>
-<b>param t</b></p></div>
+<div class="desc"><p>Logic to build the Control Not gate, has children in dense and sparse</p>
+<p><b>digits_in</b> The binary basis. <br>
+<b>c</b> Control qubit. <br>
+<b>t</b> Target Qubit.<br>
+<b>return</b> The index to place that will make gate.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -286,9 +333,11 @@ inheritance.</p>
 <pre><code class="python">def CNOT_logic(self, digits_in, c, t):
     &#39;&#39;&#39;
     Logic to build the Control Not gate, has children in dense and sparse
-    &lt;b&gt;param digits_in&lt;/b&gt;
-    &lt;b&gt;param c&lt;/b&gt;
-    &lt;b&gt;param t&lt;/b&gt;
+
+    &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+    &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+    &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+    &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
     &#39;&#39;&#39;
     N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -297,7 +346,7 @@ inheritance.</p>
         if digits_in[i][c] == 1:
             digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-    index = self.recog_digits(digits_out)
+    index = self.__recog_digits(digits_out)
 
     return index</code></pre>
 </details>
@@ -307,9 +356,10 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.</p>
-<p><b>param digits</b>
-<b>param c</b>
-<b>param t</b></p></div>
+<p><b>digits_in</b> The binary basis. <br>
+<b>c</b> Control qubit. <br>
+<b>t</b> Target Qubit.<br>
+<b>return</b> The index to place that will make gate.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -318,9 +368,10 @@ inheritance.</p>
     &#39;&#39;&#39;
     Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
 
-    &lt;b&gt;param digits&lt;/b&gt;
-    &lt;b&gt;param c&lt;/b&gt;
-    &lt;b&gt;param t&lt;/b&gt;
+    &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+    &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+    &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+    &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
     &#39;&#39;&#39;
     N = int(np.log(len(digits)) / np.log(2))
     index = []
@@ -336,12 +387,25 @@ inheritance.</p>
 <span>def <span class="ident">CZ_logic</span></span>(<span>self, digits, c, t)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>CZ logic gate, same as CV.</p>
+<p><b>digits_in</b> The binary basis. <br>
+<b>c</b> Control qubit. <br>
+<b>t</b> Target Qubit.<br>
+<b>return</b> The index to place that will make gate.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def CZ_logic(self, digits, c, t):
+    &#39;&#39;&#39;
+    CZ logic gate, same as CV.
+
+    &lt;b&gt;digits_in&lt;/b&gt; The binary basis. &lt;br&gt;
+    &lt;b&gt;c&lt;/b&gt; Control qubit. &lt;br&gt;
+    &lt;b&gt;t&lt;/b&gt; Target Qubit.&lt;br&gt;
+    &lt;b&gt;return&lt;/b&gt; The index to place that will make gate.
+    &#39;&#39;&#39;
+
     return self.CV_logic(digits, c, t)</code></pre>
 </details>
 </dd>
@@ -365,7 +429,7 @@ inheritance.</p>
 </code></dt>
 <dd>
 <div class="desc"><p>Find the inner product</p>
-<p><b>param M</b> input matrix </br>
+<p><b>M</b> input matrix </br>
 <b>return</b> inner product of state</p></div>
 <details class="source">
 <summary>
@@ -376,7 +440,7 @@ def inner_product(self, M):
     &#39;&#39;&#39;
     Find the inner product
 
-    &lt;b&gt;param M&lt;/b&gt; input matrix &lt;/br&gt;
+    &lt;b&gt;M&lt;/b&gt; input matrix &lt;/br&gt;
     &lt;b&gt;return&lt;/b&gt; inner product of state
     &#39;&#39;&#39;
     pass</code></pre>
@@ -387,8 +451,8 @@ def inner_product(self, M):
 </code></dt>
 <dd>
 <div class="desc"><p>Multiply two matrices
-<b>param M1</b> Matrix 1 </br>
-<b>param M2</b> Matrix 2 </br>
+<b>M1</b> Matrix 1 </br>
+<b>M2</b> Matrix 2 </br>
 <b>return</b> Matrix 1 multiplied by matrix 2</p></div>
 <details class="source">
 <summary>
@@ -398,8 +462,8 @@ def inner_product(self, M):
 def matrix_multiply(self, M1, M2):
     &#39;&#39;&#39;
     Multiply two matrices
-    &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
-    &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+    &lt;b&gt;M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+    &lt;b&gt;M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
     &lt;b&gt;return&lt;/b&gt; Matrix 1 multiplied by matrix 2
     &#39;&#39;&#39;
     pass</code></pre>
@@ -409,46 +473,28 @@ def matrix_multiply(self, M1, M2):
 <span>def <span class="ident">output</span></span>(<span>self, input)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Returns the amplitudes of the state vector that is produced from applying the register.</p>
+<p><b>input</b> The register.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def output(self, input):
+    &#39;&#39;&#39;Returns the amplitudes of the state vector that is produced from applying the register.
+
+    &lt;b&gt;input&lt;/b&gt; The register.
+    &#39;&#39;&#39;
     pass</code></pre>
-</details>
-</dd>
-<dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits"><code class="name flex">
-<span>def <span class="ident">recog_digits</span></span>(<span>self, digits)</span>
-</code></dt>
-<dd>
-<div class="desc"><p><b>param digits</b></p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def recog_digits(self, digits):
-    &#39;&#39;&#39;
-    &lt;b&gt;param digits&lt;/b&gt;
-    &#39;&#39;&#39;
-    N = int(np.log(len(digits)) / np.log(2))
-    numbers = []
-    for i in range(0, 2 ** N):
-        num = 0
-        for j in range(0, N):
-            num += 2 ** j * digits[i][j]
-        numbers.append(num)
-    return numbers</code></pre>
 </details>
 </dd>
 <dt id="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod"><code class="name flex">
 <span>def <span class="ident">tensor_prod</span></span>(<span>self, M1, M2)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Do the tensor product of matrix 1 and matrix 2.</p>
-<p><b>param M2</b> Matrix 2 </br>
-<b>param M1</b> Matrix 1 </br>
+<div class="desc"><p>Tensor product of matrix 1 and matrix 2.</p>
+<p><b>M2</b> Matrix 2 </br>
+<b>M1</b> Matrix 1 </br>
 <b>return</b> Tensor product of Matrix 1 with Matrix 2</p></div>
 <details class="source">
 <summary>
@@ -457,10 +503,10 @@ def output(self, input):
 <pre><code class="python">@abstractmethod
 def tensor_prod(self, M1, M2):
     &#39;&#39;&#39;
-    Do the tensor product of matrix 1 and matrix 2.
+    Tensor product of matrix 1 and matrix 2.
 
-    &lt;b&gt;param M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
-    &lt;b&gt;param M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
+    &lt;b&gt;M2&lt;/b&gt; Matrix 2 &lt;/br&gt;
+    &lt;b&gt;M1&lt;/b&gt; Matrix 1 &lt;/br&gt;
     &lt;b&gt;return&lt;/b&gt; Tensor product of Matrix 1 with Matrix 2
     &#39;&#39;&#39;
     pass</code></pre>
@@ -470,13 +516,19 @@ def tensor_prod(self, M1, M2):
 <span>def <span class="ident">trace</span></span>(<span>self, M)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Find the trace of matrix object</p>
+<p><b>M</b> Matrix object.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@abstractmethod
 def trace(self, M):
+    &#39;&#39;&#39;
+    Find the trace of matrix object
+
+    &lt;b&gt;M&lt;/b&gt; Matrix object.
+    &#39;&#39;&#39;
     pass</code></pre>
 </details>
 </dd>
@@ -508,7 +560,6 @@ def trace(self, M):
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product">inner_product</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply">matrix_multiply</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.output">output</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod">tensor_prod</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace" href="#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace">trace</a></code></li>
 </ul>

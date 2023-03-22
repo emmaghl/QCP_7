@@ -5,14 +5,16 @@ class MatrixFrame(ABC):
 
     def __init__(self):
         '''
-        Abstract class for implementations of quantum computers.
+        Abstract class - forces implementations of necessary functions for Dense/Lazy/Sparse methods.
         '''
         self.matrix = 0
         pass
 
-    def recog_digits(self, digits):
+    def __recog_digits(self, digits):
         '''
-        <b>param digits</b>
+        Used for creating the index for CNOT gate.
+
+        <b>digits</b> The binary basis.
         '''
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -26,9 +28,11 @@ class MatrixFrame(ABC):
     def CNOT_logic(self, digits_in, c, t):
         '''
         Logic to build the Control Not gate, has children in dense and sparse
-        <b>param digits_in</b>
-        <b>param c</b>
-        <b>param t</b>
+
+        <b>digits_in</b> The binary basis. <br>
+        <b>c</b> Control qubit. <br>
+        <b>t</b> Target Qubit.<br>
+        <b>return</b> The index to place that will make gate.
         '''
         N = int(np.log(len(digits_in)) / np.log(2))
 
@@ -37,7 +41,7 @@ class MatrixFrame(ABC):
             if digits_in[i][c] == 1:
                 digits_out[i][t] = 1 - digits_out[i][t] % 2
 
-        index = self.recog_digits(digits_out)
+        index = self.__recog_digits(digits_out)
 
         return index
 
@@ -45,9 +49,10 @@ class MatrixFrame(ABC):
         '''
         Logic to build a Control V gate, has children in DenseMatrix and SparseMatrix.
 
-        <b>param digits</b>
-        <b>param c</b>
-        <b>param t</b>
+        <b>digits_in</b> The binary basis. <br>
+        <b>c</b> Control qubit. <br>
+        <b>t</b> Target Qubit.<br>
+        <b>return</b> The index to place that will make gate.
         '''
         N = int(np.log(len(digits)) / np.log(2))
         index = []
@@ -59,6 +64,15 @@ class MatrixFrame(ABC):
         return index
 
     def CZ_logic(self, digits, c, t):
+        '''
+        CZ logic gate, same as CV.
+
+        <b>digits_in</b> The binary basis. <br>
+        <b>c</b> Control qubit. <br>
+        <b>t</b> Target Qubit.<br>
+        <b>return</b> The index to place that will make gate.
+        '''
+
         return self.CV_logic(digits, c, t)
 
     def apply_register(self, input_vector: list) -> list:
@@ -69,10 +83,10 @@ class MatrixFrame(ABC):
     @abstractmethod
     def tensor_prod(self, M1, M2):
         '''
-        Do the tensor product of matrix 1 and matrix 2.
+        Tensor product of matrix 1 and matrix 2.
 
-        <b>param M2</b> Matrix 2 </br>
-        <b>param M1</b> Matrix 1 </br>
+        <b>M2</b> Matrix 2 </br>
+        <b>M1</b> Matrix 1 </br>
         <b>return</b> Tensor product of Matrix 1 with Matrix 2
         '''
         pass
@@ -81,8 +95,8 @@ class MatrixFrame(ABC):
     def matrix_multiply(self, M1, M2):
         '''
         Multiply two matrices
-        <b>param M1</b> Matrix 1 </br>
-        <b>param M2</b> Matrix 2 </br>
+        <b>M1</b> Matrix 1 </br>
+        <b>M2</b> Matrix 2 </br>
         <b>return</b> Matrix 1 multiplied by matrix 2
         '''
         pass
@@ -92,16 +106,25 @@ class MatrixFrame(ABC):
         '''
         Find the inner product
 
-        <b>param M</b> input matrix </br>
+        <b>M</b> input matrix </br>
         <b>return</b> inner product of state
         '''
         pass
 
     @abstractmethod
     def trace(self, M):
+        '''
+        Find the trace of matrix object
+
+        <b>M</b> Matrix object.
+        '''
         pass
 
     @abstractmethod
     def output(self, input):
+        '''Returns the amplitudes of the state vector that is produced from applying the register.
+
+        <b>input</b> The register.
+        '''
         pass
 

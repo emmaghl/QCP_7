@@ -36,9 +36,10 @@ class SparseMatrix(MatrixFrame):
 
     def __init__(self, Type: str, *args):
         &#39;&#39;&#39;
-        Sets up gates initally in the dense method then condenses into sparse matrices.
-        &lt;b&gt;param Type&lt;\b&gt; Take in the gate to be built
-        &lt;b&gt;param args&lt;\b&gt;
+        Implements the Sparse method for quantum computing simulation.
+
+        &lt;b&gt;Type&lt;/b&gt; Gate to be built. &lt;br&gt;
+        &lt;b&gt;*args&lt;/b&gt; Position of control and target qubits.
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:  # hadamard gate
             self.matrix = np.array([[0, 0, 1 / math.sqrt(2)], [0, 1, 1 / math.sqrt(2)], [1, 0, 1 / math.sqrt(2)], [1, 1, -1 / math.sqrt(2)]])
@@ -83,6 +84,7 @@ class SparseMatrix(MatrixFrame):
         self.size = SparseMatrix.size_matrix(self.matrix)
 
     def strip_matrix(self, mat): #future take care of real and imag separately to only strip half
+        &#39;&#39;&#39;Controls what is meant by non-zero.&#39;&#39;&#39;
         del_entries = []
         for i in range(len(mat)):
             if np.abs(np.real(mat[i][2])) &gt;= 10 ** (-10) or np.abs(np.imag(mat[i][2])) &gt;= 10 ** (-10) or i == len(mat)-1:
@@ -124,6 +126,7 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def quantum_register(cls, qnum):
+        &#39;&#39;&#39;Initialises quantum register.&#39;&#39;&#39;
         register = np.array([[0, 0, 1], [0, 1, 0]])
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -135,12 +138,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def tensor_prod(cls, M2, M1):
-        &#39;&#39;&#39;
-        Preform a tensor product between two matrices
-        &lt;b&gt;param m1&lt;\b&gt; Matrix 1
-        &lt;b&gt;param m2&lt;\b&gt; Matrix 2
-        &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
-        &#39;&#39;&#39;
         if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
@@ -160,8 +157,6 @@ class SparseMatrix(MatrixFrame):
 
         for j in range(len(m1)):
             for i in range(len(m2)):
-                # if ((type(m1[j][2]) == &#34;float&#34; and m1[j][2] &gt;= 10**(-10)) or (type(m1[j][2]) == &#34;complex&#34; and abs(m1[j][2]) &gt;= 10**(-10))) and ((type(m2[j][2]) == &#34;float&#34; and m2[j][2] &gt;= 10**(-10)) or (type(m2[j][2]) == &#34;complex&#34; and abs(m2[j][2]) &gt;= 10**(-10))):
-                # if abs(m1[j][2]) &gt;= 10**(-10) and abs(m2[i][2]) &gt;= 10**(-10):
                 if 1&gt;0:
                     column = m2_col * m1[j][0] + m2[i][0]
                     row = m2_row * m1[j][1] + m2[i][1]
@@ -176,12 +171,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def matrix_multiply(cls, M1, M2):
-        &#39;&#39;&#39;
-        Multiply two matrices
-        &lt;b&gt;param m1&lt;\b&gt; Matrix 1
-        &lt;b&gt;param m2&lt;\b&gt; Matrix 2
-        &lt;b&gt;return&lt;\b&gt; Matrix 1 multiplied by Matrix 2
-        &#39;&#39;&#39;
         if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
@@ -190,8 +179,6 @@ class SparseMatrix(MatrixFrame):
             m2 = M2.matrix
         else:
             m2 = M2
-        # print(f&#34;m1{m1}&#34;)
-        # print(f&#34;m2{m2}&#34;)
 
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
         dict1 = {(row, col): val for [row, col, val] in m1}
@@ -201,15 +188,12 @@ class SparseMatrix(MatrixFrame):
 
         for (r1, c1), v1 in dict1.items():  # iterate over SM1
             for (r2, c2), v2 in dict2.items():  # and SM2
-                # if ((type(v1) == &#34;float&#34; and v1 &gt;= 10**(-10)) or (type(v1) == &#34;complex&#34; and abs(v1) &gt;= 10**(-10))) and ((type(v2) == &#34;float&#34; and v2 &gt;= 10**(-10)) or (type(v2) == &#34;complex&#34; and abs(v2) &gt;= 10**(-10))):
-                # if abs(v1) &gt;= 10**(-10) and abs(v2) &gt;= 10**(-10):
                 if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
                     dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
         return SparseMatrix(&#34;general&#34;, matmul)
 
     def sparse_multiply(self, num: float, mat):
-        &#39;&#39;&#39;multiplies a scalar by a sparse matrix&#39;&#39;&#39;
         # multiply matrix entry by a scalar and keep row and column information unchanged
         mul = []
         for i in range(len(mat)):
@@ -218,10 +202,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def transpose(cls, M):
-        &#39;&#39;&#39;
-        Method to transpose a sparse matrix
-        &lt;b&gt;return&lt;\b&gt; Matrix transposed
-        &#39;&#39;&#39;
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -235,11 +215,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def inner_product(cls, M):
-        &#39;&#39;&#39;
-        Inner product of matrix M
-        &lt;b&gt;M&lt;\b&gt; input matrix
-        &lt;b&gt;return&lt;\b&gt; Transpose
-        &#39;&#39;&#39;
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -249,11 +224,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def trace(cls, M):
-        &#39;&#39;&#39;
-        Trace of a sparse matrix.
-        &lt;b&gt;param M&lt;\b&gt; Input Matrix
-        &lt;b&gt;return&lt;\b&gt; Transpose of matrix
-        &#39;&#39;&#39;
 
         trace = 0
 
@@ -265,7 +235,6 @@ class SparseMatrix(MatrixFrame):
             m_col = SparseMatrix.size_matrix(m)[0]  # STcol/SM1col = SM2col etc.
 
         for i in range(len(m)):
-            # for j in range(SparseMatrix.size_matrix(M)[1]): #number of columns
             for j in range(m_col):  # number of columns
                 if m[i][0] == j and m[i][1] == j:
                     trace += m[i][2]
@@ -281,10 +250,7 @@ class SparseMatrix(MatrixFrame):
 
     def cnot(self, d: list, c: float, t: float):
         &#39;&#39;&#39;
-        Inherits from MatrixFrame to produce a CNOT gate.
-        &lt;b&gt;param d&lt;\b&gt;
-        &lt;b&gt;param c&lt;\b&gt;
-        &lt;b&gt;param t&lt;\b&gt;
+        CNot gate.
         &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cn = []
@@ -299,6 +265,7 @@ class SparseMatrix(MatrixFrame):
         return cn
 
     def cv(self, d:list, c:float, t:float):
+        &#39;&#39;&#39;CV gate&#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cv = []
 
@@ -315,6 +282,7 @@ class SparseMatrix(MatrixFrame):
         return cv
 
     def cz(self, d:list, c:float, t:float):
+        &#39;&#39;&#39;CZ gate&#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cz = []
 
@@ -332,12 +300,13 @@ class SparseMatrix(MatrixFrame):
 
     def Sparse_to_Dense(self, SMatrix):
         &#39;&#39;&#39;
-        ! Takes in a sparse matrix and returns the corresponding dense matrix.
+        Takes in a sparse matrix and returns the corresponding dense matrix.
             Note: suppose you&#39;re converting a dense matrix to sparse and back to dense,
             if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
             these will be lost in the sparse conversion.
-             @param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
-             @return  DMatrix: the converted dense matrix (in array form)
+
+        &lt;b&gt;Matrix&lt;/b&gt; a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value &lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt;  DMatrix: the converted dense matrix (in array form)
          &#39;&#39;&#39;
         count = 0
         for row in SMatrix:
@@ -356,10 +325,6 @@ class SparseMatrix(MatrixFrame):
         return DMatrix
 
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
-        &#34;&#34;&#34;! What the class/method does
-            @param list the parameters and what they do
-            @return  what the function returns
-        &#34;&#34;&#34;
         rows = np.shape(Matrix)[0]
         cols = np.shape(Matrix)[1]
         SMatrix = []  # output matrix
@@ -378,8 +343,7 @@ class SparseMatrix(MatrixFrame):
 
     def output(self, inputs:np.array) -&gt; np.array:
         &#39;&#39;&#39;
-        Output of sparse matrix class.
-        &lt;b&gt;param inputs&lt;\b&gt;
+        Gives the output state once the register, given by `inputs`, is applied.
         &#39;&#39;&#39;
         # inputs = self.Dense_to_Sparse(inputs)
         inputs_sparse = []
@@ -418,9 +382,9 @@ class SparseMatrix(MatrixFrame):
 <dd>
 <div class="desc"><p>Helper class that provides a standard way to create an ABC using
 inheritance.</p>
-<p>Sets up gates initally in the dense method then condenses into sparse matrices.
-<b>param Type&lt;&gt; Take in the gate to be built
-<b>param args&lt;&gt;</p></div>
+<p>Implements the Sparse method for quantum computing simulation.</p>
+<p><b>Type</b> Gate to be built. <br>
+<b>*args</b> Position of control and target qubits.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -429,9 +393,10 @@ inheritance.</p>
 
     def __init__(self, Type: str, *args):
         &#39;&#39;&#39;
-        Sets up gates initally in the dense method then condenses into sparse matrices.
-        &lt;b&gt;param Type&lt;\b&gt; Take in the gate to be built
-        &lt;b&gt;param args&lt;\b&gt;
+        Implements the Sparse method for quantum computing simulation.
+
+        &lt;b&gt;Type&lt;/b&gt; Gate to be built. &lt;br&gt;
+        &lt;b&gt;*args&lt;/b&gt; Position of control and target qubits.
         &#39;&#39;&#39;
         if Type == &#39;H&#39;:  # hadamard gate
             self.matrix = np.array([[0, 0, 1 / math.sqrt(2)], [0, 1, 1 / math.sqrt(2)], [1, 0, 1 / math.sqrt(2)], [1, 1, -1 / math.sqrt(2)]])
@@ -476,6 +441,7 @@ inheritance.</p>
         self.size = SparseMatrix.size_matrix(self.matrix)
 
     def strip_matrix(self, mat): #future take care of real and imag separately to only strip half
+        &#39;&#39;&#39;Controls what is meant by non-zero.&#39;&#39;&#39;
         del_entries = []
         for i in range(len(mat)):
             if np.abs(np.real(mat[i][2])) &gt;= 10 ** (-10) or np.abs(np.imag(mat[i][2])) &gt;= 10 ** (-10) or i == len(mat)-1:
@@ -517,6 +483,7 @@ inheritance.</p>
 
     @classmethod
     def quantum_register(cls, qnum):
+        &#39;&#39;&#39;Initialises quantum register.&#39;&#39;&#39;
         register = np.array([[0, 0, 1], [0, 1, 0]])
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -528,12 +495,6 @@ inheritance.</p>
 
     @classmethod
     def tensor_prod(cls, M2, M1):
-        &#39;&#39;&#39;
-        Preform a tensor product between two matrices
-        &lt;b&gt;param m1&lt;\b&gt; Matrix 1
-        &lt;b&gt;param m2&lt;\b&gt; Matrix 2
-        &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
-        &#39;&#39;&#39;
         if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
@@ -553,8 +514,6 @@ inheritance.</p>
 
         for j in range(len(m1)):
             for i in range(len(m2)):
-                # if ((type(m1[j][2]) == &#34;float&#34; and m1[j][2] &gt;= 10**(-10)) or (type(m1[j][2]) == &#34;complex&#34; and abs(m1[j][2]) &gt;= 10**(-10))) and ((type(m2[j][2]) == &#34;float&#34; and m2[j][2] &gt;= 10**(-10)) or (type(m2[j][2]) == &#34;complex&#34; and abs(m2[j][2]) &gt;= 10**(-10))):
-                # if abs(m1[j][2]) &gt;= 10**(-10) and abs(m2[i][2]) &gt;= 10**(-10):
                 if 1&gt;0:
                     column = m2_col * m1[j][0] + m2[i][0]
                     row = m2_row * m1[j][1] + m2[i][1]
@@ -569,12 +528,6 @@ inheritance.</p>
 
     @classmethod
     def matrix_multiply(cls, M1, M2):
-        &#39;&#39;&#39;
-        Multiply two matrices
-        &lt;b&gt;param m1&lt;\b&gt; Matrix 1
-        &lt;b&gt;param m2&lt;\b&gt; Matrix 2
-        &lt;b&gt;return&lt;\b&gt; Matrix 1 multiplied by Matrix 2
-        &#39;&#39;&#39;
         if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
@@ -583,8 +536,6 @@ inheritance.</p>
             m2 = M2.matrix
         else:
             m2 = M2
-        # print(f&#34;m1{m1}&#34;)
-        # print(f&#34;m2{m2}&#34;)
 
         # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
         dict1 = {(row, col): val for [row, col, val] in m1}
@@ -594,15 +545,12 @@ inheritance.</p>
 
         for (r1, c1), v1 in dict1.items():  # iterate over SM1
             for (r2, c2), v2 in dict2.items():  # and SM2
-                # if ((type(v1) == &#34;float&#34; and v1 &gt;= 10**(-10)) or (type(v1) == &#34;complex&#34; and abs(v1) &gt;= 10**(-10))) and ((type(v2) == &#34;float&#34; and v2 &gt;= 10**(-10)) or (type(v2) == &#34;complex&#34; and abs(v2) &gt;= 10**(-10))):
-                # if abs(v1) &gt;= 10**(-10) and abs(v2) &gt;= 10**(-10):
                 if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
                     dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
         matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
         return SparseMatrix(&#34;general&#34;, matmul)
 
     def sparse_multiply(self, num: float, mat):
-        &#39;&#39;&#39;multiplies a scalar by a sparse matrix&#39;&#39;&#39;
         # multiply matrix entry by a scalar and keep row and column information unchanged
         mul = []
         for i in range(len(mat)):
@@ -611,10 +559,6 @@ inheritance.</p>
 
     @classmethod
     def transpose(cls, M):
-        &#39;&#39;&#39;
-        Method to transpose a sparse matrix
-        &lt;b&gt;return&lt;\b&gt; Matrix transposed
-        &#39;&#39;&#39;
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -628,11 +572,6 @@ inheritance.</p>
 
     @classmethod
     def inner_product(cls, M):
-        &#39;&#39;&#39;
-        Inner product of matrix M
-        &lt;b&gt;M&lt;\b&gt; input matrix
-        &lt;b&gt;return&lt;\b&gt; Transpose
-        &#39;&#39;&#39;
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -642,11 +581,6 @@ inheritance.</p>
 
     @classmethod
     def trace(cls, M):
-        &#39;&#39;&#39;
-        Trace of a sparse matrix.
-        &lt;b&gt;param M&lt;\b&gt; Input Matrix
-        &lt;b&gt;return&lt;\b&gt; Transpose of matrix
-        &#39;&#39;&#39;
 
         trace = 0
 
@@ -658,7 +592,6 @@ inheritance.</p>
             m_col = SparseMatrix.size_matrix(m)[0]  # STcol/SM1col = SM2col etc.
 
         for i in range(len(m)):
-            # for j in range(SparseMatrix.size_matrix(M)[1]): #number of columns
             for j in range(m_col):  # number of columns
                 if m[i][0] == j and m[i][1] == j:
                     trace += m[i][2]
@@ -674,10 +607,7 @@ inheritance.</p>
 
     def cnot(self, d: list, c: float, t: float):
         &#39;&#39;&#39;
-        Inherits from MatrixFrame to produce a CNOT gate.
-        &lt;b&gt;param d&lt;\b&gt;
-        &lt;b&gt;param c&lt;\b&gt;
-        &lt;b&gt;param t&lt;\b&gt;
+        CNot gate.
         &#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cn = []
@@ -692,6 +622,7 @@ inheritance.</p>
         return cn
 
     def cv(self, d:list, c:float, t:float):
+        &#39;&#39;&#39;CV gate&#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cv = []
 
@@ -708,6 +639,7 @@ inheritance.</p>
         return cv
 
     def cz(self, d:list, c:float, t:float):
+        &#39;&#39;&#39;CZ gate&#39;&#39;&#39;
         digits = copy.deepcopy(d)
         cz = []
 
@@ -725,12 +657,13 @@ inheritance.</p>
 
     def Sparse_to_Dense(self, SMatrix):
         &#39;&#39;&#39;
-        ! Takes in a sparse matrix and returns the corresponding dense matrix.
+        Takes in a sparse matrix and returns the corresponding dense matrix.
             Note: suppose you&#39;re converting a dense matrix to sparse and back to dense,
             if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
             these will be lost in the sparse conversion.
-             @param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
-             @return  DMatrix: the converted dense matrix (in array form)
+
+        &lt;b&gt;Matrix&lt;/b&gt; a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value &lt;br&gt;
+        &lt;b&gt;return&lt;/b&gt;  DMatrix: the converted dense matrix (in array form)
          &#39;&#39;&#39;
         count = 0
         for row in SMatrix:
@@ -749,10 +682,6 @@ inheritance.</p>
         return DMatrix
 
     def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
-        &#34;&#34;&#34;! What the class/method does
-            @param list the parameters and what they do
-            @return  what the function returns
-        &#34;&#34;&#34;
         rows = np.shape(Matrix)[0]
         cols = np.shape(Matrix)[1]
         SMatrix = []  # output matrix
@@ -771,8 +700,7 @@ inheritance.</p>
 
     def output(self, inputs:np.array) -&gt; np.array:
         &#39;&#39;&#39;
-        Output of sparse matrix class.
-        &lt;b&gt;param inputs&lt;\b&gt;
+        Gives the output state once the register, given by `inputs`, is applied.
         &#39;&#39;&#39;
         # inputs = self.Dense_to_Sparse(inputs)
         inputs_sparse = []
@@ -819,90 +747,18 @@ def conjugate(cls, M):
     return M_conj</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.inner_product"><code class="name flex">
-<span>def <span class="ident">inner_product</span></span>(<span>M)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Inner product of matrix M
-<b>M&lt;&gt; input matrix
-<b>return&lt;&gt; Transpose</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def inner_product(cls, M):
-    &#39;&#39;&#39;
-    Inner product of matrix M
-    &lt;b&gt;M&lt;\b&gt; input matrix
-    &lt;b&gt;return&lt;\b&gt; Transpose
-    &#39;&#39;&#39;
-    if type(M) == SparseMatrix:
-        m = M.matrix
-    else:
-        m = M
-
-    return SparseMatrix.matrix_multiply(m, SparseMatrix.transpose(np.conj(m)))</code></pre>
-</details>
-</dd>
-<dt id="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.matrix_multiply"><code class="name flex">
-<span>def <span class="ident">matrix_multiply</span></span>(<span>M1, M2)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Multiply two matrices
-<b>param m1&lt;&gt; Matrix 1
-<b>param m2&lt;&gt; Matrix 2
-<b>return&lt;&gt; Matrix 1 multiplied by Matrix 2</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def matrix_multiply(cls, M1, M2):
-    &#39;&#39;&#39;
-    Multiply two matrices
-    &lt;b&gt;param m1&lt;\b&gt; Matrix 1
-    &lt;b&gt;param m2&lt;\b&gt; Matrix 2
-    &lt;b&gt;return&lt;\b&gt; Matrix 1 multiplied by Matrix 2
-    &#39;&#39;&#39;
-    if type(M1) == SparseMatrix:
-        m1 = M1.matrix
-    else:
-        m1 = M1
-    if type(M2) == SparseMatrix:
-        m2 = M2.matrix
-    else:
-        m2 = M2
-    # print(f&#34;m1{m1}&#34;)
-    # print(f&#34;m2{m2}&#34;)
-
-    # Convert SM1 and SM2 to a dictionaries with (row, col) keys and values for matrix manipulation when adding terms for matrix multiplication
-    dict1 = {(row, col): val for [row, col, val] in m1}
-    dict2 = {(row, col): val for [row, col, val] in m2}
-
-    dictm = {}
-
-    for (r1, c1), v1 in dict1.items():  # iterate over SM1
-        for (r2, c2), v2 in dict2.items():  # and SM2
-            # if ((type(v1) == &#34;float&#34; and v1 &gt;= 10**(-10)) or (type(v1) == &#34;complex&#34; and abs(v1) &gt;= 10**(-10))) and ((type(v2) == &#34;float&#34; and v2 &gt;= 10**(-10)) or (type(v2) == &#34;complex&#34; and abs(v2) &gt;= 10**(-10))):
-            # if abs(v1) &gt;= 10**(-10) and abs(v2) &gt;= 10**(-10):
-            if c1 == r2:  # when the coloumn entry of SM1 and row entry of SM2 match, this is included in the non-zero terms for the matmul matrix
-                dictm[(r1, c2)] = dictm.get((r1, c2),0) + v1 * v2  # there may be more non-zero adding terms for each item in the matmul so the dictionary takes care of that
-    matmul = [[r, c, v] for (r, c), v in dictm.items()]  # return in sparse matric form
-    return SparseMatrix(&#34;general&#34;, matmul)</code></pre>
-</details>
-</dd>
 <dt id="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.quantum_register"><code class="name flex">
 <span>def <span class="ident">quantum_register</span></span>(<span>qnum)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Initialises quantum register.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def quantum_register(cls, qnum):
+    &#39;&#39;&#39;Initialises quantum register.&#39;&#39;&#39;
     register = np.array([[0, 0, 1], [0, 1, 0]])
     w = 2 ** (qnum) - 2
     for i in range(w):
@@ -948,112 +804,17 @@ def size_matrix(cls, M):
     return (int(np.real(ncol)), int(np.real(nrow)))</code></pre>
 </details>
 </dd>
-<dt id="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.tensor_prod"><code class="name flex">
-<span>def <span class="ident">tensor_prod</span></span>(<span>M2, M1)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Preform a tensor product between two matrices
-<b>param m1&lt;&gt; Matrix 1
-<b>param m2&lt;&gt; Matrix 2
-<b>return&lt;&gt; Tensor product of Matrix 1 with Matrix 2</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def tensor_prod(cls, M2, M1):
-    &#39;&#39;&#39;
-    Preform a tensor product between two matrices
-    &lt;b&gt;param m1&lt;\b&gt; Matrix 1
-    &lt;b&gt;param m2&lt;\b&gt; Matrix 2
-    &lt;b&gt;return&lt;\b&gt; Tensor product of Matrix 1 with Matrix 2
-    &#39;&#39;&#39;
-    if type(M1) == SparseMatrix:
-        m1 = M1.matrix
-    else:
-        m1 = M1
-
-    if type(M2) == SparseMatrix:
-        m2 = M2.matrix
-        m2_col = M2.size[0]
-        m2_row = M2.size[1]
-    else:
-        m2 = M2
-        m2_col = SparseMatrix.size_matrix(m2)[0]  # STcol/SM1col = SM2col etc.
-        m2_row = SparseMatrix.size_matrix(m2)[1]  # STcol/SM1col = SM2col etc.
-
-    
-    tensorprod = []
-
-    for j in range(len(m1)):
-        for i in range(len(m2)):
-            # if ((type(m1[j][2]) == &#34;float&#34; and m1[j][2] &gt;= 10**(-10)) or (type(m1[j][2]) == &#34;complex&#34; and abs(m1[j][2]) &gt;= 10**(-10))) and ((type(m2[j][2]) == &#34;float&#34; and m2[j][2] &gt;= 10**(-10)) or (type(m2[j][2]) == &#34;complex&#34; and abs(m2[j][2]) &gt;= 10**(-10))):
-            # if abs(m1[j][2]) &gt;= 10**(-10) and abs(m2[i][2]) &gt;= 10**(-10):
-            if 1&gt;0:
-                column = m2_col * m1[j][0] + m2[i][0]
-                row = m2_row * m1[j][1] + m2[i][1]
-                value = m1[j][2] * m2[i][2]
-                tensorprod.append([column, row, value])
-
-    column = m2_col * m1[-1][0] + m2[-1][0] #or use size etc..
-    row = m2_row * m1[-1][1] + m2[-1][1]
-    value = round(m1[-1][2] * m2[-1][2], 10)
-    tensorprod.append([column, row, value])
-    return SparseMatrix(&#34;general&#34;, tensorprod)</code></pre>
-</details>
-</dd>
-<dt id="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.trace"><code class="name flex">
-<span>def <span class="ident">trace</span></span>(<span>M)</span>
-</code></dt>
-<dd>
-<div class="desc"><p>Trace of a sparse matrix.
-<b>param M&lt;&gt; Input Matrix
-<b>return&lt;&gt; Transpose of matrix</p></div>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">@classmethod
-def trace(cls, M):
-    &#39;&#39;&#39;
-    Trace of a sparse matrix.
-    &lt;b&gt;param M&lt;\b&gt; Input Matrix
-    &lt;b&gt;return&lt;\b&gt; Transpose of matrix
-    &#39;&#39;&#39;
-
-    trace = 0
-
-    if type(M) == SparseMatrix:
-        m = M.matrix
-        m_col = M.size[0]
-    else:
-        m = M
-        m_col = SparseMatrix.size_matrix(m)[0]  # STcol/SM1col = SM2col etc.
-
-    for i in range(len(m)):
-        # for j in range(SparseMatrix.size_matrix(M)[1]): #number of columns
-        for j in range(m_col):  # number of columns
-            if m[i][0] == j and m[i][1] == j:
-                trace += m[i][2]
-    return trace</code></pre>
-</details>
-</dd>
 <dt id="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.transpose"><code class="name flex">
 <span>def <span class="ident">transpose</span></span>(<span>M)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Method to transpose a sparse matrix
-<b>return&lt;&gt; Matrix transposed</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">@classmethod
 def transpose(cls, M):
-    &#39;&#39;&#39;
-    Method to transpose a sparse matrix
-    &lt;b&gt;return&lt;\b&gt; Matrix transposed
-    &#39;&#39;&#39;
     if type(M) == SparseMatrix:
         m = M.matrix
     else:
@@ -1073,19 +834,12 @@ def transpose(cls, M):
 <span>def <span class="ident">Dense_to_Sparse</span></span>(<span>self, Matrix)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>! What the class/method does
-@param list the parameters and what they do
-@return
-what the function returns</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def Dense_to_Sparse(self, Matrix):  # defines a sparse matrix of the form row i column j has value {}
-    &#34;&#34;&#34;! What the class/method does
-        @param list the parameters and what they do
-        @return  what the function returns
-    &#34;&#34;&#34;
     rows = np.shape(Matrix)[0]
     cols = np.shape(Matrix)[1]
     SMatrix = []  # output matrix
@@ -1107,12 +861,12 @@ what the function returns</p></div>
 <span>def <span class="ident">Sparse_to_Dense</span></span>(<span>self, SMatrix)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>! Takes in a sparse matrix and returns the corresponding dense matrix.
+<div class="desc"><p>Takes in a sparse matrix and returns the corresponding dense matrix.
 Note: suppose you're converting a dense matrix to sparse and back to dense,
 if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
-these will be lost in the sparse conversion.
-@param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
-@return
+these will be lost in the sparse conversion.</p>
+<p><b>Matrix</b> a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value <br>
+<b>return</b>
 DMatrix: the converted dense matrix (in array form)</p></div>
 <details class="source">
 <summary>
@@ -1120,12 +874,13 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 </summary>
 <pre><code class="python">def Sparse_to_Dense(self, SMatrix):
     &#39;&#39;&#39;
-    ! Takes in a sparse matrix and returns the corresponding dense matrix.
+    Takes in a sparse matrix and returns the corresponding dense matrix.
         Note: suppose you&#39;re converting a dense matrix to sparse and back to dense,
         if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
         these will be lost in the sparse conversion.
-         @param Matrix: a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
-         @return  DMatrix: the converted dense matrix (in array form)
+
+    &lt;b&gt;Matrix&lt;/b&gt; a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value &lt;br&gt;
+    &lt;b&gt;return&lt;/b&gt;  DMatrix: the converted dense matrix (in array form)
      &#39;&#39;&#39;
     count = 0
     for row in SMatrix:
@@ -1148,20 +903,14 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <span>def <span class="ident">cnot</span></span>(<span>self, d: list, c: float, t: float)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Inherits from MatrixFrame to produce a CNOT gate.
-<b>param d&lt;&gt;
-<b>param c&lt;&gt;
-<b>param t&lt;&gt;</p></div>
+<div class="desc"><p>CNot gate.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cnot(self, d: list, c: float, t: float):
     &#39;&#39;&#39;
-    Inherits from MatrixFrame to produce a CNOT gate.
-    &lt;b&gt;param d&lt;\b&gt;
-    &lt;b&gt;param c&lt;\b&gt;
-    &lt;b&gt;param t&lt;\b&gt;
+    CNot gate.
     &#39;&#39;&#39;
     digits = copy.deepcopy(d)
     cn = []
@@ -1180,12 +929,13 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <span>def <span class="ident">cv</span></span>(<span>self, d: list, c: float, t: float)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>CV gate</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cv(self, d:list, c:float, t:float):
+    &#39;&#39;&#39;CV gate&#39;&#39;&#39;
     digits = copy.deepcopy(d)
     cv = []
 
@@ -1206,12 +956,13 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <span>def <span class="ident">cz</span></span>(<span>self, d: list, c: float, t: float)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>CZ gate</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def cz(self, d:list, c:float, t:float):
+    &#39;&#39;&#39;CZ gate&#39;&#39;&#39;
     digits = copy.deepcopy(d)
     cz = []
 
@@ -1232,16 +983,14 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <span>def <span class="ident">output</span></span>(<span>self, inputs: <built-in function array>) ‑> <built-in function array></span>
 </code></dt>
 <dd>
-<div class="desc"><p>Output of sparse matrix class.
-<b>param inputs&lt;&gt;</p></div>
+<div class="desc"><p>Gives the output state once the register, given by <code>inputs</code>, is applied.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def output(self, inputs:np.array) -&gt; np.array:
     &#39;&#39;&#39;
-    Output of sparse matrix class.
-    &lt;b&gt;param inputs&lt;\b&gt;
+    Gives the output state once the register, given by `inputs`, is applied.
     &#39;&#39;&#39;
     # inputs = self.Dense_to_Sparse(inputs)
     inputs_sparse = []
@@ -1268,13 +1017,12 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <span>def <span class="ident">sparse_multiply</span></span>(<span>self, num: float, mat)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>multiplies a scalar by a sparse matrix</p></div>
+<div class="desc"></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def sparse_multiply(self, num: float, mat):
-    &#39;&#39;&#39;multiplies a scalar by a sparse matrix&#39;&#39;&#39;
     # multiply matrix entry by a scalar and keep row and column information unchanged
     mul = []
     for i in range(len(mat)):
@@ -1286,12 +1034,13 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <span>def <span class="ident">strip_matrix</span></span>(<span>self, mat)</span>
 </code></dt>
 <dd>
-<div class="desc"></div>
+<div class="desc"><p>Controls what is meant by non-zero.</p></div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def strip_matrix(self, mat): #future take care of real and imag separately to only strip half
+    &#39;&#39;&#39;Controls what is meant by non-zero.&#39;&#39;&#39;
     del_entries = []
     for i in range(len(mat)):
         if np.abs(np.real(mat[i][2])) &gt;= 10 ** (-10) or np.abs(np.imag(mat[i][2])) &gt;= 10 ** (-10) or i == len(mat)-1:
@@ -1314,8 +1063,12 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <ul class="hlist">
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CNOT_logic">CNOT_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CV_logic">CV_logic</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.CZ_logic">CZ_logic</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.apply_register">apply_register</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.recog_digits">recog_digits</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.inner_product">inner_product</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.matrix_multiply">matrix_multiply</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.tensor_prod">tensor_prod</a></code></li>
+<li><code><a title="QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace" href="MatrixFrame.html#QuantumComputerSimulator.mods.MatrixFrame.MatrixFrame.trace">trace</a></code></li>
 </ul>
 </li>
 </ul>
@@ -1345,15 +1098,11 @@ DMatrix: the converted dense matrix (in array form)</p></div>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.conjugate" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.conjugate">conjugate</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.cv" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.cv">cv</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.cz" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.cz">cz</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.inner_product" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.inner_product">inner_product</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.matrix_multiply" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.matrix_multiply">matrix_multiply</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.output" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.output">output</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.quantum_register" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.quantum_register">quantum_register</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.size_matrix" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.size_matrix">size_matrix</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.sparse_multiply" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.sparse_multiply">sparse_multiply</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.strip_matrix" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.strip_matrix">strip_matrix</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.tensor_prod" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.tensor_prod">tensor_prod</a></code></li>
-<li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.trace" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.trace">trace</a></code></li>
 <li><code><a title="QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.transpose" href="#QuantumComputerSimulator.mods.SparseMatrix.SparseMatrix.transpose">transpose</a></code></li>
 </ul>
 </li>
