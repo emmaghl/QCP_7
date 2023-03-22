@@ -227,8 +227,8 @@ def Q_Key_Distribution():
         B_secret_key.append(B_Key[i])
 
     print('Both person A and person B have their secret keys now:')
-    print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
-    print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
+    print('A Secret Key =', A_secret_key, 'These are not shared publicly, but are used to encrypt messages.')
+    print('B Secret Key =', B_secret_key, 'These are not shared publicly, but are used to encrypt messages.')
 def KeyDist_report_example():
     print("You are acting as a communication channel for person A to send secret messages to person B.")
     t = str(input('What type of matrix object do you want to use? Type D for dense, S for sparse, L for lazy: '))
@@ -341,8 +341,8 @@ def KeyDist_report_example():
         B_secret_key.append(B_Key[i])
 
     print('Both person A and person B have their secret keys now:')
-    print('A Secret Key =', A_secret_key, 'These are not shared publicaly, but are used to encript messages.')
-    print('B Secret Key =', B_secret_key, 'These are not shared publicaly, but are used to encript messages.')
+    print('A Secret Key =', A_secret_key, 'These are not shared publicly, but are used to encrypt messages.')
+    print('B Secret Key =', B_secret_key, 'These are not shared publicly, but are used to encrypt messages.')
 
 
 if __name__=="__main__":
