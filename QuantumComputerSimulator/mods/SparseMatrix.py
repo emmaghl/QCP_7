@@ -56,6 +56,7 @@ class SparseMatrix(MatrixFrame):
         self.size = SparseMatrix.size_matrix(self.matrix)
 
     def strip_matrix(self, mat): #future take care of real and imag separately to only strip half
+        '''Controls what is meant by non-zero.'''
         del_entries = []
         for i in range(len(mat)):
             if np.abs(np.real(mat[i][2])) >= 10 ** (-10) or np.abs(np.imag(mat[i][2])) >= 10 ** (-10) or i == len(mat)-1:
@@ -97,6 +98,7 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def quantum_register(cls, qnum):
+        '''Initialises quantum register.'''
         register = np.array([[0, 0, 1], [0, 1, 0]])
         w = 2 ** (qnum) - 2
         for i in range(w):
@@ -108,12 +110,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def tensor_prod(cls, M2, M1):
-        '''
-        Preform a tensor product between two matrices
-        <b> m1</b> Matrix 1 <br>
-        <b> m2</b> Matrix 2 <br>
-        <b>return</b> Tensor product of Matrix 1 with Matrix 2
-        '''
         if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
@@ -147,12 +143,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def matrix_multiply(cls, M1, M2):
-        '''
-        Multiply two matrices
-        <b> m1</b> Matrix 1 <br>
-        <b> m2</b> Matrix 2<br>
-        <b>return</b> Matrix 1 multiplied by Matrix 2
-        '''
         if type(M1) == SparseMatrix:
             m1 = M1.matrix
         else:
@@ -176,7 +166,6 @@ class SparseMatrix(MatrixFrame):
         return SparseMatrix("general", matmul)
 
     def sparse_multiply(self, num: float, mat):
-        '''multiplies a scalar by a sparse matrix'''
         # multiply matrix entry by a scalar and keep row and column information unchanged
         mul = []
         for i in range(len(mat)):
@@ -185,11 +174,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def transpose(cls, M):
-        '''
-        Method to transpose a sparse matrix
-
-        <b>return</b> Matrix transposed
-        '''
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -203,11 +187,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def inner_product(cls, M):
-        '''
-        Inner product of matrix M
-        <b>M</b> input matrix <br>
-        <b>return</b> Transpose
-        '''
         if type(M) == SparseMatrix:
             m = M.matrix
         else:
@@ -217,11 +196,6 @@ class SparseMatrix(MatrixFrame):
 
     @classmethod
     def trace(cls, M):
-        '''
-        Trace of a sparse matrix.
-        <b> M</b> Input Matrix <br>
-        <b>return</b> Transpose of matrix
-        '''
 
         trace = 0
 
@@ -248,10 +222,7 @@ class SparseMatrix(MatrixFrame):
 
     def cnot(self, d: list, c: float, t: float):
         '''
-        Inherits from MatrixFrame to produce a CNOT gate.
-        <b> d</b>
-        <b> c</b>
-        <b> t</b>
+        CNot gate.
         '''
         digits = copy.deepcopy(d)
         cn = []
@@ -266,6 +237,7 @@ class SparseMatrix(MatrixFrame):
         return cn
 
     def cv(self, d:list, c:float, t:float):
+        '''CV gate'''
         digits = copy.deepcopy(d)
         cv = []
 
@@ -282,6 +254,7 @@ class SparseMatrix(MatrixFrame):
         return cv
 
     def cz(self, d:list, c:float, t:float):
+        '''CZ gate'''
         digits = copy.deepcopy(d)
         cz = []
 
@@ -304,7 +277,7 @@ class SparseMatrix(MatrixFrame):
             if the last row(s) and/or coloumn(s) of the original dense matrix are all zero entries,
             these will be lost in the sparse conversion.
 
-        <b>Matrix</b> a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value
+        <b>Matrix</b> a sparse matrix: an array of triples [a,b,c] where a is the row, b is the colomn and c is the non-zero value <br>
         <b>return</b>  DMatrix: the converted dense matrix (in array form)
          '''
         count = 0
@@ -342,10 +315,7 @@ class SparseMatrix(MatrixFrame):
 
     def output(self, inputs:np.array) -> np.array:
         '''
-        Output of sparse matrix class.
-
-        <b>inputs</b> The register. <br>
-        <b>return</b> The output state vector, from applying the register to the circuit.
+        Gives the output state once the register, given by `inputs`, is applied.
         '''
         # inputs = self.Dense_to_Sparse(inputs)
         inputs_sparse = []

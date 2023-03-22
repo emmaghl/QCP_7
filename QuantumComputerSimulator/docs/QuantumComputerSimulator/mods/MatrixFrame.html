@@ -40,9 +40,9 @@ class MatrixFrame(ABC):
 
     def __recog_digits(self, digits):
         &#39;&#39;&#39;
-        Used for creating the indec for CNOT gate.
+        Used for creating the index for CNOT gate.
 
-        &lt;b&gt;digits&lt;/b&gt;
+        &lt;b&gt;digits&lt;/b&gt; The binary basis.
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []
@@ -188,9 +188,9 @@ inheritance.</p>
 
     def __recog_digits(self, digits):
         &#39;&#39;&#39;
-        Used for creating the indec for CNOT gate.
+        Used for creating the index for CNOT gate.
 
-        &lt;b&gt;digits&lt;/b&gt;
+        &lt;b&gt;digits&lt;/b&gt; The binary basis.
         &#39;&#39;&#39;
         N = int(np.log(len(digits)) / np.log(2))
         numbers = []

@@ -52,6 +52,7 @@ class LazyMatrix(MatrixFrame):
 
     @classmethod
     def quantum_register(cls, qnum):
+        '''Initialises register.'''
         reg = []
         for i in range(0,qnum):
             reg.append([lambda x: x[i]])
@@ -60,10 +61,7 @@ class LazyMatrix(MatrixFrame):
     @classmethod
     def tensor_prod(cls, m2, m1):
         '''
-        Lazy tensor product
-        <b>m1</b> Gate 1
-        <b>m2</b> Gate 2
-        <b>return</b> Tensor product of Gate 1 with Gate 2
+        Tensor product.
         '''
         tp = []
         for i in range(0, m1.dim):
@@ -76,12 +74,6 @@ class LazyMatrix(MatrixFrame):
 
     @classmethod
     def matrix_multiply(cls, m1, m2):
-        '''
-        Use list comprehension to preform a matrix multiplication between two 'matrices'
-        <b> m1</b> Gate 1
-        <b> m2</b> Gate 2
-        <b>return</b> Multiplication of gate 1 and gate 2
-        '''
         mm = []
         for i in range(0, m1.dim):
             mm.append(
@@ -99,6 +91,7 @@ class LazyMatrix(MatrixFrame):
         return DenseMatrix.trace(M)
 
     def cnot(self, d, c, t):
+        '''CNot gate'''
         digits = copy.deepcopy(d)
         cn = []
 
@@ -110,6 +103,7 @@ class LazyMatrix(MatrixFrame):
         return cn
 
     def cv(self, d, c, t):
+        '''CV gate'''
         digits = copy.deepcopy(d)
         cv = []
 
@@ -124,6 +118,7 @@ class LazyMatrix(MatrixFrame):
         return cv
 
     def cz(self, d, c, t):
+        '''CZ gate'''
         digits = copy.deepcopy(d)
         cz = []
 
@@ -138,6 +133,9 @@ class LazyMatrix(MatrixFrame):
         return cz
 
     def output(self,inputs):
+        '''
+        Gives the output state once the register, given by `inputs`, is applied.
+        '''
         new_in = []
         for i in range(0,len(inputs)):
             new_in.append(inputs[i])
