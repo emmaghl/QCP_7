@@ -229,7 +229,8 @@ class QuantumComputer(ABC):
         '''
         check.check_type(qnum, int)
         check.check_type(state, int)
-        check.check_type(register, list)
+        # check.check_type(register, list)
+        print("must unhash")
 
         inner_register = self.Matrix.inner_product(register)
         if state == 0:
